@@ -4,7 +4,6 @@ import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import image from '@rollup/plugin-image';
 
-
 const packageJson = require("./package.json");
 
 export default [
@@ -27,11 +26,7 @@ export default [
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
       image(),
-      dts({
-        name: "index",
-        out: "index.d.ts",
-        exclude: "**/*.d.ts",
-      }),
+
     ],
   },
   {

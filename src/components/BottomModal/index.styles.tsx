@@ -1,5 +1,5 @@
 import styled from "styled-components";
-const modalBackground = require("../../assets/images/ModalBackground.png");
+import modalBackground from "../../assets/images/ModalBackground.png";
 
 export const Spacer = styled.div`
   margin-top: 1rem;

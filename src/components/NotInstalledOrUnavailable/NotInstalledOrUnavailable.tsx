@@ -11,10 +11,6 @@ import {
   ModalSubtitle,
   ModalTitle,
 } from "../Modal/index.styles";
-import { ReactComponent as LedgerConnectSvg } from "../../assets/svg/LedgerConnect.svg";
-import { ReactComponent as XButtonSvg } from "../../assets/svg/X.svg";
-import { ReactComponent as Lightbulb } from "../../assets/svg/Lightbulb.svg";
-import { ReactComponent as Checkmark } from "../../assets/svg/Checkmark.svg";
 import {
   IconContainer,
   JoinBetaButton,
@@ -23,6 +19,10 @@ import {
   ModalSubtitleContainer,
 } from "./NotInstalledOrUnavailable.styles";
 import BottomModal from "../BottomModal";
+import { default as LedgerConnectSvg } from "../../assets/svg/LedgerConnect.svg";
+import { default as XButtonSvg } from "../../assets/svg/X.svg";
+import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
+import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
 
 interface NotInstalledOrUnavailableProps {
   isOpen: boolean;
@@ -48,16 +48,16 @@ const NotInstalledOrUnavailable = ({
           <ModalContent>
             <ModalSpacer>
               <ModalHeader>
-                <LedgerConnectSvg />
+                <img src={LedgerConnectSvg} />
                 <CloseButtonWrapper onClick={handleClose}>
-                  <XButtonSvg />
+                  <img src={XButtonSvg} />
                 </CloseButtonWrapper>
               </ModalHeader>
               <ModalBody>
                 <ModalTitle> Try Ledger Connect </ModalTitle>
                 <ModalSubtitleContainer>
                   <IconContainer>
-                    <Lightbulb />
+                    <img src={LightbulbSvg} />
                   </IconContainer>
                   <ModalSubtitle>
                     One secure wallet and extension that works across all dApps.
@@ -65,7 +65,7 @@ const NotInstalledOrUnavailable = ({
                 </ModalSubtitleContainer>
                 <ModalSubtitleContainer>
                   <IconContainer>
-                    <Checkmark />
+                    <img src={CheckmarkSvg} />
                   </IconContainer>
                   <ModalSubtitle>
                     Stay safe and prevent harmful transactions with Web3 Check.

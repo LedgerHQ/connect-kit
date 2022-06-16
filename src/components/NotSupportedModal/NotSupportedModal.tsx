@@ -12,9 +12,9 @@ import {
   ModalWrapper,
   CloseButtonWrapper,
 } from "../Modal/index.styles";
-import { ReactComponent as LedgerConnectSvg } from "../../assets/svg/LedgerConnect.svg";
-import { ReactComponent as AppleSvg } from "../../assets/svg/Apple.svg";
-import { ReactComponent as XButtonSvg } from "../../assets/svg/X.svg";
+import { default as LedgerConnectSvg } from "../../assets/svg/LedgerConnect.svg";
+import { default as AppleSvg } from "../../assets/svg/Apple.svg";
+import { default as XButtonSvg } from "../../assets/svg/X.svg";
 import { TextSpacer } from "./NotSupportedModal.styles";
 import BottomModal from "../BottomModal";
 
@@ -36,9 +36,9 @@ const NotSupportedModal = ({ isOpen }: NotSupportedModalProps) => {
           <ModalContent>
             <ModalSpacer>
               <ModalHeader>
-                <LedgerConnectSvg />
+                <img src={LedgerConnectSvg} />
                 <CloseButtonWrapper onClick={handleClose}>
-                  <XButtonSvg />
+                  <img src={XButtonSvg} />
                 </CloseButtonWrapper>
               </ModalHeader>
               <ModalBody>
@@ -53,7 +53,7 @@ const NotSupportedModal = ({ isOpen }: NotSupportedModalProps) => {
                 </ModalSubtitle>
               </ModalBody>
               <ModalFooter>
-                <AppleSvg />
+                <img src={AppleSvg} />
                 <ModalFooterText>Safari on iOS</ModalFooterText>
               </ModalFooter>
             </ModalSpacer>
