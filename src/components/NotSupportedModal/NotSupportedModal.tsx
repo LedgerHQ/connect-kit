@@ -1,5 +1,4 @@
-import { useState } from "react";
-import Modal from "../Modal";
+import Modal, { setIsModalOpen } from "../Modal";
 import {
   ModalBody,
   ModalContent,
@@ -18,19 +17,13 @@ import { default as XButtonSvg } from "../../assets/svg/X.svg";
 import { TextSpacer } from "./NotSupportedModal.styles";
 import BottomModal from "../BottomModal";
 
-interface NotSupportedModalProps {
-  isOpen: boolean;
-}
-
-const NotSupportedModal = ({ isOpen }: NotSupportedModalProps) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(isOpen);
-
+const NotSupportedModal = () => {
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
   return (
-    <Modal isOpen={isModalOpen}>
+    <Modal>
       <>
         <ModalWrapper>
           <ModalContent>

@@ -6,6 +6,7 @@ import {
   NotLedgerConnectProviderError,
   ShowAppropriateModalResponse,
 } from "./types";
+import { setIsModalOpen } from "../../components/Modal";
 
 export default class LedgerConnectUiKit {
   private readonly notSupportedRenderer: NotSupportedRenderer;
@@ -49,12 +50,14 @@ export default class LedgerConnectUiKit {
         error = new PlatformOrBrowserNotSupportedError();
         console.log(error.message);
 
-        this.notSupportedRenderer.attachAndShow(this.root);
+        this.notSupportedRenderer.attach(this.root);
+        setIsModalOpen(true);
       } else if (!environment.isLedgerConnectExtensionLoaded) {
         error = new NotLedgerConnectProviderError();
         console.log(error.message);
 
-        this.notInstalledOrUnavailableRenderer.attachAndShow(this.root);
+        this.notInstalledOrUnavailableRenderer.attach(this.root);
+        setIsModalOpen(true);
       }
     }
 

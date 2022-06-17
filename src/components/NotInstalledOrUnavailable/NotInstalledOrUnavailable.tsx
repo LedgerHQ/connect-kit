@@ -1,5 +1,4 @@
-import { useState } from "react";
-import Modal from "../Modal";
+import Modal, { setIsModalOpen } from "../Modal";
 import {
   ModalBody,
   ModalContent,
@@ -24,15 +23,7 @@ import { default as XButtonSvg } from "../../assets/svg/X.svg";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
 
-interface NotInstalledOrUnavailableProps {
-  isOpen: boolean;
-}
-
-const NotInstalledOrUnavailable = ({
-  isOpen,
-}: NotInstalledOrUnavailableProps) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(isOpen);
-
+const NotInstalledOrUnavailable = () => {
   const handleClose = () => {
     setIsModalOpen(false);
   };
@@ -42,7 +33,7 @@ const NotInstalledOrUnavailable = ({
   };
 
   return (
-    <Modal isOpen={isModalOpen}>
+    <Modal>
       <>
         <ModalWrapper>
           <ModalContent>

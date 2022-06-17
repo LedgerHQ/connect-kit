@@ -1,1 +1,4 @@
-export { default as LedgerConnectUiKit } from "./LedgerConnectUiKit";
+export {
+  default as LedgerConnectUiKit,
+  ShowAppropriateModalResponse
+} from "./LedgerConnectUiKit";
