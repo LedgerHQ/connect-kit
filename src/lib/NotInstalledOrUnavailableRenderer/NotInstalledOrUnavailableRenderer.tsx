@@ -1,14 +1,15 @@
-import { render } from "react-dom";
+import { createRoot, Root } from 'react-dom/client';
 import { NotInstalledOrUnavailable } from "../../components";
 
 export default class NotInstalledOrUnavailableRenderer {
-  private root: Element | null = null;
+  private root: Root | null = null;
 
   public attachAndShow(el: Element): void {
     if (!this.root) {
-      this.root = document.createElement("div");
-      this.root.className = "-lcuikit-platform-not-supported-screen";
-      el.appendChild(this.root);
+      const container = document.createElement("div");
+      container.className = "-lcuikit-platform-not-supported-screen";
+      el.appendChild(container);
+      this.root = createRoot(container)
     }
 
     this.render();
@@ -19,6 +20,6 @@ export default class NotInstalledOrUnavailableRenderer {
       return;
     }
 
-    render(<NotInstalledOrUnavailable isOpen />, this.root);
+    this.root.render(<NotInstalledOrUnavailable isOpen />);
   }
 }
