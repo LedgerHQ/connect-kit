@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useState } from "react";
-import Backdrop from "./Backdrop";
+import Backdrop from "./Backdrop.styles";
+import { ModalContent, ModalWrapper } from "./index.styles";
 
 let setIsModalOpen = (isOpen: boolean) => {};
 
@@ -25,8 +26,14 @@ const Modal = ({ isOpen = true, children }: ModalProps) => {
     <>
       {isOpenState && (
         <>
-          <Backdrop />
-          {children}
+        <Backdrop />
+        <ModalWrapper>
+          <ModalContent>
+            <>
+              {children}
+            </>
+          </ModalContent>
+        </ModalWrapper>
         </>
       )}
     </>

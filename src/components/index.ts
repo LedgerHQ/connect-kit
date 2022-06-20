@@ -1,2 +1,2 @@
-export { default as NotSupportedModal } from "./NotSupportedModal";
-export { default as NotInstalledOrUnavailable } from "./NotInstalledOrUnavailable";
+export { default as PlatformNotSupportedModal } from "./PlatformNotSupportedModal";
+export { default as NotInstalledOrUnavailable } from "./ExtensionUnavailableModal";

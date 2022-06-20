@@ -12,19 +12,16 @@ export const IconContainer = styled.div`
   margin-right: 10px;
 `;
 
-export const JoinBetaButtonWrapper = styled.div`
-  margin-top: 2rem;
-`;
-
 export const JoinBetaButton = styled.button`
-  width: 80vw;
+  width: 100%;
   height: 3rem;
   border-radius: 3rem;
   outline: none;
   border: none;
+  background-color: white;
+  margin: 0.2rem;
 `;
 
 export const JoinBetaText = styled.p`
   font-weight: bold;
-  font-size: 0.9rem;
 `;

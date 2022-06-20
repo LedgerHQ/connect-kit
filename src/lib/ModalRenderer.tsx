@@ -1,7 +1,7 @@
 import { createRoot, Root } from "react-dom/client";
-import { PlatformNotSupportedModal } from "../../components";
+import { PlatformNotSupportedModal } from "../components";
 
-export default class NotSupportedRenderer {
+export default class ModalRenderer {
   private root: Root | null = null;
 
   public attach(el: Element): void {
