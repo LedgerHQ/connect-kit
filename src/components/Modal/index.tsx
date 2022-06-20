@@ -13,10 +13,10 @@ const Modal = ({ isOpen = true, children }: ModalProps) => {
   const [isOpenState, setIsOpen] = useState<boolean>(false);
 
   setIsModalOpen = (isModalOpen: boolean) => {
-    if (isModalOpen != null) {
+    if (isModalOpen !== null) {
       setIsOpen(isModalOpen);
     }
-  }
+  };
 
   useEffect(() => {
     setIsOpen(isOpen);
@@ -26,14 +26,12 @@ const Modal = ({ isOpen = true, children }: ModalProps) => {
     <>
       {isOpenState && (
         <>
-        <Backdrop />
-        <ModalWrapper>
-          <ModalContent>
-            <>
-              {children}
-            </>
-          </ModalContent>
-        </ModalWrapper>
+          <Backdrop />
+          <ModalWrapper>
+            <ModalContent>
+              <>{children}</>
+            </ModalContent>
+          </ModalWrapper>
         </>
       )}
     </>

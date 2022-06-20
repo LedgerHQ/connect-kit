@@ -1,6 +1,6 @@
 import NotSupportedRenderer from "../NotSupportedRenderer";
 import NotInstalledOrUnavailableRenderer from "../NotInstalledOrUnavailableRenderer";
-import checkLedgerConnect from "../checkLedgerConnect";
+import { checkLedgerConnect } from "../checkLedgerConnect";
 import {
   PlatformOrBrowserNotSupportedError,
   NotLedgerConnectProviderError,

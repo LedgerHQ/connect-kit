@@ -1,1 +1,1 @@
-export { default } from "./checkLedgerConnect";
+export { checkLedgerConnect } from "./checkLedgerConnect";

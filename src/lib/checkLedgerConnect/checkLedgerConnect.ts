@@ -12,7 +12,7 @@ const LedgerConnectIdentityFlag = "isLedgerConnect";
 
 declare const window: CustomWindow;
 
-function checkLedgerConnect() {
+export function checkLedgerConnect() {
   const device = getBrowser();
 
   // check supported browsers
@@ -41,5 +41,3 @@ function checkLedgerConnect() {
     isLedgerConnectExtensionLoaded,
   };
 }
-
-export default checkLedgerConnect;
