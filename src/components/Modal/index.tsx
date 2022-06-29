@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import Backdrop from "./Backdrop.styles";
+import { Backdrop } from "./Backdrop.styles";
 import { ModalContent, ModalWrapper } from "./index.styles";
 
 let setIsModalOpen = (isOpen: boolean) => {};

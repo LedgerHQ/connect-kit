@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-const Backdrop = styled.div`
-  z-index: 1;
+export const Backdrop = styled.div`
+  z-index: 998;
   position: fixed;
   top: 0;
   right: 0;
@@ -10,5 +10,3 @@ const Backdrop = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
   transition: opacity .25s;
 `;
-
-export default Backdrop;

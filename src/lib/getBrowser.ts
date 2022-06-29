@@ -1,19 +1,19 @@
-import bowser from "bowser";
+import bowser from "bowser"
 
-export declare type Platform =
+declare type Platform =
   | DeviceOSName
   | DeviceBrowserName
   | DeviceType
   | "all";
-export declare type DeviceOS = {
+declare type DeviceOS = {
   name: DeviceOSName;
   version: string;
 };
-export declare type DeviceBrowser = {
+declare type DeviceBrowser = {
   name: DeviceBrowserName;
   version: string;
 };
-export declare type DeviceOSName =
+declare type DeviceOSName =
   | "Windows Phone"
   | "Windows"
   | "macOS"
@@ -21,7 +21,7 @@ export declare type DeviceOSName =
   | "Android"
   | "Linux"
   | "Chrome OS";
-export declare type DeviceBrowserName =
+declare type DeviceBrowserName =
   | "Android Browser"
   | "Chrome"
   | "Chromium"
@@ -30,7 +30,7 @@ export declare type DeviceBrowserName =
   | "Opera"
   | "Safari";
 
-export declare type DeviceType = "desktop" | "mobile" | "tablet";
+declare type DeviceType = "desktop" | "mobile" | "tablet";
 
 export declare type Device = {
   os: DeviceOS;
@@ -38,7 +38,7 @@ export declare type Device = {
   browser: DeviceBrowser;
 };
 
-function getBrowser(): Device {
+export function getBrowser(): Device {
   const parsed = bowser.getParser(window.navigator.userAgent);
   const os = parsed.getOS();
   const browser = parsed.getBrowser();
@@ -50,5 +50,3 @@ function getBrowser(): Device {
     browser: browser as DeviceBrowser,
   };
 }
-
-export default getBrowser;
