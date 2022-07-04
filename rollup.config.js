@@ -6,10 +6,6 @@ import image from '@rollup/plugin-image';
 import { terser } from "rollup-plugin-terser";
 import replace from '@rollup/plugin-replace';
 
-
-
-
-
 const packageJson = require("./package.json");
 
 export default [
@@ -20,7 +16,7 @@ export default [
         file: packageJson.module,
         format: "umd",
         sourcemap: true,
-        name: "ledger-connect-button-package"
+        name: "ledgerConnectKit"
       },
     ],
     plugins: [

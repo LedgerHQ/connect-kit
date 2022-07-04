@@ -17,7 +17,7 @@ const isU2FSupported = (device: Device): boolean => {
     typeof navigator.credentials?.create === 'function' ||
     typeof navigator.credentials?.get === 'function') &&
     // Exclude these as even if they support U2F (when using HTTPS) they cannot
-    // not use USB, or are being excluded by @ledgerhq/hw-transport-u2f
+    // use USB, or are being excluded by @ledgerhq/hw-transport-u2f
     //
     // Safari (both on macOS and iOS)
     !(device.browser.name === "Safari") &&
@@ -35,10 +35,10 @@ interface CustomWindow extends Window {
 }
 
 declare const window: CustomWindow;
-const LedgerConnectNameSpace = "ethereum";
-const LedgerConnectIdentityFlag = "isLedgerConnect";
+const LEDGER_CONNECT_NAMESPACE = "ethereum";
+const LEDGER_CONNECT_IDENTIFIER = "isLedgerConnect";
 
-export type CheckConnectSupport = {
+export type ConnectSupport = {
   isConnectSupported: boolean,
   isProviderDefined: boolean,
   isLedgerConnectExtensionLoaded: boolean,
@@ -47,7 +47,7 @@ export type CheckConnectSupport = {
   isU2FSupported: boolean
 }
 
-export function checkConnectSupport(): CheckConnectSupport {
+export function checkConnectSupport(): ConnectSupport {
   const device = getBrowser();
 
   // check Connect support, currently Safari only on iOS/iPadOS
@@ -58,14 +58,14 @@ export function checkConnectSupport(): CheckConnectSupport {
   const isLedgerLiveMobileInstalled = false;
 
   // check provider
-  const provider = window[LedgerConnectNameSpace];
+  const provider = window[LEDGER_CONNECT_NAMESPACE];
   const isProviderDefined = !!provider;
 
   // check extension enabled
   const isLedgerConnectExtensionLoaded =
-    !!provider && !!provider[LedgerConnectIdentityFlag];
+    !!provider && !!provider[LEDGER_CONNECT_IDENTIFIER];
 
-  const supportResponse = {
+  return {
     isConnectSupported,
     isProviderDefined,
     isLedgerConnectExtensionLoaded,
@@ -73,6 +73,4 @@ export function checkConnectSupport(): CheckConnectSupport {
     isWebUSBSupported: isWebUSBSupported(),
     isU2FSupported: isU2FSupported(device)
   };
-
-  return supportResponse;
 }

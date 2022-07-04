@@ -1,7 +1,7 @@
 import { setIsModalOpen } from "../components/Modal";
 import { createRoot, Root } from "react-dom/client";
 import { NotInstalledOrUnavailable, PlatformNotSupportedModal } from "../components";
-import { CheckConnectSupport } from "./checkConnectSupport";
+import { ConnectSupport } from "./checkConnectSupport";
 
 class PlatformOrBrowserNotSupportedError extends Error {
   public constructor() {
@@ -36,7 +36,7 @@ const rendererModal = (modalType: ModalType): void => {
   }
 }
 
-export const showModal = (support: CheckConnectSupport) => {
+export const showModal = (support: ConnectSupport) => {
   let error;
 
   if (!root) {

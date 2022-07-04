@@ -1,10 +1,5 @@
 import bowser from "bowser"
 
-declare type Platform =
-  | DeviceOSName
-  | DeviceBrowserName
-  | DeviceType
-  | "all";
 declare type DeviceOS = {
   name: DeviceOSName;
   version: string;

@@ -2,25 +2,21 @@ import { ReactElement, useEffect, useState } from "react";
 import { Backdrop } from "./Backdrop.styles";
 import { ModalContent, ModalWrapper } from "./index.styles";
 
-let setIsModalOpen = (isOpen: boolean) => {};
+export let setIsModalOpen = (isOpen: boolean) => {};
 
 interface ModalProps {
   isOpen?: boolean;
   children: ReactElement | null;
 }
 
-const Modal = ({ isOpen = true, children }: ModalProps) => {
-  const [isOpenState, setIsOpen] = useState<boolean>(false);
+export const Modal = ({ children }: ModalProps) => {
+  const [isOpenState, setIsOpen] = useState<boolean>(true);
 
   setIsModalOpen = (isModalOpen: boolean) => {
     if (isModalOpen !== null) {
       setIsOpen(isModalOpen);
     }
   };
-
-  useEffect(() => {
-    setIsOpen(isOpen);
-  }, [isOpen]);
 
   return (
     <>
@@ -38,5 +34,4 @@ const Modal = ({ isOpen = true, children }: ModalProps) => {
   );
 };
 
-export { setIsModalOpen };
 export default Modal;
