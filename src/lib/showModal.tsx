@@ -36,7 +36,16 @@ const rendererModal = (modalType: ModalType): void => {
   }
 }
 
-export const showModal = (support: ConnectSupport) => {
+// accepts a boolean informing of the connector support for USB
+type showModalOptions = ConnectSupport & { connectorSupportsUsb: boolean }
+
+export const showModal = ({
+  isConnectSupported,
+  isLedgerConnectExtensionLoaded,
+  isWebUSBSupported,
+  isU2FSupported,
+  connectorSupportsUsb = false,
+}: showModalOptions) => {
   let error;
 
   if (!root) {
@@ -47,13 +56,16 @@ export const showModal = (support: ConnectSupport) => {
     root = createRoot(container)
   }
 
-  if (!support.isConnectSupported && !support.isWebUSBSupported && !support.isU2FSupported) {
+  // only check for USB support on browser if the connector supports USB
+  const isUSBSupported = connectorSupportsUsb && (isWebUSBSupported || isU2FSupported)
+
+  if (!isConnectSupported && !isUSBSupported) {
     // if none of the connection methods is supported, show the Platform Not
     // Supported modal
     error = new PlatformOrBrowserNotSupportedError();
     rendererModal("PlatformNotSupportedModal");
     setIsModalOpen(true);
-  } else if (support.isConnectSupported && !support.isLedgerConnectExtensionLoaded) {
+  } else if (isConnectSupported && !isLedgerConnectExtensionLoaded) {
     // if we're on a supported platform but Connect is not enabled show the
     // Try Ledger Connect modal
     error = new NotLedgerConnectProviderError();
