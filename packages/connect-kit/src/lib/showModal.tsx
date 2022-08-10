@@ -36,7 +36,6 @@ const rendererModal = (modalType: ModalType): void => {
   }
 }
 
-// accepts a boolean informing of the connector support for USB
 type showModalOptions = ConnectSupport & { connectorSupportsUsb: boolean }
 
 export const showModal = ({
@@ -56,10 +55,19 @@ export const showModal = ({
     root = createRoot(container)
   }
 
-  // only check for USB support on browser if the connector supports USB
-  const isUSBSupported = connectorSupportsUsb && (isWebUSBSupported || isU2FSupported)
+  console.log('support props are ', {
+    isConnectSupported,
+    isLedgerConnectExtensionLoaded,
+    isWebUSBSupported,
+    isU2FSupported,
+    connectorSupportsUsb})
 
-  if (!isConnectSupported && !isUSBSupported) {
+  const isUSBSupported = connectorSupportsUsb && (isWebUSBSupported || isU2FSupported)
+  const noSupportedTransports = !isConnectSupported && !isUSBSupported
+
+  console.log('no supported transports is ', noSupportedTransports)
+
+  if (noSupportedTransports) {
     // if none of the connection methods is supported, show the Platform Not
     // Supported modal
     error = new PlatformOrBrowserNotSupportedError();
