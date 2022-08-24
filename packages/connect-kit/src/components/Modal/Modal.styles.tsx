@@ -12,18 +12,15 @@ export const ModalWrapper = styled.div`
   top: 0px;
   left: 0px;
   width: 100vw;
-
-  /* workaround for bottom toolbar on Safari and Chrome hidding content */
-  height: 100%; /* fallback */
-  height: fill-available;
-  height: stretch; /* latest specification */
-
+  height: 100%;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
 
   @media ${devices.notPhone} {
-    align-items: center;
+    justify-content: start;
+    align-items: end;
   }
 `;
 
@@ -32,9 +29,6 @@ export const ModalContent = styled.div`
   bottom: 0px;
   left: 0px;
   width: 100%;
-
-  display: flex;
-  flex-direction: column;
   border-radius: ${borderRadius} ${borderRadius} 0 0;
   background: #131214;
 
@@ -42,8 +36,9 @@ export const ModalContent = styled.div`
   transition: opacity .25s,transform .25s;
 
   @media ${devices.notPhone} {
-     max-width: 420px;
-     border-radius: ${borderRadius};
+    margin: 2.6rem;
+    max-width: 420px;
+    border-radius: ${borderRadius};
   }
 `;
 
@@ -57,7 +52,7 @@ export const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const modalPadding = '1rem';
+const modalPadding = '1.1rem';
 
 export const ModalHeader = styled.div`
   display: flex;
@@ -69,10 +64,9 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalSection = styled.div`
-  display: flex;
-  flex-direction: column;
   border-top: 1px solid #2b2a2b;
-  padding: ${modalPadding};
+  padding: ${modalPadding} ${modalPadding} 0 ${modalPadding};
+  margin-bottom: ${modalPadding};
 
   font-size: 0.9rem;
   font-weight: 500;
@@ -84,7 +78,6 @@ export const ModalTitle = styled.h2`
   line-height: 2.2rem;
   color: #fff;
   font-weight: 600;
-  margin-block-end: 0;
   margin-bottom: 0.8rem;
 `;
 
@@ -92,17 +85,13 @@ export const ModalSubtitle = styled.h3`
   font-size: 1.4rem;
   color: #fff;
   font-weight: 500;
-  margin-block-end: 0;
-  margin-block-start: 0;
   margin-bottom: 0.5rem;
 `;
 
 export const ModalText = styled.p`
   font-size: 0.9rem;
   font-weight: 500;
-  margin-block-end: 0;
-  margin-block-start: 0;
-  margin-bottom: 0.5rem;
+  margin: 0.8rem 0;
 `;
 
 export type VariantOptions = {

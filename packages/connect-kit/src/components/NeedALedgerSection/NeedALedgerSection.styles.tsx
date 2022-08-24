@@ -6,7 +6,7 @@ export const CustomBackground = styled.div`
   background: url(${nanoX});
   background-size: 260px;
   background-repeat: no-repeat;
-  background-position: right bottom;
+  background-position: right 128%;
 `;
 
 export const ContentWrapper = styled.div`
@@ -16,4 +16,5 @@ export const ContentWrapper = styled.div`
 export const BuyNowButton = styled(ModalButton)`
   width: 7rem;
   margin-top: 1rem;
+  margin-bottom: 0.6rem;
 `;
