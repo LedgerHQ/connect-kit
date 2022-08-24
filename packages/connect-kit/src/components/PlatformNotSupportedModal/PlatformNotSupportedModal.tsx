@@ -1,55 +1,60 @@
-import Modal, { setIsModalOpen } from "../Modal";
+import Modal from "../Modal/Modal";
 import {
-  CloseButtonWrapper,
-} from "../Modal/index.styles";
-import {
-  CardBody,
-  CardContent,
-  CardFooter,
-  CardFooterText,
-  CardHeader,
-  CardSubtitle,
-  CardTitle,
-  CardWrapper,
-} from "../Modal/Card.styles";
-import { default as LedgerConnectSvg } from "../../assets/svg/LedgerConnect.svg";
-import { default as AppleSvg } from "../../assets/svg/Apple.svg";
-import { default as XButtonSvg } from "../../assets/svg/X.svg";
-import NeedALedgerCard from "../NeedALedgerCard";
+  ModalSection,
+  ModalText,
+  ModalTitle,
+} from "../Modal/Modal.styles";
+import { BrowserList, BrowserListItem } from "./PlatformNotSupported.styles";
+import { default as ChromeIcon } from "../../assets/svg/ChromeIcon.svg";
+import { default as SafariIcon } from "../../assets/svg/SafariIcon.svg";
+import { default as FirefoxIcon } from "../../assets/svg/FirefoxIcon.svg";
+import NeedALedgerSection from "../NeedALedgerSection";
 
-const PlatformNotSupportedModal = () => {
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
+type PlatformNotSupportedModalProps = {
+  withUsb?: boolean;
+}
 
+const PlatformNotSupportedModal = ({ withUsb }: PlatformNotSupportedModalProps) => {
   return (
     <Modal>
       <>
-        <CardWrapper>
-          <CardContent>
-            <CardHeader>
-              <img src={LedgerConnectSvg} />
-              <CloseButtonWrapper onClick={handleClose}>
-                <img src={XButtonSvg} />
-              </CloseButtonWrapper>
-            </CardHeader>
-            <CardBody>
-              <CardTitle>
-                Sorry, we don't support this platform just yet.
-              </CardTitle>
-              <CardSubtitle>
-                We're working hard to expand our coverage.
-                <br />
-                Until we get there you can try Connect on...
-              </CardSubtitle>
-            </CardBody>
-            <CardFooter>
-              <img src={AppleSvg} />
-              <CardFooterText>Safari on iOS</CardFooterText>
-            </CardFooter>
-          </CardContent>
-        </CardWrapper>
-        <NeedALedgerCard />
+        <ModalSection>
+          <ModalTitle>
+            Sorry, we don't support this platform just yet.
+          </ModalTitle>
+
+          <ModalText>
+            We're working hard to expand our coverage.
+            <br/>
+            Until we get there, you can try Ledger Connect on:
+          </ModalText>
+          <BrowserList>
+            <BrowserListItem>
+              <img src={SafariIcon} />
+              Safari on iOS
+            </BrowserListItem>
+          </BrowserList>
+
+          {withUsb && (
+            <>
+              <ModalText>
+                Or still use USB on:
+              </ModalText>
+              <BrowserList>
+                <BrowserListItem>
+                  <img src={ChromeIcon} />
+                  Chrome based browsers on desktop
+                </BrowserListItem>
+                <BrowserListItem>
+                  <img src={FirefoxIcon} />
+                  Firefox on desktop
+                </BrowserListItem>
+              </BrowserList>
+            </>
+          )}
+        </ModalSection>
+
+        <NeedALedgerSection variant="primary" />
       </>
     </Modal>
   );

@@ -1,4 +1,4 @@
-import { setIsModalOpen } from "../components/Modal";
+import { setIsModalOpen } from "../components/Modal/Modal";
 import { createRoot, Root } from "react-dom/client";
 import { NotInstalledOrUnavailable, PlatformNotSupportedModal } from "../components";
 import { ConnectSupport } from "./checkConnectSupport";
@@ -21,10 +21,12 @@ class NotLedgerConnectProviderError extends Error {
 
 type ModalType =
   'PlatformNotSupportedModal' |
+  'PlatformNotSupportedModalWithUsb' |
   'NotInstalledOrUnavailable';
 
 const modals = {
   'PlatformNotSupportedModal': <PlatformNotSupportedModal />,
+  'PlatformNotSupportedModalWithUsb': <PlatformNotSupportedModal withUsb />,
   'NotInstalledOrUnavailable': <NotInstalledOrUnavailable />
 };
 
@@ -71,7 +73,12 @@ export const showModal = ({
     // if none of the connection methods is supported, show the Platform Not
     // Supported modal
     error = new PlatformOrBrowserNotSupportedError();
-    rendererModal("PlatformNotSupportedModal");
+
+    if (connectorSupportsUsb) {
+      rendererModal("PlatformNotSupportedModalWithUsb");
+    } else {
+      rendererModal("PlatformNotSupportedModal");
+    }
     setIsModalOpen(true);
   } else if (isConnectSupported && !isLedgerConnectExtensionLoaded) {
     // if we're on a supported platform but Connect is not enabled show the
