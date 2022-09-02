@@ -1,27 +1,21 @@
 import styled from "styled-components";
+import { ModalButton } from "../Modal/Modal.styles";
 
-export const ModalSubtitleContainer = styled.div`
+export const ConnectFeature = styled.div`
   display: flex;
-  flex: 1;
   flex-direction: row;
   align-items: center;
-  margin-top: 1rem;
+  margin: 0.6rem 0 0.6rem 0;
+  padding: 0 3rem 0 0;
+
+  & > img {
+    width: 48px;
+    height: 48px;
+    margin-right: 12px;
+  }
 `;
 
-export const IconContainer = styled.div`
-  margin-right: 10px;
-`;
-
-export const JoinBetaButton = styled.button`
+export const InstallButton = styled(ModalButton)`
   width: 100%;
-  height: 3rem;
-  border-radius: 3rem;
-  outline: none;
-  border: none;
-  background-color: white;
-  margin: 0.2rem;
-`;
-
-export const JoinBetaText = styled.p`
-  font-weight: bold;
+  margin-top: 1.4rem;
 `;
