@@ -15,11 +15,6 @@
     "allowJs": false,
 
     "outDir": "dist",
-    "baseUrl": "src",
-    "paths": {
-      "@types/*": [
-        "@types/*"
-      ]
-    }
+    "baseUrl": "src"
   }
 }
