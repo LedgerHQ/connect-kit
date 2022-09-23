@@ -8,69 +8,49 @@ export type ConnectSupport = {
   isU2FSupported: boolean;
 };
 
-export interface ConnectSupportFunction {
-  (): ConnectSupport;
-}
+export type ConnectSupportFunction = () => ConnectSupport;
 
 // ethereum
 
 export interface EthereumProvider {
-  providers?: EthereumProvider[]
-  request(...args: any[]): Promise<any>
-  on(...args: any[]): void
-  removeListener(...args: any[]): void
+  providers?: EthereumProvider[];
+  request(...args: unknown[]): Promise<unknown>;
+  on(...args: unknown[]): void;
+  removeListener(...args: unknown[]): void;
 }
 
-export interface GetEthereumProviderFunction {
-  (): EthereumProvider | null
-}
+export type GetEthereumProviderFunction = () => EthereumProvider | null;
 
 // solana
 
 export interface SolanaProvider {
-  signTransaction(...args: any[]): Promise<any>
-  signAllTransactions(...args: any[]): Promise<any>
-  signAndSendTransaction(...args: any[]): Promise<any>
-  connect(): Promise<void>
-  disconnect(): Promise<void>
+  signTransaction(...args: unknown[]): Promise<unknown>;
+  signAllTransactions(...args: unknown[]): Promise<unknown>;
+  signAndSendTransaction(...args: unknown[]): Promise<unknown>;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
 }
 
-export interface GetSolanaProviderFunction {
-  (): SolanaProvider | null
-}
+export type GetSolanaProviderFunction = () => SolanaProvider | null;
 
 // getProvider
 
-export const SupportedProviders = {
-  ethereum: 'ethereum',
-  solana: 'solana'
-} as const;
-export type SupportedProvidersType = typeof SupportedProviders
-export type SupportedProvider =  SupportedProvidersType[keyof SupportedProvidersType]
-
-export interface GetProviderFunction {
-  (provider: SupportedProvider): EthereumProvider | SolanaProvider | null
+export enum SupportedProviders {
+  ethereum = 'ethereum',
+  solana = 'solana'
 }
+
+export type GetProviderFunction = (provider: SupportedProviders) => EthereumProvider | SolanaProvider | null;
 
 // modal
 
-export type ShowModalOptions = ConnectSupport & { connectorSupportsUsb: boolean }
+export type ShowModalOptions = ConnectSupport & { connectorSupportsUsb?: boolean }
 
 export type ShowModalResult = {
   error?: Error
 }
 
-export interface ShowModalFunction {
-  (params: ShowModalOptions): ShowModalResult
-}
-
-export type LedgerConnectKit = {
-  checkConnectSupport: ConnectSupportFunction;
-  getProvider: GetProviderFunction;
-  getEthereumProvider: GetEthereumProviderFunction;
-  getSolanaProvider: GetSolanaProviderFunction;
-  showModal: ShowModalFunction;
-};
+export type ShowModalFunction = (params: ShowModalOptions) => ShowModalResult;
 
 // script loader
 
@@ -93,6 +73,14 @@ function loadScript(src: string, globalName: string): Promise<any> {
     document.head.appendChild(script)
   })
 }
+
+export interface LedgerConnectKit {
+  checkConnectSupport: ConnectSupportFunction;
+  getProvider: GetProviderFunction;
+  getEthereumProvider: GetEthereumProviderFunction;
+  getSolanaProvider: GetSolanaProviderFunction;
+  showModal: ShowModalFunction;
+};
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
   const CONNECT_KIT_CDN_URL = "https://incomparable-duckanoo-b48572.netlify.app/umd/index.js"

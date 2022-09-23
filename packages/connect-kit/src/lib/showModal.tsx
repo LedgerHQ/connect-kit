@@ -38,7 +38,7 @@ const rendererModal = (modalType: ModalType): void => {
   }
 }
 
-type showModalOptions = ConnectSupport & { connectorSupportsUsb: boolean }
+type showModalOptions = ConnectSupport & { connectorSupportsUsb?: boolean }
 
 type ShowModalResult = {
   error?: Error

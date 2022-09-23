@@ -44,14 +44,9 @@ export type ConnectSupport = {
 export function checkConnectSupport(): ConnectSupport {
   const device = getBrowser();
 
-  const hasConnectEthereumProvider = !!getEthereumProvider();
-
-  // check extension enabled
-  const isLedgerConnectExtensionLoaded = hasConnectEthereumProvider;
-
   return {
     isConnectSupported: isConnectSupported(device),
-    isLedgerConnectExtensionLoaded,
+    isLedgerConnectExtensionLoaded: !!getEthereumProvider(),
     isLedgerLiveMobileInstalled: undefined,
     isWebUSBSupported: isWebUSBSupported(),
     isU2FSupported: isU2FSupported(device)

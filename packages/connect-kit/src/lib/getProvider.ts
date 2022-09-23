@@ -1,11 +1,9 @@
-export const SupportedProviders = {
-  ethereum: 'ethereum',
-  solana: 'solana'
-} as const;
-type SupportedProvidersType = typeof SupportedProviders
-export type SupportedProvider = SupportedProvidersType[keyof SupportedProvidersType]
+export enum SupportedProviders {
+  ethereum = 'ethereum',
+  solana = 'solana'
+}
 
-export function getProvider (provider: SupportedProvider) {
+export function getProvider (provider: SupportedProviders) {
   switch (provider) {
     case SupportedProviders.ethereum:
       return getEthereumProvider()
@@ -13,7 +11,7 @@ export function getProvider (provider: SupportedProvider) {
     case SupportedProviders.solana:
       return getSolanaProvider()
       break
-    defualt:
+    default:
       return null
   }
 }
@@ -24,15 +22,15 @@ export const LEDGER_ETHEREUM_PROVIDER = 'ethereum'
 export const LEDGER_CONNECT_ETHEREUM_PROP = 'isLedgerConnect'
 
 export interface EthereumProvider {
-  [LEDGER_CONNECT_ETHEREUM_PROP]: boolean
-  providers?: EthereumProvider[]
-  on(): void
-  request(): Promise<any>
-  removeListener(): void
+  [LEDGER_CONNECT_ETHEREUM_PROP]: boolean;
+  providers?: EthereumProvider[];
+  request(...args: unknown[]): Promise<unknown>;
+  on(...args: unknown[]): void;
+  removeListener(...args: unknown[]): void;
 }
 
-export declare interface WindowWithEthereum {
-  [LEDGER_ETHEREUM_PROVIDER]?: EthereumProvider
+export interface WindowWithEthereum {
+  [LEDGER_ETHEREUM_PROVIDER]?: EthereumProvider;
 }
 
 export function getEthereumProvider () {
@@ -51,15 +49,15 @@ export const LEDGER_SOLANA_PROVIDER = 'solana'
 export const LEDGER_CONNECT_SOLANA_PROP = 'isPhantom'
 
 export interface SolanaProvider {
-  [LEDGER_CONNECT_SOLANA_PROP]: boolean
-  signTransaction(...args: any[]): Promise<any>
-  signAllTransactions(...args: any[]): Promise<any>
-  signAndSendTransaction(...args: any[]): Promise<any>
-  connect(): Promise<void>
-  disconnect(): Promise<void>
+  [LEDGER_CONNECT_SOLANA_PROP]: boolean;
+  signTransaction(...args: unknown[]): Promise<unknown>;
+  signAllTransactions(...args: unknown[]): Promise<unknown>;
+  signAndSendTransaction(...args: unknown[]): Promise<unknown>;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
 }
 
-export declare interface WindowWithSolana {
+export interface WindowWithSolana {
   [LEDGER_SOLANA_PROVIDER]?: SolanaProvider
 }
 
