@@ -44,10 +44,6 @@ type ShowModalResult = {
   error?: Error
 }
 
-type ShowModalResult = {
-  error?: Error
-}
-
 export const showModal = ({
   isConnectSupported,
   isLedgerConnectExtensionLoaded,
