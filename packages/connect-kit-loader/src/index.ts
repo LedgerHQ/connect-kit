@@ -1,14 +1,18 @@
 // support
 
-export type ConnectSupport = {
-  isConnectSupported: boolean;
-  isLedgerConnectExtensionLoaded: boolean;
+export type CheckSupportOptions = {
+  connectorSupportsUsb?: boolean;
+  browserSupportsUsb?: boolean;
+}
+
+export type CheckSupportResult = {
+  isLedgerConnectSupported: boolean;
+  isLedgerConnectEnabled: boolean;
   isLedgerLiveMobileInstalled: boolean | undefined;
-  isWebUSBSupported: boolean;
-  isU2FSupported: boolean;
+  error?: Error;
 };
 
-export type ConnectSupportFunction = () => ConnectSupport;
+export type CheckSupportFunction = (options?: CheckSupportOptions) => CheckSupportResult
 
 // ethereum
 
@@ -42,16 +46,6 @@ export enum SupportedProviders {
 
 export type GetProviderFunction = (provider: SupportedProviders) => EthereumProvider | SolanaProvider | null;
 
-// modal
-
-export type ShowModalOptions = ConnectSupport & { connectorSupportsUsb?: boolean }
-
-export type ShowModalResult = {
-  error?: Error
-}
-
-export type ShowModalFunction = (params: ShowModalOptions) => ShowModalResult;
-
 // script loader
 
 function loadScript(src: string, globalName: string): Promise<any> {
@@ -75,15 +69,16 @@ function loadScript(src: string, globalName: string): Promise<any> {
 }
 
 export interface LedgerConnectKit {
-  checkConnectSupport: ConnectSupportFunction;
+  checkSupport: CheckSupportFunction;
   getProvider: GetProviderFunction;
   getEthereumProvider: GetEthereumProviderFunction;
   getSolanaProvider: GetSolanaProviderFunction;
-  showModal: ShowModalFunction;
 };
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const CONNECT_KIT_CDN_URL = "https://incomparable-duckanoo-b48572.netlify.app/umd/index.js"
+  // const CONNECT_KIT_CDN_URL = "http://hdambp:3001/umd/index.js"
+  const CONNECT_KIT_CDN_URL = "https://6331c4da453ebc0d19b1b44c--incomparable-duckanoo-b48572.netlify.app/umd/index.js"
+  //const CONNECT_KIT_CDN_URL = "https://incomparable-duckanoo-b48572.netlify.app/umd/index.js"
   const CONNECT_KIT_GLOBAL_NAME = "ledgerConnectKit"
 
   return await loadScript(CONNECT_KIT_CDN_URL, CONNECT_KIT_GLOBAL_NAME)
