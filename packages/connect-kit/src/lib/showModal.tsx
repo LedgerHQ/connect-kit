@@ -38,7 +38,11 @@ const rendererModal = (modalType: ModalType): void => {
   }
 }
 
-type showModalOptions = ConnectSupport & { connectorSupportsUsb: boolean }
+type showModalOptions = ConnectSupport & { connectorSupportsUsb?: boolean }
+
+type ShowModalResult = {
+  error?: Error
+}
 
 export const showModal = ({
   isConnectSupported,
@@ -46,28 +50,19 @@ export const showModal = ({
   isWebUSBSupported,
   isU2FSupported,
   connectorSupportsUsb = false,
-}: showModalOptions) => {
+}: showModalOptions): ShowModalResult => {
   let error;
 
   if (!root) {
     const el = document.body;
     const container = document.createElement("div");
-    container.className = "-lcuikit-modal";
+    container.className = "ledger-ck-modal";
     el.appendChild(container);
     root = createRoot(container)
   }
 
-  console.log('support props are ', {
-    isConnectSupported,
-    isLedgerConnectExtensionLoaded,
-    isWebUSBSupported,
-    isU2FSupported,
-    connectorSupportsUsb})
-
   const isUSBSupported = connectorSupportsUsb && (isWebUSBSupported || isU2FSupported)
   const noSupportedTransports = !isConnectSupported && !isUSBSupported
-
-  console.log('no supported transports is ', noSupportedTransports)
 
   if (noSupportedTransports) {
     // if none of the connection methods is supported, show the Platform Not

@@ -1,4 +1,5 @@
 import { Device, getBrowser } from "./getBrowser";
+import { getEthereumProvider } from "./getProvider";
 
 /* USB support */
 
@@ -27,22 +28,15 @@ const isU2FSupported = (device: Device): boolean => {
 
 /* Ledger Connect extension support */
 
-type InjectedProvider = Record<string, boolean> &
-  Record<string, InjectedProvider[]>;
-
-interface CustomWindow extends Window {
-  ethereum: InjectedProvider;
+// check if Connect supports the user's platform
+function isConnectSupported (device: Device): boolean {
+  return (device.os.name === "iOS" && device.browser.name === "Safari");
 }
-
-declare const window: CustomWindow;
-const LEDGER_CONNECT_NAMESPACE = "ethereum";
-const LEDGER_CONNECT_IDENTIFIER = "isLedgerConnect";
 
 export type ConnectSupport = {
   isConnectSupported: boolean,
-  isProviderDefined: boolean,
   isLedgerConnectExtensionLoaded: boolean,
-  isLedgerLiveMobileInstalled: boolean,
+  isLedgerLiveMobileInstalled: boolean | undefined,   // not used yet
   isWebUSBSupported: boolean,
   isU2FSupported: boolean
 }
@@ -50,26 +44,10 @@ export type ConnectSupport = {
 export function checkConnectSupport(): ConnectSupport {
   const device = getBrowser();
 
-  // check Connect support, currently Safari only on iOS/iPadOS
-  const isConnectSupported =
-    device.os.name === "iOS" && device.browser.name === "Safari";
-
-  // TODO check if LLM is installed, do a deep link request
-  const isLedgerLiveMobileInstalled = false;
-
-  // check provider
-  const provider = window[LEDGER_CONNECT_NAMESPACE];
-  const isProviderDefined = !!provider;
-
-  // check extension enabled
-  const isLedgerConnectExtensionLoaded =
-    !!provider && !!provider[LEDGER_CONNECT_IDENTIFIER];
-
   return {
-    isConnectSupported,
-    isProviderDefined,
-    isLedgerConnectExtensionLoaded,
-    isLedgerLiveMobileInstalled,
+    isConnectSupported: isConnectSupported(device),
+    isLedgerConnectExtensionLoaded: !!getEthereumProvider(),
+    isLedgerLiveMobileInstalled: undefined,
     isWebUSBSupported: isWebUSBSupported(),
     isU2FSupported: isU2FSupported(device)
   };
