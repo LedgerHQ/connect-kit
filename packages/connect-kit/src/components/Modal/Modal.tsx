@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
 import { Backdrop } from "./Backdrop.styles";
 import { CloseButton, ModalContent, ModalHeader, ModalWrapper } from "./Modal.styles";
-import { default as LedgerConnectSvg } from "../../assets/svg/LedgerConnect.svg";
+import { default as LedgerSvg } from "../../assets/svg/Ledger.svg";
 import { default as XButtonSvg } from "../../assets/svg/X.svg";
 
 export let setIsModalOpen = (isModalOpen: boolean) => {};
@@ -31,7 +31,7 @@ export const Modal = ({ children }: ModalProps) => {
         <ModalWrapper>
           <ModalContent>
             <ModalHeader>
-              <img src={LedgerConnectSvg} />
+              <img src={LedgerSvg} />
               <CloseButton onClick={handleClose}>
                 <img src={XButtonSvg} />
               </CloseButton>
