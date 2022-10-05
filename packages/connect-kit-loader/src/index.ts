@@ -1,14 +1,18 @@
 // support
 
-export type ConnectSupport = {
-  isConnectSupported: boolean;
-  isLedgerConnectExtensionLoaded: boolean;
+export type CheckSupportOptions = {
+  connectorSupportsUsb?: boolean;
+  browserSupportsUsb?: boolean;
+}
+
+export type CheckSupportResult = {
+  isLedgerConnectSupported: boolean;
+  isLedgerConnectEnabled: boolean;
   isLedgerLiveMobileInstalled: boolean | undefined;
-  isWebUSBSupported: boolean;
-  isU2FSupported: boolean;
+  error?: Error;
 };
 
-export type ConnectSupportFunction = () => ConnectSupport;
+export type CheckSupportFunction = (options?: CheckSupportOptions) => CheckSupportResult
 
 // ethereum
 
@@ -42,16 +46,6 @@ export enum SupportedProviders {
 
 export type GetProviderFunction = (provider: SupportedProviders) => EthereumProvider | SolanaProvider | null;
 
-// modal
-
-export type ShowModalOptions = ConnectSupport & { connectorSupportsUsb?: boolean }
-
-export type ShowModalResult = {
-  error?: Error
-}
-
-export type ShowModalFunction = (params: ShowModalOptions) => ShowModalResult;
-
 // script loader
 
 function loadScript(src: string, globalName: string): Promise<any> {
@@ -75,11 +69,10 @@ function loadScript(src: string, globalName: string): Promise<any> {
 }
 
 export interface LedgerConnectKit {
-  checkConnectSupport: ConnectSupportFunction;
+  checkSupport: CheckSupportFunction;
   getProvider: GetProviderFunction;
   getEthereumProvider: GetEthereumProviderFunction;
   getSolanaProvider: GetSolanaProviderFunction;
-  showModal: ShowModalFunction;
 };
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
