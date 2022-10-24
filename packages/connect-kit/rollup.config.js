@@ -16,7 +16,7 @@ export default [
         file: packageJson.module,
         format: "umd",
         sourcemap: true,
-        name: "ledgerConnectKit"
+        name: "ledgerConnectKit",
       },
     ],
     plugins: [
@@ -24,7 +24,7 @@ export default [
       commonjs(),
       replace({
         'process.env.NODE_ENV': JSON.stringify('production'),
-        preventAssignment: true
+        preventAssignment: true,
       }),
       typescript({ tsconfig: "./tsconfig.json" }),
       image(),

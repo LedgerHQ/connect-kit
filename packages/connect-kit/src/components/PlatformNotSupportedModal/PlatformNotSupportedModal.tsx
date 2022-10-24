@@ -4,17 +4,16 @@ import {
   ModalText,
   ModalTitle,
 } from "../Modal/Modal.styles";
-import { BrowserList, BrowserListItem } from "./PlatformNotSupported.styles";
-import { default as ChromeIcon } from "../../assets/svg/ChromeIcon.svg";
+import { BrowserList, BrowserListItem } from "./PlatformNotSupportedModal.styles";
 import { default as SafariIcon } from "../../assets/svg/SafariIcon.svg";
-import { default as FirefoxIcon } from "../../assets/svg/FirefoxIcon.svg";
 import NeedALedgerSection from "../NeedALedgerSection";
+import { getLogger } from "../../lib/logger";
 
-type PlatformNotSupportedModalProps = {
-  withUsb?: boolean;
-}
+const log = getLogger('PlatformNotSupportedModal')
 
-const PlatformNotSupportedModal = ({ withUsb }: PlatformNotSupportedModalProps) => {
+const PlatformNotSupportedModal = () => {
+  log('initializing');
+
   return (
     <Modal>
       <>
@@ -28,30 +27,13 @@ const PlatformNotSupportedModal = ({ withUsb }: PlatformNotSupportedModalProps) 
             <br/>
             Until we get there, you can try Ledger Connect on:
           </ModalText>
+
           <BrowserList>
             <BrowserListItem>
               <img src={SafariIcon} />
               Safari on iOS
             </BrowserListItem>
           </BrowserList>
-
-          {withUsb && (
-            <>
-              <ModalText>
-                Or still use USB on:
-              </ModalText>
-              <BrowserList>
-                <BrowserListItem>
-                  <img src={ChromeIcon} />
-                  Chrome based browsers on desktop
-                </BrowserListItem>
-                <BrowserListItem>
-                  <img src={FirefoxIcon} />
-                  Firefox on desktop
-                </BrowserListItem>
-              </BrowserList>
-            </>
-          )}
         </ModalSection>
 
         <NeedALedgerSection variant="primary" />
