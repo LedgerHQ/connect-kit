@@ -14,12 +14,12 @@ a transparent way.
 ## Support status
 
 Ledger Connect is currently only supported on Safari iOS. There are two edge
-cases in the detection logic
+cases in the detection logic:
 
 - Safari on iPadOS is shown as supported if the user requests the mobile
   website, as it sets the userAgent string to be the same as iOS, otherwise
   the userAgent string is the same as Safari on MacOS, which is not supported
-  yet;
+  yet.
 - Brave on iOS is shown as supported because it sets the userAgest string to
   be the same as Safari on iOS, but Connect will not work.
 
@@ -71,7 +71,19 @@ See what functions are provided by the Connect Kit API below.
 
 ## Connect Kit API
 
-Connect Kit exports two functions, `checkSupport` and `getProvider`.
+Connect Kit exports three functions, `enableDebugLogs`, `checkSupport` and
+`getProvider`.
+
+### `enableDebugLogs`
+
+#### Description
+
+Enables debug messages on the console in case you need to diagnose a possible
+problem. Just reload the dapp to disable them.
+
+Once Connect Kit is loaded you can call it from the browser's developer tools
+console with `window.ledgerConnectKit.enableDebugLogs()` and call the other
+Connect Kit functions to see the messages.
 
 ### `checkSupport`
 
@@ -109,10 +121,9 @@ of these modals will be shown:
 
 - Try Ledger Connect, in case the user's platform supports Connect but
   it is not installed or enabled; a button will be shown to let the user
-  install the browser extension;
+  install the browser extension.
 - Connect with Ledger Live, in case the user's platform does not support
   Connect they will be able to use Ledger Live Mobile or Desktop to connect.
-  You can use
 
 ### `getProvider`
 
@@ -144,6 +155,7 @@ simple `useState` functions to keep app state.
 const connectWallet = async () => {
   try {
     const connectKit = await loadConnectKit();
+    connectKit.enableDebugLogs();
     const checkSupportResult = connectKit.checkSupport({
       chainId: 1,
       providerType: SupportedProviders.Ethereum,

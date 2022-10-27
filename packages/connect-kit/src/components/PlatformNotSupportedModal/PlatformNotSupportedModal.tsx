@@ -7,9 +7,9 @@ import {
 import { BrowserList, BrowserListItem } from "./PlatformNotSupportedModal.styles";
 import { default as SafariIcon } from "../../assets/svg/SafariIcon.svg";
 import NeedALedgerSection from "../NeedALedgerSection";
-import { getLogger } from "../../lib/logger";
+import { getDebugLogger } from "../../lib/logger";
 
-const log = getLogger('PlatformNotSupportedModal')
+const log = getDebugLogger('PlatformNotSupportedModal')
 
 const PlatformNotSupportedModal = () => {
   log('initializing');

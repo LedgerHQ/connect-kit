@@ -1,8 +1,8 @@
 import { ProviderNotFoundError } from "../lib/errors";
 import { ProviderResult } from "../lib/provider";
-import { getLogger } from "../lib/logger";
+import { getDebugLogger } from "../lib/logger";
 
-const log = getLogger('LedgerConnectEthereum');
+const log = getDebugLogger('LedgerConnectEthereum');
 
 export const LEDGER_ETHEREUM_PROVIDER = 'ethereum'
 export const LEDGER_CONNECT_ETHEREUM_PROP = 'isLedgerConnect'

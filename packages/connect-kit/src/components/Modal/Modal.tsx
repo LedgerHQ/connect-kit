@@ -12,19 +12,15 @@ interface ModalProps {
 }
 
 export const Modal = ({ children }: ModalProps) => {
-  const [isOpenState, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+  // assign the set state function to the exported one
+  setIsModalOpen = setIsOpen;
 
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  setIsModalOpen = (isModalOpen: boolean) => {
-    if (isModalOpen !== null) {
-      setIsOpen(isModalOpen);
-    }
-  };
-
-  if (isOpenState) {
+  if (isOpen) {
     return (
       <>
         <Backdrop />

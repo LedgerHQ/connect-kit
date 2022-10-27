@@ -4,7 +4,7 @@ export const ConnectFeature = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 12px 0 0q 0;
+  margin: 12px 0 0 0;
   padding: 0 3rem 0 0;
 
   & > img {

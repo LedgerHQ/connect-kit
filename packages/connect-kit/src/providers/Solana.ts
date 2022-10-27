@@ -1,8 +1,8 @@
 import { ProviderNotFoundError } from "../lib/errors";
 import { ProviderResult } from "../lib/provider";
-import { getLogger } from "../lib/logger";
+import { getDebugLogger } from "../lib/logger";
 
-const log = getLogger('LedgerConnectSolana');
+const log = getDebugLogger('LedgerConnectSolana');
 
 export const LEDGER_SOLANA_PROVIDER = 'solana'
 export const LEDGER_CONNECT_SOLANA_PROP = 'isLedgerConnect'

@@ -1,18 +1,21 @@
-export type Logger = (message: string, ...others: any[]) => void;
+export type Logger = (message: string, ...others: unknown[]) => void;
 
-const disabled = false;
+let debugLogsEnabled = false;
 
-export const getLogger =
-  (context: string): Logger => {
-    if (disabled) return () => null;
+export const getDebugLogger = (context: string): Logger => {
+  return (message: string, ...others: unknown[]) => {
+    if (debugLogsEnabled) {
+      console.debug(`[${context}] ${message}`, ...others);
+    }
+  };
+}
 
-    return (message: string, ...others: any[]) => {
-      console.log(`[${context}] ${message}`, ...others);
-    };
-  }
-
-export const getErrorLogger =
-  (context: string): Logger =>
-  (message: string, error: Error, ...others: any[]) => {
+export const getErrorLogger = (context: string): Logger => {
+  return (message: string, ...others: unknown[]) => {
     console.error(`[${context}] ${message}`, ...others);
   };
+}
+
+export const enableDebugLogs = (): void => {
+  debugLogsEnabled = true
+};

@@ -5,6 +5,7 @@ import {
   ConnectWithLedgerLiveModal,
   PlatformNotSupportedModal
 } from "../components";
+import { ConnectWithLedgerLiveModalProps } from "../components/ConnectWithLedgerLiveModal/ConnectWithLedgerLiveModal";
 
 type ModalType =
   'ConnectWithLedgerLiveModal' |
@@ -13,7 +14,10 @@ type ModalType =
 
 let root: Root | null = null;
 
-export function showModal(modalType: ModalType, props?: {} ) {
+export function showModal(
+  modalType: ModalType,
+  props?: ConnectWithLedgerLiveModalProps
+) {
   if (!root) {
     const el = document.body;
     const container = document.createElement("div");

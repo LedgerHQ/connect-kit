@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { getLogger } from "../../lib/logger";
-import { getWalletConnectUri } from "../../providers/WalletConnect";
+import { useState } from "react";
+import { getDebugLogger } from "../../lib/logger";
 import Modal from "../Modal/Modal";
 import {
   ModalButton,
@@ -13,33 +12,44 @@ import {
 import NeedALedgerSection from "../NeedALedgerSection";
 import { QrCode, QrCodeSection } from "./ConnectWithLedgerLiveModal.styles";
 
-const log = getLogger('ConnectWithLedgerLiveModal');
+const log = getDebugLogger('ConnectWithLedgerLiveModal');
+let walletConnectUri: string;
+let ledgerLiveDeepLink: string;
 
-type ConnectWithLedgerLiveModalProps = {
+// placeholder functions until the component is initialized
+let setModalUri = (uri: string) => {};
+let setModalDeeplink = (uri: string) => {};
+
+// called by the WalletConnect display_uri event handler
+export let setWalletConnectUri = (uri: string): void => {
+  log('setModalUri', uri);
+  walletConnectUri = uri;
+  ledgerLiveDeepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
+
+  // update internal component state
+  setModalUri(uri);
+  setModalDeeplink(ledgerLiveDeepLink);
+}
+
+export type ConnectWithLedgerLiveModalProps = {
   withQrCode?: boolean;
 }
 
 const ConnectWithLedgerLiveModal = ({
   withQrCode = false
 }: ConnectWithLedgerLiveModalProps) => {
-  const [walletConnectUri, setWalletConnectUri] = useState<string>('');
-  const [ledgerLiveDeepLink, setLedgerLiveDeepLink] = useState<string>('');
-
   log('initializing', { withQrCode });
+  log('walletConnectUri', walletConnectUri);
 
-  useEffect(() => {
-    const uri = getWalletConnectUri();
-    const deepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
-
-    log('WC URI', uri);
-    log('deeplink', deepLink);
-
-    setWalletConnectUri(uri);
-    setLedgerLiveDeepLink(deepLink);
-  })
+  // use the module variables as the initial start values
+  const [uri, setUri] = useState<string>(walletConnectUri);
+  const [deeplink, setDeeplink] = useState<string>(ledgerLiveDeepLink);
+  // replace the placeholder functions by the setState ones
+  setModalUri = setUri;
+  setModalDeeplink = setDeeplink;
 
   const onUseLedgerLiveClick = () => {
-    window.open(ledgerLiveDeepLink);
+    window.open(deeplink);
     return false;
   };
 
@@ -63,7 +73,7 @@ const ConnectWithLedgerLiveModal = ({
               Install Ledger Live
             </ModalButton>
 
-            {walletConnectUri !== '' &&
+            {uri !== '' &&
               <ModalButton variant="primary" onClick={onUseLedgerLiveClick}>
                 Use Ledger Live
               </ModalButton>
@@ -71,14 +81,14 @@ const ConnectWithLedgerLiveModal = ({
           </Stack>
         </ModalSection>
 
-        {withQrCode && walletConnectUri !== '' &&
+        {withQrCode && uri !== '' &&
           <QrCodeSection>
             <Stack direction="row" gap={1}>
               <Stack direction="column" gap={0}>
                 <ModalSubtitle>Or scan to connect</ModalSubtitle>
                 <ModalText>Scan this QR code with your mobile to connect with Ledger Live.</ModalText>
               </Stack>
-              <QrCode value={walletConnectUri} size={128} />
+              <QrCode value={uri} size={128} />
             </Stack>
           </QrCodeSection>
         }

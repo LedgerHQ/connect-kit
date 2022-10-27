@@ -8,9 +8,9 @@ import { ConnectFeature } from "./ExtensionUnavailableModal.styles";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
 import NeedALedgerSection from "../NeedALedgerSection";
-import { getLogger } from "../../lib/logger";
+import { getDebugLogger } from "../../lib/logger";
 
-const log = getLogger('ExtensionUnavailableModal')
+const log = getDebugLogger('ExtensionUnavailableModal')
 
 const ExtensionUnavailableModal = () => {
   log('initializing');

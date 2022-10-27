@@ -1,9 +1,10 @@
 import WalletConnectProvider from '@walletconnect/ethereum-provider/dist/umd/index.min.js';
-import { ProviderResult } from '../lib/provider';
-import { getErrorLogger, getLogger } from '../lib/logger';
+import { getErrorLogger, getDebugLogger } from '../lib/logger';
 import { setIsModalOpen } from '../components/Modal/Modal';
+import { setWalletConnectUri } from '../components/ConnectWithLedgerLiveModal/ConnectWithLedgerLiveModal';
+import { EthereumProvider } from './Ethereum';
 
-const log = getLogger('WalletConnect');
+const log = getDebugLogger('WalletConnect');
 const logError = getErrorLogger('WalletConnect');
 
 let walletConnectProvider: WalletConnectProvider;
@@ -54,6 +55,7 @@ function assignProviderEvents(provider: WalletConnectProvider) {
   }
 
   provider.connector.on('connect', connectHandler);
+  provider.connector.on("display_uri", displayUriHandler);
   provider.on("disconnect", disconnectHandler);
   hasAssignedProviderEvents = true;
 
@@ -69,10 +71,15 @@ function assignProviderEvents(provider: WalletConnectProvider) {
     setIsModalOpen(false);
   }
 
-  function disconnectHandler(code: number, reason: string) {
-    log('handleDisconnect', code, reason);
+  function displayUriHandler(error: Error | null, payload: any) {
+    log('displayUriHandler', error, payload);
 
-    provider.connector.killSession();
+    const uri = payload.params[0];
+    setWalletConnectUri(uri);
+  }
+
+  function disconnectHandler(code: number, reason: string) {
+    log('disconnectHandler', code, reason);
 
     provider.removeListener("disconnect", disconnectHandler);
     hasAssignedProviderEvents = false;
@@ -85,32 +92,15 @@ export function isWalletConnectProviderConnected () {
   return walletConnectProvider.connected;
 }
 
-export function getWalletConnectUri() {
-  log('getWalletConnectUri');
+export async function getWalletConnectProvider(): Promise<EthereumProvider> {
+  log('getWalletConnectProvider');
 
-  return walletConnectProvider?.connector?.uri;
-}
-
-export function getWalletConnectProvider(): Promise<ProviderResult> {
-  return new Promise((resolve, reject) => {
-    log('getWalletConnectProvider');
-
-    try {
-      walletConnectProvider.enable().then(() => {
-        resolve(walletConnectProvider);
-      });
-    } catch (err) {
-      logError('error', err);
-
-      let error: Error;
-
-      if (err instanceof Error) {
-        error = err
-      } else {
-        error = new Error(String(err))
-      }
-
-      reject(error);
-    }
-  })
+  try {
+    await walletConnectProvider.enable();
+    return walletConnectProvider as EthereumProvider;
+  } catch (err) {
+    const error = (err instanceof Error) ? err : new Error(String(err));
+    logError('error', error);
+    throw error;
+  }
 }

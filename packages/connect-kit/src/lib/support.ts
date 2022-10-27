@@ -1,6 +1,9 @@
 import { getEthereumProvider } from "../providers/Ethereum";
 import { getSolanaProvider } from "../providers/Solana";
-import { initWalletConnectProvider, isWalletConnectProviderConnected } from "../providers/WalletConnect";
+import {
+  initWalletConnectProvider,
+  isWalletConnectProviderConnected
+} from "../providers/WalletConnect";
 import { isLedgerConnectSupported } from "./connectSupport";
 import { getBrowser } from "./browser";
 import {
@@ -12,10 +15,10 @@ import {
   SupportedProviderImplementations,
   setProviderType
 } from "./provider";
-import { getLogger } from "./logger";
+import { getDebugLogger } from "./logger";
 import { showModal } from "./modal";
 
-const log = getLogger('checkSupport');
+const log = getDebugLogger('checkSupport');
 
 export type CheckSupportOptions = {
   providerType: SupportedProviders;
@@ -115,8 +118,8 @@ function checkSolanaSupport() {
 
   try {
     // just check if we can get the provider
-    const ethereumProvider = getSolanaProvider();
-    isLedgerConnectEnabled = !!ethereumProvider;
+    const solanaProvider = getSolanaProvider();
+    isLedgerConnectEnabled = !!solanaProvider;
   } catch (err) {
     // swallow any error
   }
