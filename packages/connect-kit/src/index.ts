@@ -1,2 +1,3 @@
-export * from "./lib/checkSupport";
-export * from "./lib/getProvider";
+export { checkSupport } from "./lib/support";
+export { getProvider } from "./lib/provider";
+export { enableDebugLogs } from './lib/logger';

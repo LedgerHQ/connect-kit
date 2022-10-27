@@ -52,7 +52,7 @@ export const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const modalPadding = '1.1rem';
+const modalPadding = '1rem';
 
 export const ModalHeader = styled.div`
   display: flex;
@@ -65,6 +65,7 @@ export const ModalHeader = styled.div`
 
 export const ModalSection = styled.div`
   border-top: 1px solid #2b2a2b;
+
   padding: ${modalPadding} ${modalPadding} 0 ${modalPadding};
   margin-bottom: ${modalPadding};
 
@@ -78,20 +79,20 @@ export const ModalTitle = styled.h2`
   line-height: 2.2rem;
   color: #fff;
   font-weight: 600;
-  margin-bottom: 0.8rem;
+  margin: 0;
 `;
 
 export const ModalSubtitle = styled.h3`
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: #fff;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin: 0;
 `;
 
 export const ModalText = styled.p`
   font-size: 0.9rem;
   font-weight: 500;
-  margin: 0.8rem 0;
+  margin: 12px 0 0 0;
 `;
 
 export type VariantOptions = {
@@ -99,18 +100,42 @@ export type VariantOptions = {
 }
 
 export const ModalButton = styled.button<{ variant: string }>`
-  padding: 0.8rem 1rem;
-  outline: none;
+  width: 100%;
+  margin-top: 24px;
   border-radius: 3rem;
+  padding: 0.8rem 1rem;
   font-weight: 500;
 
+  transition: all .5s ease;
+
   ${({variant}) => (variant == 'primary' ? css`
-    border: none;
-    background-color: white;
-    color: #000;
+  border: none;
+  background-color: white;
+  color: #000;
+  &:hover, &:focus {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
   ` : css`
-    border: 1px solid #565656;
-    background-color: transparent;
-    color: #fff;
+  border: 1px solid #565656;
+  background-color: transparent;
+  color: #fff;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
   `)}
+`;
+
+export const Stack = styled.div<{
+  direction: "row" | "column",
+  gap: number
+}>`
+  boxSizing: 'border-box';
+  display: flex;
+  ${({gap}) => css`
+    gap: ${gap | 0}rem;
+  `}
+
+  ${({direction}) => css`
+    flex-direction: ${direction};
+  `}
 `;
