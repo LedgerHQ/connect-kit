@@ -100,7 +100,7 @@ jobs:
       - name: Update GitHub release documentation
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.NEW_VERSION }}
+          tag_name: ckl-${{ env.NEW_VERSION }}
           body: ${{ steps.get-changelog.outputs.changelog }}
           prerelease: ${{ startsWith(github.event.inputs.release-type, 'pre') }}
         env:
