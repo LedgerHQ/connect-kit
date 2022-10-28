@@ -1,3 +1,4 @@
 # Ledger Connect Kit
 
-Please read the [connect-kit-loader README.md](../connect-kit-loader/README.md) file.
+Please use Connect Kit Loader, read the information available on the
+[connect-kit-loader](../connect-kit-loader) package.

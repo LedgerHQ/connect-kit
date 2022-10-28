@@ -71,7 +71,7 @@ export interface LedgerConnectKit {
 };
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://idyllic-kelpie-25742f.netlify.app/umd/index.js";
+  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@beta";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {

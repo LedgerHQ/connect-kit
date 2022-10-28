@@ -1,7 +1,18 @@
 {
   "name": "@ledgerhq/connect-kit-loader",
-  "version": "0.9.0-beta1",
-  "description": "Loads Ledger Connect Kit at runtime",
+  "version": "1.0.0-beta.1",
+  "description": "Load Ledger Connect Kit at runtime, a library for dapps to integrate with Ledger Connect and Ledger Live",
+  "author": "Hugo Lopes",
+  "license": "MIT",
+  "keywords": [
+    "ledger",
+    "hardware wallet",
+    "ethereum",
+    "blockchain",
+    "provider",
+    "dapps",
+    "onboarding"
+  ],
   "main": "dist/esm/index.js",
   "module": "dist/esm/index.js",
   "typings": "dist/esm/index.d.ts",
@@ -9,12 +20,16 @@
     "dist"
   ],
   "types": "index",
+  "homepage": "https://get-connect.ledger.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LedgerHQ/connect-kit",
+    "directory": "packages/connect-kit-loader"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c --compact"
   },
-  "author": "Hugo Lopes",
-  "license": "Apache-2.0",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
