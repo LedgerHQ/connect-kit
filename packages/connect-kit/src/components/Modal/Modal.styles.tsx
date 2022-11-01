@@ -13,6 +13,12 @@ export const ModalWrapper = styled.div`
   left: 0px;
   width: 100vw;
   height: 100%;
+
+  font: 14px inter, sans-serif;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  font-feature-settings: "kern";
+  text-align: left !important;
+
   display: flex;
   flex-direction: column;
   justify-content: end;
@@ -43,13 +49,20 @@ export const ModalContent = styled.div`
 `;
 
 export const CloseButton = styled.button`
+  box-sizing: border-box;
   margin: 0.2rem 0.2rem 0 0;
+  border: none;
+  padding: 0;
   width: 18px;
   height: 18px;
   background: transparent;
-  border: none;
   outline: none;
   cursor: pointer;
+
+  & > img {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 const modalPadding = '1rem';
@@ -64,35 +77,33 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalSection = styled.div`
-  border-top: 1px solid #2b2a2b;
-
-  padding: ${modalPadding} ${modalPadding} 0 ${modalPadding};
   margin-bottom: ${modalPadding};
-
-  font-size: 0.9rem;
-  font-weight: 500;
+  border-top: 1px solid #2b2a2b;
+  padding: ${modalPadding} ${modalPadding} 0 ${modalPadding};
   color: #C3C3C3;
 `;
 
 export const ModalTitle = styled.h2`
-  font-size: 1.6rem;
-  line-height: 2.2rem;
   color: #fff;
-  font-weight: 600;
   margin: 0;
+  line-height: 28px;
+  font-size: 24px;
+  font-weight: 600;
 `;
 
 export const ModalSubtitle = styled.h3`
-  font-size: 1.3rem;
   color: #fff;
-  font-weight: 500;
   margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24px;
 `;
 
 export const ModalText = styled.p`
-  font-size: 0.9rem;
-  font-weight: 500;
   margin: 12px 0 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
 `;
 
 export type VariantOptions = {
@@ -104,7 +115,10 @@ export const ModalButton = styled.button<{ variant: string }>`
   margin-top: 24px;
   border-radius: 3rem;
   padding: 0.8rem 1rem;
-  font-weight: 500;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 17px;
 
   transition: all .5s ease;
 

@@ -1,11 +1,11 @@
 # Ledger Connect Kit
 
-The Ledger Connect Kit can be used to check the level of support for Ledger
-Connect on the user's platform. We will guide the user to install Connect or use
-a fallback connection to the Ledger Live app. The code is designed to be loaded
-at runtime from a CDN so that the logic and UI can be updated as we release new
-updates to Connect without the wait for wallet libraries and dapps updating
-package versions and releasing new builds.
+The Ledger Connect Kit can be used to check the level of support for [Ledger
+Connect](https://get-connect.ledger.com) on the user's platform. We will guide
+the user to install Connect or use a fallback connection to the Ledger Live
+app. The code is designed to be loaded at runtime from a CDN so that the logic
+and UI can be updated as we release new updates to Connect without the wait for
+wallet libraries and dapps updating package versions and releasing new builds.
 
 The `@ledgerhq/connect-kit-loader` allows developers to consume Connect Kit in
 a transparent way.
@@ -129,7 +129,7 @@ of these modals will be shown:
 
 #### Returns
 
-`Promise<EthereumProvider | SolanaProvider | WalletConnetProvider>`
+`Promise<EthereumProvider | SolanaProvider>`
 
 #### Description
 

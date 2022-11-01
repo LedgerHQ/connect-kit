@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { ModalSection } from "../Modal/Modal.styles";
 
 export const QrCode = styled(QRCodeSVG)`
+  box-sizing: border-box;
   flex-grow: 0;
   flex-shrink: 0;
   padding: 0.5rem;

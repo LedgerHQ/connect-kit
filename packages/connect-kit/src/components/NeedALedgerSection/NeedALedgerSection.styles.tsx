@@ -10,7 +10,7 @@ export const CustomBackground = styled.div`
 `;
 
 export const ContentWrapper = styled(ModalSection)`
-  padding-right: 3rem;
+  padding-right: 4rem;
 `;
 
 export const BuyNowButton = styled(ModalButton)`

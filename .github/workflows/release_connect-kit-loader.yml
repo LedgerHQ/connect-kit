@@ -69,7 +69,7 @@ jobs:
           cd packages/connect-kit-loader
           git add "package.json"
           git add "CHANGELOG.md"
-          git commit -m "chore: release Connect Kit ${{ env.NEW_VERSION }}"
+          git commit -m "chore: release Connect Kit Loader ${{ env.NEW_VERSION }}"
           git tag ckl-${{ env.NEW_VERSION }}
 
       # Publish version to public repository

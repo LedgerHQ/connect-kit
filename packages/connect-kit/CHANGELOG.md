@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- set some CSS values instead of inheriting them from the app
+
 ## 1.0.0-beta.2 - 2022-10-28
 This is the first public version of the package.
 

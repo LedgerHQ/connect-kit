@@ -8,7 +8,7 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "declaration": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "emitDeclarationOnly": true,
