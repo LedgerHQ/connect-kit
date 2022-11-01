@@ -9,6 +9,12 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      PKG_NAME: 'Connect Kit'
+      PKG_DIR: 'packages/connect-kit'
+      PKG_SPEC: '@ledgerhq/connect-kit'
+      GIT_TAG_PREFIX: 'ck-'
+      DIST_TAG_PRERELEASE: 'beta'
     steps:
       # Checkout project repository
       - name: Checkout
@@ -24,7 +30,7 @@ jobs:
       # Build
       - name: Build
         run: |
-          cd packages/connect-kit
+          cd ${{ env.PKG_DIR }}
           yarn && yarn build
 
       # Configure Git
@@ -38,7 +44,7 @@ jobs:
       - name: Bump release version
         if: startsWith(github.event.inputs.release-type, 'pre') != true
         run: |
-          cd packages/connect-kit
+          cd ${{ env.PKG_DIR }}
           echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
           echo "RELEASE_TAG=latest" >> $GITHUB_ENV
         env:
@@ -49,9 +55,9 @@ jobs:
       - name: Bump pre-release version
         if: startsWith(github.event.inputs.release-type, 'pre')
         run: |
-          cd packages/connect-kit
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE)" >> $GITHUB_ENV
-          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
+          cd ${{ env.PKG_DIR }}
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=${{ env.DIST_TAG_PRERELEASE }} version $RELEASE_TYPE)" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${{ env.DIST_TAG_PRERELEASE }}" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release-type }}
 
@@ -59,24 +65,33 @@ jobs:
       - name: Update changelog
         uses: superfaceai/release-changelog-action@v1
         with:
-          path-to-changelog: packages/connect-kit/CHANGELOG.md
+          path-to-changelog: ${{ env.PKG_DIR }}/CHANGELOG.md
           version: ${{ env.NEW_VERSION }}
           operation: release
 
       # Commit changes
       - name: Commit CHANGELOG.md and package.json changes and create tag
         run: |
-          cd packages/connect-kit
+          cd ${{ env.PKG_DIR }}
           git add "package.json"
           git add "CHANGELOG.md"
-          git commit -m "chore: release Connect Kit ${{ env.NEW_VERSION }}"
-          git tag ck-${{ env.NEW_VERSION }}
+          git commit -m "chore: release ${{ env.PKG_NAME }} ${{ env.NEW_VERSION }}"
+          git tag ${{ env.GIT_TAG_PREFIX }}${{ env.NEW_VERSION }}
 
       # Publish version to public repository
       - name: Publish
         run: |
-          cd packages/connect-kit
+          cd ${{ env.PKG_DIR }}
           yarn publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
+
+      # Tag beta versions as latest while we don't have a stable one
+      - name: Tag beta versions as latest
+        if: ${{ env.RELEASE_TAG == '${{ env.DIST_TAG_PRERELEASE }}' }}
+        run: |
+          cd ${{ env.PKG_DIR }}
+          npm dist-tag add ${{ env.PKG_SPEC }}@${{ env.NEW_VERSION }} latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
 
@@ -92,7 +107,7 @@ jobs:
         name: Get version changelog
         uses: superfaceai/release-changelog-action@v1
         with:
-          path-to-changelog: packages/connect-kit/CHANGELOG.md
+          path-to-changelog: ${{ env.PKG_DIR }}/CHANGELOG.md
           version: ${{ env.NEW_VERSION }}
           operation: read
 
@@ -100,7 +115,7 @@ jobs:
       - name: Update GitHub release documentation
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ck-${{ env.NEW_VERSION }}
+          tag_name: ${{ env.GIT_TAG_PREFIX }}${{ env.NEW_VERSION }}
           body: ${{ steps.get-changelog.outputs.changelog }}
           prerelease: ${{ startsWith(github.event.inputs.release-type, 'pre') }}
         env:
