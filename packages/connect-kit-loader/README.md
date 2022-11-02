@@ -59,7 +59,6 @@ export class LedgerConnector {
 
   public async connect(): Promise<Connector> {
     if (!this.provider) {
-      // load Connect Kit, check support and show a UI modal if not supported
       const connectKit = await this.connectKitPromise
 ```
 
@@ -78,12 +77,13 @@ Connect Kit exports three functions, `enableDebugLogs`, `checkSupport` and
 
 #### Description
 
-Enables debug messages on the console in case you need to diagnose a possible
-problem. Just reload the dapp to disable them.
+Enables debug messages on the browser console in case you need to diagnose a
+possible problem.
 
 Once Connect Kit is loaded you can call it from the browser's developer tools
 console with `window.ledgerConnectKit.enableDebugLogs()` and call the other
-Connect Kit functions to see the messages.
+Connect Kit functions to see the debug messages. Just reload the dapp to
+disable them.
 
 ### `checkSupport`
 
