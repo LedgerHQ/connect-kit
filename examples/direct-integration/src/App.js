@@ -75,16 +75,8 @@ export default function Home() {
 
   return (
     <>
-      <Stack direction="column">
+      <Stack direction="column" justifyContent="center" height="100vh">
         <Heading>Connect with Ledger Connect Kit</Heading>
-
-        <Box>
-          {!account ? (
-            <Button bg='primary' onClick={() => connectWallet(1)}>Connect Wallet</Button>
-          ) : (
-            <Button onClick={disconnect}>Disconnect</Button>
-          )}
-        </Box>
 
         <Box>Status: {account
           ? (<On>Connected</On>)
@@ -95,6 +87,14 @@ export default function Home() {
         <Box>{`Account: ${shortenAddress(account)}`}</Box>
 
         <Box>{error ? error.message : null}</Box>
+
+        <Box>
+          {!account ? (
+            <Button bg='primary' onClick={() => connectWallet(1)}>Connect Wallet</Button>
+          ) : (
+            <Button onClick={disconnect}>Disconnect</Button>
+          )}
+        </Box>
       </Stack>
     </>
   );

@@ -2,7 +2,10 @@ import styled, { css, createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
   body {
-    font: 16px sans-serif;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-feature-settings: "kern";
+    text-align: center;
   }
 `;
 
@@ -14,6 +17,14 @@ export const Stack = styled.div`
   ${({direction}) => css`
     flex-direction: ${direction};
   `}
+
+  ${({justifyContent}) => css`
+    justify-content: ${justifyContent || 'flex-start'};
+  `}
+
+  ${({height}) => height && css`
+    height: ${height};
+  `}
 `;
 
 export const Box = styled.div`
@@ -21,11 +32,13 @@ export const Box = styled.div`
 `;
 
 export const Heading = styled.h2`
+  font-weight: normal;
+  font-size: 2rem;
   margin-bottom: 2rem;
 `;
 
 export const Button = styled.button`
-  bacground: #aaa;
+  background-color: #dedede;
   color: black;
 
   margin-bottom: 0.5rem;
@@ -34,6 +47,13 @@ export const Button = styled.button`
   padding: 0.5rem 1rem;
 
   font: inherit;
+
+  &:hover {
+    background-color: #d0d0d0;
+  }
+  &:active {
+    background-color: #c0c0c0;
+  }
 `;
 
 export const On = styled.span`
