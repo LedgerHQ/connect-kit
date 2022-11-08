@@ -83,8 +83,12 @@ export default function Home() {
           : (<Off>Not connected</Off>)
         }</Box>
 
-        <Box>{`Network Id: ${chainId ? chainId : "none"}`}</Box>
-        <Box>{`Account: ${shortenAddress(account)}`}</Box>
+        {account && (
+          <>
+            <Box>{`Network Id: ${chainId ? chainId : "none"}`}</Box>
+            <Box>{`Account: ${shortenAddress(account)}`}</Box>
+          </>
+        )}
 
         <Box>{error ? error.message : null}</Box>
 
