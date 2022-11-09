@@ -11,7 +11,7 @@ import {
 
 const NeedALedgerCard = ({variant = 'default'}: VariantOptions) => {
   const handleOnBuyNowClick = () => {
-    window.open("https://shop.ledger.com/pages/ledger-nano-x", "_blank");
+    window.open("https://shop.ledger.com/pages/ledger-nano-x?utm_medium=ledger_button", "_blank");
   };
 
   return (
