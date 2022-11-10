@@ -1,5 +1,5 @@
 name: Release Connect Kit Loader
-concurrency: release-ckl-${{ github.repository }}
+concurrency: release-${{ github.repository }}
 on:
   workflow_dispatch:
     inputs:
