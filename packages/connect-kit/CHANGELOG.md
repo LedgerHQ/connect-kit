@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.0-beta.6 - 2022-11-10
+
 ### Changed
 - The rpc parameter is now optional.
 - The chainId parameter is now optional, defaults to 1.
