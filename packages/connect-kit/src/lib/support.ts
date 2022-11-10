@@ -22,10 +22,10 @@ const log = getDebugLogger('checkSupport');
 
 export type CheckSupportOptions = {
   providerType: SupportedProviders;
-  chainId?: ConnectSupportedChains;
+  chainId?: number;
   bridge?: string;
   infuraId?: string;
-  rpc: { [chainId: number]: string; };
+  rpc?: { [chainId: number]: string; };
 }
 
 export type CheckSupportResult = {
@@ -85,10 +85,10 @@ function checkEthereumSupport(options: CheckEthereumSupportOptions) {
     // unsupported platform or chainId, use WalletConnect
     checkSupportResult.providerImplementation = SupportedProviderImplementations.WalletConnect;
     initWalletConnectProvider({
+      chainId: options.chainId,
       bridge: options.bridge,
       infuraId: options.infuraId,
       rpc: options.rpc,
-      chainId: options.chainId,
     });
 
     // don't show the modal if the WalletConnect provider is connected

@@ -12,10 +12,10 @@ let walletConnectProvider: WalletConnectProvider;
 let hasAssignedProviderEvents: boolean = false;
 
 export interface initWalletConnectProviderOptions {
+  chainId?: number;
   bridge?: string;
   infuraId?: string;
   rpc?: { [chainId: number]: string };
-  chainId?: number;
 }
 
 export function initWalletConnectProvider (options: initWalletConnectProviderOptions): void {
@@ -28,17 +28,12 @@ export function initWalletConnectProvider (options: initWalletConnectProviderOpt
     return;
   }
 
-  const bridge = options.bridge || 'https://bridge.walletconnect.org';
-  const infuraId = options.infuraId || '';
-  const rpc = options.rpc;
-  const chainId = options.chainId || 1;
-
   const provider = new WalletConnectProvider({
-    bridge,
+    chainId: options.chainId,
+    bridge: options.bridge,
+    infuraId: options.infuraId,
+    rpc: options.rpc,
     qrcode: false,
-    infuraId,
-    rpc,
-    chainId,
   });
 
   assignProviderEvents(provider);
@@ -55,8 +50,8 @@ function assignProviderEvents(provider: WalletConnectProvider) {
   }
 
   provider.connector.on('connect', connectHandler);
-  provider.connector.on("display_uri", displayUriHandler);
-  provider.on("disconnect", disconnectHandler);
+  provider.connector.on('display_uri', displayUriHandler);
+  provider.on('disconnect', disconnectHandler);
   hasAssignedProviderEvents = true;
 
   function connectHandler(error: Error | null, payload: any) {
@@ -83,6 +78,9 @@ function assignProviderEvents(provider: WalletConnectProvider) {
 
     provider.removeListener("disconnect", disconnectHandler);
     hasAssignedProviderEvents = false;
+
+    // hide the Connect Kit modal when rejecting connection
+    setIsModalOpen(false);
   }
 };
 

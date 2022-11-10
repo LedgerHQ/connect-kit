@@ -17,10 +17,10 @@ export type EnableDebugLogsFunction = () => void;
 
 export type CheckSupportOptions = {
   providerType: SupportedProviders;
-  chainId: SupportedChains;
+  chainId?: number;
   bridge?: string;
   infuraId?: string;
-  rpc: { [chainId: number]: string; };
+  rpc?: { [chainId: number]: string; };
 }
 
 export type CheckSupportResult = {
