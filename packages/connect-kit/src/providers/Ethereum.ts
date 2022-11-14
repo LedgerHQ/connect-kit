@@ -10,6 +10,8 @@ export const LEDGER_CONNECT_ETHEREUM_PROP = 'isLedgerConnect'
 export interface EthereumProvider {
   providers?: EthereumProvider[];
   request(...args: unknown[]): Promise<unknown>;
+  disconnect(): Promise<void>;
+  emit(eventName: string | symbol, ...args: any[]): boolean;
   on(...args: unknown[]): void;
   removeListener(...args: unknown[]): void;
 }
