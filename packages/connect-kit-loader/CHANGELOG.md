@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.0-beta.6 - 2022-11-14
 ### Changed
 - Added disconnect and emit to the EthereumProvider interface to implement
   the lerger wagmi connector.
-
 
 ## 1.0.0-beta.5 - 2022-11-10
 ### Changed
