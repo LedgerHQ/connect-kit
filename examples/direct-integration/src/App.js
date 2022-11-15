@@ -36,7 +36,7 @@ export default function Home() {
       const provider = await connectKit.getProvider();
 
       const library = new ethers.providers.Web3Provider(provider);
-      const accounts = await library.listAccounts();
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
       const network = await library.getNetwork();
 
       setProvider(provider);
