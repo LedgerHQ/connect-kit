@@ -37,7 +37,7 @@ export type CheckSupportFunction = (options: CheckSupportOptions) => CheckSuppor
 export interface EthereumProvider {
   providers?: EthereumProvider[];
   request(...args: unknown[]): Promise<unknown>;
-  disconnect(): Promise<void>;
+  disconnect?: {(): Promise<void>};
   emit(eventName: string | symbol, ...args: any[]): boolean;
   on(...args: unknown[]): void;
   removeListener(...args: unknown[]): void;

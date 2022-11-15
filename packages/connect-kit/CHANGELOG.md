@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Make disconnect on EthereumProvider optional since it is only available on
+  WalletConnect.
+
 ## 1.0.0-beta.4-5 - 2022-11-01
 ### Changed
 - Release workflow changes.
