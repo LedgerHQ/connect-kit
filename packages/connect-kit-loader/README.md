@@ -165,16 +165,17 @@ const connectWallet = async () => {
       }
     });
     console.log('checkSupportResult is', checkSupportResult);
+
     const provider = await connectKit.getProvider();
+    setProvider(provider);
+
+    const accounts = await provider.request({ method: 'eth_requestAccounts' });
+    if (accounts) setAccount(accounts[0]);
 
     const library = new ethers.providers.Web3Provider(provider);
-    const accounts = await library.listAccounts();
-    const network = await library.getNetwork();
-
-    setProvider(provider);
     setLibrary(library);
 
-    if (accounts) setAccount(accounts[0]);
+    const network = await library.getNetwork();
     setChainId(network.chainId);
   } catch (error) {
     setError(error);

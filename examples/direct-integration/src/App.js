@@ -33,18 +33,18 @@ export default function Home() {
         }
       });
       console.log('checkSupportResult is', checkSupportResult);
+
       const provider = await connectKit.getProvider();
-
-      const library = new ethers.providers.Web3Provider(provider);
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
-      const network = await library.getNetwork();
-
       setProvider(provider);
-      setLibrary(library);
 
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
       if (accounts) setAccount(accounts[0]);
 
-      setChainId(network?.chainId);
+      const library = new ethers.providers.Web3Provider(provider);
+      setLibrary(library);
+
+      const network = await library.getNetwork();
+      setChainId(network.chainId);
     } catch (error) {
       setError(error);
     }
