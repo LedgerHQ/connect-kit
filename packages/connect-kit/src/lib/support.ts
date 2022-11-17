@@ -1,19 +1,15 @@
 import { getEthereumProvider } from "../providers/Ethereum";
 import { getSolanaProvider } from "../providers/Solana";
-import {
-  initWalletConnectProvider,
-  isWalletConnectProviderConnected
-} from "../providers/WalletConnect";
+import { initWalletConnectProvider } from "../providers/WalletConnect";
 import { isLedgerConnectSupported } from "./connectSupport";
 import { getBrowser } from "./browser";
 import {
   ConnectSupportedChains,
   SupportedProviders,
-  setChainId,
   isChainIdSupported,
   setProviderImplementation,
   SupportedProviderImplementations,
-  setProviderType
+  setProviderType,
 } from "./provider";
 import { getDebugLogger } from "./logger";
 import { showModal } from "./modal";
@@ -42,7 +38,6 @@ export function checkSupport(options: CheckSupportOptions): CheckSupportResult {
 
   // default to Ethereum Mainnet if not specified
   const chainId = options.chainId || 1;
-  setChainId(chainId);
 
   switch (options.providerType) {
     case SupportedProviders.Ethereum:
@@ -90,21 +85,12 @@ function checkEthereumSupport(options: CheckEthereumSupportOptions) {
       infuraId: options.infuraId,
       rpc: options.rpc,
     });
-
-    // don't show the modal if the WalletConnect provider is connected
-    if (isWalletConnectProviderConnected()) {
-      return checkSupportResult;
-    }
-
-    // show the QR code if we are on a desktop browser
-    const withQrCode = (device.type === 'desktop');
-    showModal('ConnectWithLedgerLiveModal', { withQrCode });
   } else if (
     checkSupportResult.isLedgerConnectSupported &&
     !checkSupportResult.isLedgerConnectEnabled
   ) {
     // supported platform but Connect is not enabled
-    showModal("ExtensionUnavailableModal");
+    showModal('ExtensionUnavailableModal');
   }
 
   setProviderImplementation(checkSupportResult.providerImplementation);

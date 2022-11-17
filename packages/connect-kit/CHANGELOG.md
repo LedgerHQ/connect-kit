@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Don't open a blank tab when pressing the User Ledger Live deeplink.
+- Patch the provider's request method to handle the Connect With Ledger Live
+  modal in the `eth_requestAccounts` method, allowing us to reject with the
+  "user rejected connection" error when the modal is closed.
+
 ## 1.0.0 - 2022-11-17
 ### Changed
 - Promoted to 1.0.

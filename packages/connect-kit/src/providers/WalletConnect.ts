@@ -94,7 +94,6 @@ export async function getWalletConnectProvider(): Promise<EthereumProvider> {
   log('getWalletConnectProvider');
 
   try {
-    await walletConnectProvider.enable();
     return walletConnectProvider as unknown as EthereumProvider;
   } catch (err) {
     const error = (err instanceof Error) ? err : new Error(String(err));

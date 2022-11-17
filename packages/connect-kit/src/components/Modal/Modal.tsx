@@ -8,16 +8,18 @@ export let setIsModalOpen = (isModalOpen: boolean) => {};
 
 interface ModalProps {
   isOpen?: boolean;
+  onClose?: () => void;
   children: ReactElement | null;
 }
 
-export const Modal = ({ children }: ModalProps) => {
+export const Modal = ({ onClose, children }: ModalProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   // assign the set state function to the exported one
   setIsModalOpen = setIsOpen;
 
   const handleClose = () => {
     setIsModalOpen(false);
+    onClose && onClose();
   };
 
   if (isOpen) {
