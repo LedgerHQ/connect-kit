@@ -86,15 +86,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
 
-      # Tag beta versions as latest while we don't have a stable one
-      - name: Tag beta versions as latest
-        if: ${{ env.RELEASE_TAG == env.DIST_TAG_PRERELEASE }}
-        run: |
-          cd ${{ env.PKG_DIR }}
-          npm dist-tag add ${{ env.PKG_SPEC }}@${{ env.NEW_VERSION }} latest
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
-
       # Push repository changes
       - name: Push changes to repository
         env:
