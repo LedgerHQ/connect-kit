@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Make sure loadConnectKit is running on client side.
+
+### Fixed
+- CheckSupportOptions props.
+
 ## 1.0.0-beta.7 - 2022-11-15
 ### Changed
 - Make disconnect on EthereumProvider optional since it is only available on

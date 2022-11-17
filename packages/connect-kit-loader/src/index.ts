@@ -26,7 +26,7 @@ export type CheckSupportOptions = {
 export type CheckSupportResult = {
   isLedgerConnectSupported: boolean;
   isLedgerConnectEnabled: boolean;
-  isLedgerLiveMobileInstalled: boolean | undefined;
+  isChainIdSupported?: boolean;
   providerImplementation: SupportedProviderImplementations;
 };
 
@@ -78,6 +78,12 @@ export async function loadConnectKit(): Promise<LedgerConnectKit> {
 
   return new Promise((resolve, reject) => {
     const scriptId = `ledger-ck-script-${globalName}`;
+
+    // we don't support server side rendering, reject with no stack trace for now
+    if (typeof document === 'undefined') {
+      reject('Connect Kit does not support server side');
+      return;
+    }
 
     if (document.getElementById(scriptId)) {
       resolve((window as { [key: string]: any })[globalName]);
