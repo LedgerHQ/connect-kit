@@ -13,21 +13,17 @@ import NeedALedgerSection from "../NeedALedgerSection";
 import { QrCode, QrCodeSection } from "./ConnectWithLedgerLiveModal.styles";
 
 const log = getDebugLogger('ConnectWithLedgerLiveModal');
-let walletConnectUri: string;
 let ledgerLiveDeepLink: string;
 
 // placeholder functions until the component is initialized
-let setModalUri = (uri: string) => {};
 let setModalDeeplink = (uri: string) => {};
 
 // called by the WalletConnect display_uri event handler
 export let setWalletConnectUri = (uri: string): void => {
   log('setModalUri', uri);
-  walletConnectUri = uri;
   ledgerLiveDeepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
 
   // update internal component state
-  setModalUri(uri);
   setModalDeeplink(ledgerLiveDeepLink);
 }
 
@@ -41,13 +37,11 @@ const ConnectWithLedgerLiveModal = ({
   onClose = () => void 0,
 }: ConnectWithLedgerLiveModalProps) => {
   log('initializing', { withQrCode });
-  log('walletConnectUri', walletConnectUri);
+  log('ledgerLiveDeepLink', ledgerLiveDeepLink);
 
   // use the module variables as the initial start values
-  const [uri, setUri] = useState<string>(walletConnectUri);
   const [deeplink, setDeeplink] = useState<string>(ledgerLiveDeepLink);
   // replace the placeholder functions by the setState ones
-  setModalUri = setUri;
   setModalDeeplink = setDeeplink;
 
   const onUseLedgerLiveClick = () => {
@@ -75,7 +69,7 @@ const ConnectWithLedgerLiveModal = ({
               Install Ledger Live
             </ModalButton>
 
-            {uri !== '' &&
+            {ledgerLiveDeepLink !== '' &&
               <ModalButton variant="primary" onClick={onUseLedgerLiveClick}>
                 Use Ledger Live
               </ModalButton>
@@ -83,14 +77,14 @@ const ConnectWithLedgerLiveModal = ({
           </Stack>
         </ModalSection>
 
-        {withQrCode && uri !== '' &&
+        {withQrCode && ledgerLiveDeepLink !== '' &&
           <QrCodeSection>
             <Stack direction="row" gap={1}>
               <Stack direction="column" gap={0}>
                 <ModalSubtitle>Or scan to connect</ModalSubtitle>
                 <ModalText>Scan this QR code with your mobile to connect with Ledger Live.</ModalText>
               </Stack>
-              <QrCode value={uri} size={128} />
+              <QrCode value={ledgerLiveDeepLink} size={128} />
             </Stack>
           </QrCodeSection>
         }
