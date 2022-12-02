@@ -7,13 +7,18 @@ const log = getDebugLogger('LedgerConnectEthereum');
 export const LEDGER_ETHEREUM_PROVIDER = 'ethereum'
 export const LEDGER_CONNECT_ETHEREUM_PROP = 'isLedgerConnect'
 
+export type EthereumRequestPayload = {
+  method: string;
+  params?: unknown[] | object;
+}
+
 export interface EthereumProvider {
   providers?: EthereumProvider[];
-  request(...args: unknown[]): Promise<unknown>;
+  request(payload: EthereumRequestPayload): Promise<unknown>;
   disconnect?: {(): Promise<void>};
   emit(eventName: string | symbol, ...args: any[]): boolean;
-  on(...args: unknown[]): void;
-  removeListener(...args: unknown[]): void;
+  on(event: any, listener: any): void;
+  removeListener(event: string, listener: any): void;
 }
 
 export interface LedgerConnectProvider extends EthereumProvider {

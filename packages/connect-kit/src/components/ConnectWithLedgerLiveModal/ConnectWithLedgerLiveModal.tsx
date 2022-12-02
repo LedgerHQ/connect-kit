@@ -33,10 +33,12 @@ export let setWalletConnectUri = (uri: string): void => {
 
 export type ConnectWithLedgerLiveModalProps = {
   withQrCode?: boolean;
+  onClose?: () => void;
 }
 
 const ConnectWithLedgerLiveModal = ({
-  withQrCode = false
+  withQrCode = false,
+  onClose = () => void 0,
 }: ConnectWithLedgerLiveModalProps) => {
   log('initializing', { withQrCode });
   log('walletConnectUri', walletConnectUri);
@@ -49,7 +51,7 @@ const ConnectWithLedgerLiveModal = ({
   setModalDeeplink = setDeeplink;
 
   const onUseLedgerLiveClick = () => {
-    window.open(deeplink);
+    window.location.href = deeplink;
     return false;
   };
 
@@ -59,7 +61,7 @@ const ConnectWithLedgerLiveModal = ({
   };
 
   return (
-    <Modal>
+    <Modal onClose={() => onClose()}>
       <>
         <ModalSection>
           <ModalTitle>Use Ledger Live</ModalTitle>

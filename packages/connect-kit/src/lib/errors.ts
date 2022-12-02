@@ -13,3 +13,13 @@ export class ProviderTypeIsNotSupportedError extends Error {
     this.message = "The specified provider is not supported.";
   }
 }
+
+export class UserRejectedRequestError extends Error {
+  name = 'UserRejectedRequestError';
+  readonly code: number;
+
+  constructor() {
+    super('User rejected request');
+    this.code = 4001;
+  }
+}

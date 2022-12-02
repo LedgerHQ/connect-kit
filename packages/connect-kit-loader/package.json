@@ -19,6 +19,7 @@
   "files": [
     "dist"
   ],
+  "type":"module",
   "types": "index",
   "homepage": "https://get-connect.ledger.com",
   "repository": {
