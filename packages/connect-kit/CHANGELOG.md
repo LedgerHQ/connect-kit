@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.1 - 2022-12-02
 ### Changed
 - Don't open a blank tab when pressing the User Ledger Live deeplink.
 - Correctly detect the Brave browser on iOS.
