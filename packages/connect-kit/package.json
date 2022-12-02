@@ -1,6 +1,6 @@
 {
   "name": "@ledgerhq/connect-kit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A library for dapps to integrate with Ledger Connect and Ledger Live",
   "author": "Hugo Lopes",
   "license": "MIT",
