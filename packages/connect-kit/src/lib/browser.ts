@@ -23,6 +23,7 @@ declare type DeviceBrowserName =
   | "Firefox"
   | "Microsoft Edge"
   | "Opera"
+  | "Brave"
   | "Safari";
 
 declare type DeviceType = "desktop" | "mobile" | "tablet";
@@ -33,11 +34,25 @@ export declare type Device = {
   browser: DeviceBrowser;
 };
 
+interface BraveNavigator extends Navigator {
+  brave: { isBrave: Function };
+}
+
+function isBrave() {
+  return (
+    (window.navigator as BraveNavigator).brave?.isBrave?.name === "isBrave"
+  )
+}
+
 export function getBrowser(): Device {
   const parsed = bowser.getParser(window.navigator.userAgent);
   const os = parsed.getOS();
   const browser = parsed.getBrowser();
   const { type } = parsed.getPlatform();
+
+  if (isBrave()) {
+    browser.name = "Brave";
+  }
 
   return {
     type: type as DeviceType,
