@@ -6,8 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-### Changed
 
+## 1.0.4 - 2022-12-06
+### Changed
 - Create a new WalletConnect session each time `eth_requestAccounts` is called
   (and hence each time the "Use Ledger Live" modal is shown) to avoid reusing
   the same WalletConnect URI.
