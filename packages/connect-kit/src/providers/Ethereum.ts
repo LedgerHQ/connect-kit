@@ -1,5 +1,4 @@
 import { ProviderNotFoundError } from "../lib/errors";
-import { ProviderResult } from "../lib/provider";
 import { getDebugLogger } from "../lib/logger";
 
 const log = getDebugLogger('LedgerConnectEthereum');
@@ -14,7 +13,7 @@ export type EthereumRequestPayload = {
 
 export interface EthereumProvider {
   providers?: EthereumProvider[];
-  request(payload: EthereumRequestPayload): Promise<unknown>;
+  request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
   emit(eventName: string | symbol, ...args: any[]): boolean;
   on(event: any, listener: any): void;
@@ -29,7 +28,7 @@ interface WindowWithEthereum {
   [LEDGER_ETHEREUM_PROVIDER]?: LedgerConnectProvider;
 }
 
-export function getEthereumProvider (): ProviderResult {
+export function getEthereumProvider (): EthereumProvider {
   log('getEthereumProvider');
 
   const provider = (window as WindowWithEthereum)[LEDGER_ETHEREUM_PROVIDER];

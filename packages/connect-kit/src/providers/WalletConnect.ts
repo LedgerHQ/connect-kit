@@ -1,15 +1,15 @@
 import WalletConnectProvider from '@walletconnect/ethereum-provider/dist/umd/index.min.js';
 import { getErrorLogger, getDebugLogger } from '../lib/logger';
-import { setIsModalOpen } from '../components/Modal/Modal';
-import { setWalletConnectUri } from '../components/ConnectWithLedgerLiveModal/ConnectWithLedgerLiveModal';
-import { EthereumProvider } from './Ethereum';
+import { EthereumProvider, EthereumRequestPayload } from './Ethereum';
+import { showModal } from '../lib/modal';
+import { UserRejectedRequestError } from '../lib/errors';
+import { getBrowser } from '../lib/browser';
 
 const log = getDebugLogger('WalletConnect');
 const logError = getErrorLogger('WalletConnect');
 
 let walletConnectProvider: WalletConnectProvider;
-// needed for controlling when provider events are assigned
-let hasAssignedProviderEvents: boolean = false;
+let walletConnectOptions: initWalletConnectProviderOptions;
 
 export interface initWalletConnectProviderOptions {
   chainId?: number;
@@ -18,41 +18,74 @@ export interface initWalletConnectProviderOptions {
   rpc?: { [chainId: number]: string };
 }
 
-export function initWalletConnectProvider (options: initWalletConnectProviderOptions): void {
-  log('initWalletConnectProvider', options);
+export function setWalletConnectOptions(options: initWalletConnectProviderOptions) {
+  log('setWalletConnectOptions');
+  walletConnectOptions = options;
+}
 
-  if (!!walletConnectProvider) {
-    log('we already have a provider');
-    // assign events after disconnecting so that the connect event fires
-    assignProviderEvents(walletConnectProvider);
-    return;
-  }
+export async function initWalletConnectProvider(): Promise<void> {
+  log('initWalletConnectProvider');
 
   const provider = new WalletConnectProvider({
-    chainId: options.chainId,
-    bridge: options.bridge,
-    infuraId: options.infuraId,
-    rpc: options.rpc,
+    ...walletConnectOptions,
     qrcode: false,
   });
 
   assignProviderEvents(provider);
 
-  log('assigning new provider instance');
+  log('creating new provider instance');
   walletConnectProvider = provider;
+}
+
+function patchProviderRequest (provider: WalletConnectProvider) {
+  // get the provider's request function so we can call it later
+  const baseRequest = provider.request.bind(provider);
+  const device = getBrowser();
+
+  return async function <T = unknown>({ method, params }: EthereumRequestPayload): Promise<T> {
+    // patch eth_requestAccounts to handle the modal
+    if (method === 'eth_requestAccounts') {
+      log('calling patched', method, params);
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          if (!isWalletConnectProviderConnected()) {
+            await provider.connector.createSession({
+              chainId: walletConnectOptions.chainId
+            });
+            log('new session with handshakeTopic', provider.connector.handshakeTopic);
+
+            showModal('ConnectWithLedgerLiveModal', {
+              // show the QR code if we are on a desktop browser
+              withQrCode: device.type === 'desktop',
+              uri: provider.connector.uri,
+              // pass an onClose callback that throws when the modal is closed
+              onClose: () => {
+                reject(new UserRejectedRequestError());
+              }
+            });
+          }
+
+          // call the original provider request
+          return resolve(await baseRequest({ method, params }));
+        } catch(err) {
+          logError('error', err);
+          return reject(err);
+        }
+      });
+    } else {
+      log('calling provider', method, params);
+      // call the original provider request
+      return await baseRequest({ method, params });
+    }
+  }
 }
 
 function assignProviderEvents(provider: WalletConnectProvider) {
   log('assignProviderEvents');
 
-  if (hasAssignedProviderEvents) {
-    return;
-  }
-
   provider.connector.on('connect', connectHandler);
-  provider.connector.on('display_uri', displayUriHandler);
   provider.on('disconnect', disconnectHandler);
-  hasAssignedProviderEvents = true;
 
   function connectHandler(error: Error | null, payload: any) {
     log('connectHandler', payload);
@@ -61,30 +94,16 @@ function assignProviderEvents(provider: WalletConnectProvider) {
       logError('error', error);
       throw error;
     }
-
-    // hide the Connect Kit modal when connected
-    setIsModalOpen(false);
-  }
-
-  function displayUriHandler(error: Error | null, payload: any) {
-    log('displayUriHandler', error, payload);
-
-    const uri = payload.params[0];
-    setWalletConnectUri(uri);
   }
 
   function disconnectHandler(code: number, reason: string) {
     log('disconnectHandler', code, reason);
 
     provider.removeListener("disconnect", disconnectHandler);
-    hasAssignedProviderEvents = false;
-
-    // hide the Connect Kit modal when rejecting connection
-    setIsModalOpen(false);
   }
 };
 
-export function isWalletConnectProviderConnected () {
+export function isWalletConnectProviderConnected() {
   log('isWalletConnectProviderConnected', walletConnectProvider.connected);
 
   return walletConnectProvider.connected;
@@ -94,6 +113,10 @@ export async function getWalletConnectProvider(): Promise<EthereumProvider> {
   log('getWalletConnectProvider');
 
   try {
+    await initWalletConnectProvider();
+    // replace the provider's request function with the patched one
+    walletConnectProvider.request = patchProviderRequest(walletConnectProvider);
+
     return walletConnectProvider as unknown as EthereumProvider;
   } catch (err) {
     const error = (err instanceof Error) ? err : new Error(String(err));

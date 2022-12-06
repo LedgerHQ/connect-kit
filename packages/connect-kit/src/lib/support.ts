@@ -1,6 +1,6 @@
 import { getEthereumProvider } from "../providers/Ethereum";
 import { getSolanaProvider } from "../providers/Solana";
-import { initWalletConnectProvider } from "../providers/WalletConnect";
+import { setWalletConnectOptions } from "../providers/WalletConnect";
 import { isLedgerConnectSupported } from "./connectSupport";
 import { getBrowser } from "./browser";
 import {
@@ -79,12 +79,12 @@ function checkEthereumSupport(options: CheckEthereumSupportOptions) {
   ) {
     // unsupported platform or chainId, use WalletConnect
     checkSupportResult.providerImplementation = SupportedProviderImplementations.WalletConnect;
-    initWalletConnectProvider({
+    setWalletConnectOptions({
       chainId: options.chainId,
       bridge: options.bridge,
       infuraId: options.infuraId,
       rpc: options.rpc,
-    });
+    })
   } else if (
     checkSupportResult.isLedgerConnectSupported &&
     !checkSupportResult.isLedgerConnectEnabled

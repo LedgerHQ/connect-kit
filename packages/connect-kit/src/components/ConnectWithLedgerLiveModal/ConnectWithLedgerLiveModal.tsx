@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { getDebugLogger } from "../../lib/logger";
-import Modal from "../Modal/Modal";
+import Modal, { setIsModalOpen } from "../Modal/Modal";
 import {
   ModalButton,
   ModalSection,
@@ -13,39 +12,28 @@ import NeedALedgerSection from "../NeedALedgerSection";
 import { QrCode, QrCodeSection } from "./ConnectWithLedgerLiveModal.styles";
 
 const log = getDebugLogger('ConnectWithLedgerLiveModal');
-let ledgerLiveDeepLink: string;
-
-// placeholder functions until the component is initialized
-let setModalDeeplink = (uri: string) => {};
-
-// called by the WalletConnect display_uri event handler
-export let setWalletConnectUri = (uri: string): void => {
-  log('setModalUri', uri);
-  ledgerLiveDeepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
-
-  // update internal component state
-  setModalDeeplink(ledgerLiveDeepLink);
-}
 
 export type ConnectWithLedgerLiveModalProps = {
   withQrCode?: boolean;
+  uri?: string;
   onClose?: () => void;
 }
 
 const ConnectWithLedgerLiveModal = ({
   withQrCode = false,
+  uri = '',
   onClose = () => void 0,
 }: ConnectWithLedgerLiveModalProps) => {
-  log('initializing', { withQrCode });
-  log('ledgerLiveDeepLink', ledgerLiveDeepLink);
+  log('initializing', { withQrCode, uri });
 
-  // use the module variables as the initial start values
-  const [deeplink, setDeeplink] = useState<string>(ledgerLiveDeepLink);
-  // replace the placeholder functions by the setState ones
-  setModalDeeplink = setDeeplink;
+  const ledgerLiveDeepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
 
   const onUseLedgerLiveClick = () => {
-    window.location.href = deeplink;
+    window.location.href = ledgerLiveDeepLink;
+
+    // close the modal so that the current WalletConnect URI cannot be reused
+    setIsModalOpen(false);
+
     return false;
   };
 
