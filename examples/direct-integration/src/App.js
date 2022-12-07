@@ -29,7 +29,8 @@ export default function Home() {
         providerType: SupportedProviders.Ethereum,
         rpc: {
           1: `https://cloudflare-eth.com/`, // Mainnet
-          137: "https://polygon-rpc.com/", // Polygon
+          5: 'https://goerli.optimism.io',  // Goerli
+          137: "https://polygon-rpc.com/",  // Polygon
         }
       });
       console.log('checkSupportResult is', checkSupportResult);
