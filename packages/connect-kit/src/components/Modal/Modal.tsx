@@ -6,10 +6,10 @@ import { default as XButtonSvg } from "../../assets/svg/X.svg";
 
 export let setIsModalOpen = (isModalOpen: boolean) => {};
 
-interface ModalProps {
+export interface ModalProps {
   isOpen?: boolean;
   onClose?: () => void;
-  children: ReactElement | null;
+  children?: ReactElement | null;
 }
 
 export const Modal = ({ onClose, children }: ModalProps) => {

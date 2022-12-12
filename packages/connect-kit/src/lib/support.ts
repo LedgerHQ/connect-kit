@@ -85,12 +85,6 @@ function checkEthereumSupport(options: CheckEthereumSupportOptions) {
       infuraId: options.infuraId,
       rpc: options.rpc,
     })
-  } else if (
-    checkSupportResult.isLedgerConnectSupported &&
-    !checkSupportResult.isLedgerConnectEnabled
-  ) {
-    // supported platform but Connect is not enabled
-    showModal('ExtensionUnavailableModal');
   }
 
   setProviderImplementation(checkSupportResult.providerImplementation);

@@ -20,7 +20,9 @@ export default [
       },
     ],
     plugins: [
-      resolve(),
+      resolve({
+        preferBuiltins: false
+      }),
       commonjs(),
       replace({
         'process.env.NODE_ENV': JSON.stringify('production'),

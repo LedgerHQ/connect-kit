@@ -14,6 +14,20 @@ export class ProviderTypeIsNotSupportedError extends Error {
   }
 }
 
+export class ProviderRpcError extends Error {
+  code: any;
+
+  constructor(code: any, message: string) {
+    super();
+    this.code = code;
+    this.message = message;
+  }
+
+  toString() {
+    return `${this.message} (${this.code})`;
+  }
+}
+
 export class UserRejectedRequestError extends Error {
   name = 'UserRejectedRequestError';
   readonly code: number;

@@ -1,5 +1,5 @@
 import { getDebugLogger } from "../../lib/logger";
-import Modal, { setIsModalOpen } from "../Modal/Modal";
+import Modal, { ModalProps, setIsModalOpen } from "../Modal/Modal";
 import {
   ModalButton,
   ModalSection,
@@ -16,8 +16,7 @@ const log = getDebugLogger('ConnectWithLedgerLiveModal');
 export type ConnectWithLedgerLiveModalProps = {
   withQrCode?: boolean;
   uri?: string;
-  onClose?: () => void;
-}
+} & ModalProps;
 
 const ConnectWithLedgerLiveModal = ({
   withQrCode = false,

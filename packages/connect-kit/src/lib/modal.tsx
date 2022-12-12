@@ -6,6 +6,7 @@ import {
   PlatformNotSupportedModal
 } from "../components";
 import { ConnectWithLedgerLiveModalProps } from "../components/ConnectWithLedgerLiveModal/ConnectWithLedgerLiveModal";
+import { ExtensionUnavailableModalProps } from "../components/ExtensionUnavailableModal/ExtensionUnavailableModal";
 
 type ModalType =
   'ConnectWithLedgerLiveModal' |
@@ -16,7 +17,7 @@ let root: Root | null = null;
 
 export function showModal(
   modalType: ModalType,
-  props?: ConnectWithLedgerLiveModalProps
+  props?: ExtensionUnavailableModalProps | ConnectWithLedgerLiveModalProps
 ) {
   if (!root) {
     const el = document.body;
@@ -37,7 +38,7 @@ export function showModal(
         component = <PlatformNotSupportedModal />
         break
       case 'ExtensionUnavailableModal':
-        component = <ExtensionUnavailableModal />
+        component = <ExtensionUnavailableModal {...props} />
         break;
     }
 

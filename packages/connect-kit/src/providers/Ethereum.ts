@@ -1,5 +1,5 @@
-import { ProviderNotFoundError } from "../lib/errors";
 import { getDebugLogger } from "../lib/logger";
+import { TryConnectEthereumProvider } from "./TryConnectEthereum";
 
 const log = getDebugLogger('LedgerConnectEthereum');
 
@@ -31,13 +31,13 @@ interface WindowWithEthereum {
 export function getEthereumProvider (): EthereumProvider {
   log('getEthereumProvider');
 
-  const provider = (window as WindowWithEthereum)[LEDGER_ETHEREUM_PROVIDER];
+  let provider = (window as WindowWithEthereum)[LEDGER_ETHEREUM_PROVIDER];
 
   if (
     typeof provider === "undefined" ||
     typeof provider[LEDGER_CONNECT_ETHEREUM_PROP] === "undefined"
   ) {
-    throw new ProviderNotFoundError();
+    return new TryConnectEthereumProvider() as EthereumProvider;
   }
 
   return provider;

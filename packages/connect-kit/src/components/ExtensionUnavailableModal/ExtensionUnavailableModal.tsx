@@ -1,4 +1,4 @@
-import Modal from "../Modal/Modal";
+import Modal, { ModalProps } from "../Modal/Modal";
 import {
   ModalButton,
   ModalSection,
@@ -12,7 +12,11 @@ import { getDebugLogger } from "../../lib/logger";
 
 const log = getDebugLogger('ExtensionUnavailableModal')
 
-const ExtensionUnavailableModal = () => {
+export type ExtensionUnavailableModalProps = ModalProps;
+
+const ExtensionUnavailableModal = ({
+  onClose = () => void 0,
+}: ExtensionUnavailableModalProps) => {
   log('initializing');
 
   const onJoinBetaClick = () => {
@@ -20,7 +24,7 @@ const ExtensionUnavailableModal = () => {
   };
 
   return (
-    <Modal>
+    <Modal onClose={() => onClose()}>
       <>
         <ModalSection>
           <ModalTitle>Try Ledger Connect</ModalTitle>
