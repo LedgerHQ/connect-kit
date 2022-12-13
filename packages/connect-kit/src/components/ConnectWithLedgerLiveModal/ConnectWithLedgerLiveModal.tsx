@@ -5,10 +5,8 @@ import {
   ModalSection,
   ModalText,
   ModalTitle,
-  ModalSubtitle,
-  Stack,
+  Link,
 } from "../Modal/Modal.styles";
-import NeedALedgerSection from "../NeedALedgerSection";
 import { QrCode, QrCodeSection } from "./ConnectWithLedgerLiveModal.styles";
 
 const log = getDebugLogger('ConnectWithLedgerLiveModal');
@@ -43,41 +41,37 @@ const ConnectWithLedgerLiveModal = ({
 
   return (
     <Modal onClose={() => onClose()}>
-      <>
-        <ModalSection>
-          <ModalTitle>Use Ledger Live</ModalTitle>
-          <ModalText>
-            Ledger Live is your one-stop shop to buy crypto, grow your assets,
-            and manage NFTs.
-          </ModalText>
-
-          <Stack direction="row" gap={1}>
-            <ModalButton variant="default" onClick={onInstallLedgerLiveClick}>
-              Install Ledger Live
-            </ModalButton>
-
-            {ledgerLiveDeepLink !== '' &&
-              <ModalButton variant="primary" onClick={onUseLedgerLiveClick}>
-                Use Ledger Live
-              </ModalButton>
-            }
-          </Stack>
-        </ModalSection>
+      <ModalSection textAlign="center">
+        <ModalTitle>Do you have Ledger Live?</ModalTitle>
 
         {withQrCode && ledgerLiveDeepLink !== '' &&
-          <QrCodeSection>
-            <Stack direction="row" gap={1}>
-              <Stack direction="column" gap={0}>
-                <ModalSubtitle>Or scan to connect</ModalSubtitle>
-                <ModalText>Scan this QR code with your mobile to connect with Ledger Live.</ModalText>
-              </Stack>
-              <QrCode value={ledgerLiveDeepLink} size={128} />
-            </Stack>
-          </QrCodeSection>
+          <>
+            <ModalText>
+              Scan with your mobile.
+            </ModalText>
+
+            <QrCodeSection>
+              <QrCode value={ledgerLiveDeepLink} size={310} />
+            </QrCodeSection>
+
+            <ModalText noMargin>or</ModalText>
+
+            <ModalButton variant="primary" onClick={onUseLedgerLiveClick}>
+              Open Ledger Live Desktop
+            </ModalButton>
+          </>
         }
 
-        <NeedALedgerSection />
-      </>
+        {!withQrCode && ledgerLiveDeepLink !== '' &&
+          <ModalButton variant="primary" onClick={onUseLedgerLiveClick} extraMargin>
+            Open Ledger Live
+          </ModalButton>
+        }
+
+        <ModalText>Don't have Ledger Live? <Link onClick={onInstallLedgerLiveClick}>
+          Install</Link>
+        </ModalText>
+      </ModalSection>
     </Modal>
   );
 };

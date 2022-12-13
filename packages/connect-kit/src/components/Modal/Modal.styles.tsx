@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 
-const devices = {
+export const devices = {
   notPhone: `only screen and (min-width: 640px)`,
+  smallPhone: `only screen and (max-height: 640px)`,
 };
 
 const borderRadius = '1.2rem';
@@ -42,8 +43,8 @@ export const ModalContent = styled.div`
   transition: opacity .25s,transform .25s;
 
   @media ${devices.notPhone} {
-    margin: 2.6rem;
-    max-width: 420px;
+    margin: 15px;
+    max-width: 340px;
     border-radius: ${borderRadius};
   }
 `;
@@ -65,7 +66,7 @@ export const CloseButton = styled.button`
   }
 `;
 
-const modalPadding = '1rem';
+const modalPadding = '15px';
 
 export const ModalHeader = styled.div`
   display: flex;
@@ -76,11 +77,17 @@ export const ModalHeader = styled.div`
   padding-bottom: 0.9rem;
 `;
 
-export const ModalSection = styled.div`
+export const ModalSection = styled.div<{
+  textAlign?: "inherit" | "center"
+}>`
   margin-bottom: ${modalPadding};
   border-top: 1px solid #2b2a2b;
   padding: ${modalPadding} ${modalPadding} 0 ${modalPadding};
   color: #C3C3C3;
+
+  ${({textAlign}) => (textAlign && css`
+    text-align: ${textAlign};
+  `)}
 `;
 
 export const ModalTitle = styled.h2`
@@ -89,6 +96,10 @@ export const ModalTitle = styled.h2`
   line-height: 28px;
   font-size: 24px;
   font-weight: 600;
+
+  @media ${devices.smallPhone} {
+    font-size: 18px;
+  }
 `;
 
 export const ModalSubtitle = styled.h3`
@@ -99,8 +110,10 @@ export const ModalSubtitle = styled.h3`
   line-height: 24px;
 `;
 
-export const ModalText = styled.p`
-  margin: 12px 0 0 0;
+export const ModalText = styled.p<{ noMargin?: boolean }>`
+  ${({noMargin}) => (!noMargin && css`
+    margin: 12px 0 0 0;
+  `)}
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
@@ -110,9 +123,15 @@ export type VariantOptions = {
   variant?: string
 }
 
-export const ModalButton = styled.button<{ variant: string }>`
+export const ModalButton = styled.button<{ variant: string, extraMargin?: boolean }>`
   width: 100%;
-  margin-top: 24px;
+
+  ${({extraMargin}) => (extraMargin ? css`
+    margin: 2rem 0 1.2rem 0;
+  ` : css`
+    margin-top: 1.2rem;
+  `)}
+
   border-radius: 3rem;
   padding: 0.8rem 1rem;
 
@@ -139,17 +158,6 @@ export const ModalButton = styled.button<{ variant: string }>`
   `)}
 `;
 
-export const Stack = styled.div<{
-  direction: "row" | "column",
-  gap: number
-}>`
-  boxSizing: 'border-box';
-  display: flex;
-  ${({gap}) => css`
-    gap: ${gap | 0}rem;
-  `}
-
-  ${({direction}) => css`
-    flex-direction: ${direction};
-  `}
+export const Link = styled.a`
+  color: #BBB0FF;
 `;

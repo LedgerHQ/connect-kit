@@ -1,21 +1,26 @@
 import { QRCodeSVG } from "qrcode.react";
-import styled, { css } from "styled-components";
-import { ModalSection } from "../Modal/Modal.styles";
+import styled from "styled-components";
+import { devices } from "../Modal/Modal.styles";
 
 export const QrCode = styled(QRCodeSVG)`
   box-sizing: border-box;
   flex-grow: 0;
   flex-shrink: 0;
-  padding: 0.5rem;
+  padding: 15px;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 0.1rem;
-  height: 128px;
-  width: 128px;
   border-radius: 1rem;
   background-color: white;
+
+  @media ${devices.smallPhone} {
+    width: 200px;
+    height: 200px;
+  }
 `;
 
-export const QrCodeSection = styled(ModalSection)`
-  margin: 1.8rem 0 1.5rem 0;
+export const QrCodeSection = styled.div`
+  margin: 1rem 0 1.2rem 0;
   border-top: none;
   padding-top: 0;
 `;

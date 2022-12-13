@@ -4,6 +4,7 @@ import { EthereumProvider, EthereumRequestPayload } from './Ethereum';
 import { showModal } from '../lib/modal';
 import { UserRejectedRequestError } from '../lib/errors';
 import { getBrowser } from '../lib/browser';
+import { setIsModalOpen } from '../components/Modal/Modal';
 
 const log = getDebugLogger('WalletConnect');
 const logError = getErrorLogger('WalletConnect');
@@ -89,6 +90,9 @@ function assignProviderEvents(provider: WalletConnectProvider) {
 
   function connectHandler(error: Error | null, payload: any) {
     log('connectHandler', payload);
+
+    // close modal when QR code is scanned
+    setIsModalOpen(false);
 
     if (error) {
       logError('error', error);
