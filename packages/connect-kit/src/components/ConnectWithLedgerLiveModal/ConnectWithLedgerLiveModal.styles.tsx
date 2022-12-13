@@ -20,7 +20,7 @@ export const QrCode = styled(QRCodeSVG)`
 `;
 
 export const QrCodeSection = styled.div`
-  margin: 1rem 0 1.2rem 0;
+  margin: 1rem 0;
   border-top: none;
   padding-top: 0;
 `;

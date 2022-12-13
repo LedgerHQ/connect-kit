@@ -22,11 +22,17 @@ export const Modal = ({ onClose, children }: ModalProps) => {
     onClose && onClose();
   };
 
+  const handleOutsideClick = (e: any) => {
+    if (e?.target?.id === 'ModalWrapper') {
+      handleClose();
+    }
+  }
+
   if (isOpen) {
     return (
       <>
         <Backdrop />
-        <ModalWrapper>
+        <ModalWrapper id="ModalWrapper" onClick={handleOutsideClick}>
           <ModalContent>
             <ModalHeader>
               <img src={LedgerSvg} />

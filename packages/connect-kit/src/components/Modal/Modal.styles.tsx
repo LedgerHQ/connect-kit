@@ -111,7 +111,9 @@ export const ModalSubtitle = styled.h3`
 `;
 
 export const ModalText = styled.p<{ noMargin?: boolean }>`
-  ${({noMargin}) => (!noMargin && css`
+  ${({noMargin}) => (noMargin ? css`
+    margin: 0;
+  ` : `
     margin: 12px 0 0 0;
   `)}
   font-size: 14px;
@@ -160,4 +162,5 @@ export const ModalButton = styled.button<{ variant: string, extraMargin?: boolea
 
 export const Link = styled.a`
   color: #BBB0FF;
+  cursor: pointer;
 `;
