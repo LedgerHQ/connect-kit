@@ -13,6 +13,7 @@ export type EthereumRequestPayload = {
 
 export interface EthereumProvider {
   providers?: EthereumProvider[];
+  connector?: unknown,
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
   emit(eventName: string | symbol, ...args: any[]): boolean;

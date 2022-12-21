@@ -34,13 +34,19 @@ export type CheckSupportFunction = (options: CheckSupportOptions) => CheckSuppor
 
 // ethereum
 
+export type EthereumRequestPayload = {
+  method: string;
+  params?: unknown[] | object;
+}
+
 export interface EthereumProvider {
   providers?: EthereumProvider[];
-  request(...args: unknown[]): Promise<unknown>;
+  connector?: unknown,
+  request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
   emit(eventName: string | symbol, ...args: any[]): boolean;
-  on(...args: unknown[]): void;
-  removeListener(...args: unknown[]): void;
+  on(event: any, listener: any): void;
+  removeListener(event: string, listener: any): void;
 }
 
 // solana
