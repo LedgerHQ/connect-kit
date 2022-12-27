@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "dependencies": {
-    "@ledgerhq/connect-kit-loader": "^1.0.0-beta",
+    "@ledgerhq/connect-kit-loader": "^1.0.2",
     "ethers": "5.5.4",
     "react": "18",
     "react-dom": "18",
