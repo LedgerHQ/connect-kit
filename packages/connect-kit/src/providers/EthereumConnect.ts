@@ -1,10 +1,11 @@
+import { ProviderNotFoundError } from "../lib/errors";
 import { getDebugLogger } from "../lib/logger";
-import { TryConnectEthereumProvider } from "./TryConnectEthereum";
 
 const log = getDebugLogger('LedgerConnectEthereum');
 
 export const LEDGER_ETHEREUM_PROVIDER = 'ethereum'
 export const LEDGER_CONNECT_ETHEREUM_PROP = 'isLedgerConnect'
+export const LEDGER_CONNECT_ETHEREUM_SUPPORTED_PROP = 'isLedgerConnectSupported'
 
 export type EthereumRequestPayload = {
   method: string;
@@ -13,32 +14,34 @@ export type EthereumRequestPayload = {
 
 export interface EthereumProvider {
   providers?: EthereumProvider[];
+  // present on the Ethereum Connect provider
+  [LEDGER_CONNECT_ETHEREUM_PROP]?: boolean;
+  // present on the Ethereum TryConnect provider
+  [LEDGER_CONNECT_ETHEREUM_SUPPORTED_PROP]?: boolean;
+  // present on the WalletConnect provider
   connector?: unknown,
-  request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
+  // common Ethereum provider props
+  request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   emit(eventName: string | symbol, ...args: any[]): boolean;
   on(event: any, listener: any): void;
   removeListener(event: string, listener: any): void;
 }
 
-export interface LedgerConnectProvider extends EthereumProvider {
-  [LEDGER_CONNECT_ETHEREUM_PROP]: boolean;
-}
-
 interface WindowWithEthereum {
-  [LEDGER_ETHEREUM_PROVIDER]?: LedgerConnectProvider;
+  [LEDGER_ETHEREUM_PROVIDER]?: EthereumProvider;
 }
 
-export function getEthereumProvider (): EthereumProvider {
-  log('getEthereumProvider');
+export function getEthereumConnectProvider (): EthereumProvider {
+  log('getEthereumConnectProvider');
 
-  let provider = (window as WindowWithEthereum)[LEDGER_ETHEREUM_PROVIDER];
+  const provider = (window as WindowWithEthereum)[LEDGER_ETHEREUM_PROVIDER];
 
   if (
     typeof provider === "undefined" ||
     typeof provider[LEDGER_CONNECT_ETHEREUM_PROP] === "undefined"
   ) {
-    return new TryConnectEthereumProvider() as EthereumProvider;
+    throw new ProviderNotFoundError();
   }
 
   return provider;

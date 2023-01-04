@@ -17,6 +17,7 @@ export type EnableDebugLogsFunction = () => void;
 
 export type CheckSupportOptions = {
   providerType: SupportedProviders;
+  isHeadless?: boolean;
   chainId?: number;
   bridge?: string;
   infuraId?: string;
@@ -39,11 +40,20 @@ export type EthereumRequestPayload = {
   params?: unknown[] | object;
 }
 
+export const LEDGER_CONNECT_ETHEREUM_PROP = 'isLedgerConnect'
+export const LEDGER_CONNECT_ETHEREUM_SUPPORTED_PROP = 'isLedgerConnectSupported'
+
 export interface EthereumProvider {
   providers?: EthereumProvider[];
+  // present on the Ethereum Connect provider
+  [LEDGER_CONNECT_ETHEREUM_PROP]?: boolean;
+  // present on the Ethereum TryConnect provider
+  [LEDGER_CONNECT_ETHEREUM_SUPPORTED_PROP]?: boolean;
+  // present on the WalletConnect provider
   connector?: unknown,
-  request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
+  // common Ethereum provider props
+  request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   emit(eventName: string | symbol, ...args: any[]): boolean;
   on(event: any, listener: any): void;
   removeListener(event: string, listener: any): void;
@@ -79,7 +89,8 @@ export interface LedgerConnectKit {
 };
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
+  // const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
+  const src = "https://idyllic-kelpie-25742f.netlify.app/umd/index.js";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {

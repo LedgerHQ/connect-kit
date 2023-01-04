@@ -1,8 +1,10 @@
 import { ProviderTypeIsNotSupportedError } from "./errors";
-import { EthereumProvider, getEthereumProvider } from "../providers/Ethereum";
-import { getSolanaProvider, SolanaProvider } from "../providers/Solana";
-import { getWalletConnectProvider } from "../providers/WalletConnect";
+import { EthereumProvider, getEthereumConnectProvider } from "../providers/EthereumConnect";
+import { getSolanaConnectProvider, SolanaProvider } from "../providers/SolanaConnect";
+import { getEthereumWalletConnectProvider } from "../providers/EthereumWalletConnect";
 import { getDebugLogger } from "./logger";
+import { getEthereumTryConnectProvider } from "../providers/EthereumTryConnect";
+import { getSupportOptions } from "./supportOptions";
 
 const log = getDebugLogger('getProvider');
 
@@ -30,14 +32,7 @@ export enum SupportedProviderImplementations {
 
 export type ProviderResult = EthereumProvider | SolanaProvider
 
-let moduleProviderType: SupportedProviders;
 let moduleProviderImplementation: SupportedProviderImplementations;
-
-export function setProviderType(providerType: SupportedProviders): void {
-  log('setProviderType', providerType);
-
-  moduleProviderType = providerType;
-}
 
 export function setProviderImplementation(
   providerImplementation: SupportedProviderImplementations
@@ -48,22 +43,28 @@ export function setProviderImplementation(
 }
 
 export async function getProvider (): Promise<ProviderResult> {
-  log('getProvider', moduleProviderType, moduleProviderImplementation);
+  log('getProvider', moduleProviderImplementation);
 
-  switch (moduleProviderType) {
+  const supportOptions = getSupportOptions();
+
+  switch (supportOptions.providerType) {
     case SupportedProviders.Ethereum:
       let provider: EthereumProvider;
 
       if (moduleProviderImplementation === SupportedProviderImplementations.LedgerConnect) {
-        provider = getEthereumProvider();
+        try {
+          provider = getEthereumConnectProvider();
+        } catch (err) {
+          provider = getEthereumTryConnectProvider();
+        }
       } else {
-        provider = await getWalletConnectProvider();
+        provider = await getEthereumWalletConnectProvider();
       }
 
       return provider;
       break;
     case SupportedProviders.Solana:
-      return getSolanaProvider();
+      return getSolanaConnectProvider();
       break;
     default:
       throw new ProviderTypeIsNotSupportedError();

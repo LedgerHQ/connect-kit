@@ -1,41 +1,48 @@
 import WalletConnectProvider from '@walletconnect/ethereum-provider/dist/umd/index.min.js';
 import { getErrorLogger, getDebugLogger } from '../lib/logger';
-import { EthereumProvider, EthereumRequestPayload } from './Ethereum';
+import { EthereumProvider, EthereumRequestPayload } from './EthereumConnect';
 import { showModal } from '../lib/modal';
 import { UserRejectedRequestError } from '../lib/errors';
 import { getBrowser } from '../lib/browser';
 import { setIsModalOpen } from '../components/Modal/Modal';
+import { getSupportOptions } from '../lib/supportOptions';
 
 const log = getDebugLogger('WalletConnect');
 const logError = getErrorLogger('WalletConnect');
-
 let walletConnectProvider: WalletConnectProvider;
-let walletConnectOptions: initWalletConnectProviderOptions;
+let walletConnectOptions: WalletConnectProviderOptions;
+let isHeadless: boolean;
 
-export interface initWalletConnectProviderOptions {
+export interface WalletConnectProviderOptions {
   chainId?: number;
   bridge?: string;
   infuraId?: string;
   rpc?: { [chainId: number]: string };
 }
 
-export function setWalletConnectOptions(options: initWalletConnectProviderOptions) {
-  log('setWalletConnectOptions');
-  walletConnectOptions = options;
-}
-
 export async function initWalletConnectProvider(): Promise<void> {
   log('initWalletConnectProvider');
+  log('creating new provider instance');
+
+  const supportOptions = getSupportOptions();
+  walletConnectOptions = { ...supportOptions };
+  isHeadless = supportOptions.isHeadless || false;
 
   const provider = new WalletConnectProvider({
     ...walletConnectOptions,
     qrcode: false,
   });
-
+  walletConnectProvider = provider;
   assignProviderEvents(provider);
 
-  log('creating new provider instance');
-  walletConnectProvider = provider;
+  if (!isWalletConnectProviderConnected()) {
+    await provider.connector.createSession({
+      chainId: walletConnectOptions.chainId
+    });
+    log('created session with handshakeTopic', provider.connector.handshakeTopic);
+  } else {
+    log('reconnected to session with handshakeTopic', provider.connector.handshakeTopic);
+  }
 }
 
 function patchProviderRequest (provider: WalletConnectProvider) {
@@ -54,17 +61,19 @@ function patchProviderRequest (provider: WalletConnectProvider) {
             await provider.connector.createSession({
               chainId: walletConnectOptions.chainId
             });
-            log('new session with handshakeTopic', provider.connector.handshakeTopic);
+            log('created session with handshakeTopic', provider.connector.handshakeTopic);
 
-            showModal('ConnectWithLedgerLiveModal', {
-              // show the QR code if we are on a desktop browser
-              withQrCode: device.type === 'desktop',
-              uri: provider.connector.uri,
-              // pass an onClose callback that throws when the modal is closed
-              onClose: () => {
-                reject(new UserRejectedRequestError());
-              }
-            });
+            if (!isHeadless) {
+              showModal('ConnectWithLedgerLiveModal', {
+                // show the QR code if we are on a desktop browser
+                withQrCode: device.type === 'desktop',
+                uri: provider.connector.uri,
+                // pass an onClose callback that throws when the modal is closed
+                onClose: () => {
+                  return reject(new UserRejectedRequestError());
+                }
+              });
+            }
           }
 
           // call the original provider request
@@ -113,8 +122,8 @@ export function isWalletConnectProviderConnected() {
   return walletConnectProvider.connected;
 }
 
-export async function getWalletConnectProvider(): Promise<EthereumProvider> {
-  log('getWalletConnectProvider');
+export async function getEthereumWalletConnectProvider(): Promise<EthereumProvider> {
+  log('getEthereumWalletConnectProvider');
 
   try {
     await initWalletConnectProvider();

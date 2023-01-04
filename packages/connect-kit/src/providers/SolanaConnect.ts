@@ -20,7 +20,7 @@ interface WindowWithSolana {
   [LEDGER_SOLANA_PROVIDER]?: SolanaProvider;
 }
 
-export function getSolanaProvider (): ProviderResult {
+export function getSolanaConnectProvider (): ProviderResult {
   log('getSolanaProvider');
 
   const provider = (window as WindowWithSolana)[LEDGER_SOLANA_PROVIDER];
