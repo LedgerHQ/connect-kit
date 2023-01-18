@@ -1,9 +1,5 @@
 // chain
 
-export enum SupportedChains {
-  EthereumMainnet = 1,
-}
-
 export enum SupportedProviderImplementations {
   LedgerConnect = 'LedgerConnect',
   WalletConnect = 'WalletConnect',

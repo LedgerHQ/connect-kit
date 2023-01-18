@@ -10,10 +10,11 @@ const log = getDebugLogger('getProvider');
 
 export enum ConnectSupportedChains {
   EthereumMainnet = 1,
+  Polygon = 137,
 }
 
-export function isChainIdSupported(chainId: ConnectSupportedChains): boolean {
-  return chainId === ConnectSupportedChains.EthereumMainnet;
+export function isChainIdSupported(chainId: number): boolean {
+  return !!ConnectSupportedChains[chainId];
 }
 
 // providers
