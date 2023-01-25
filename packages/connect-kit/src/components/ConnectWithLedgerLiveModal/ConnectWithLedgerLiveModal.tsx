@@ -24,6 +24,7 @@ const ConnectWithLedgerLiveModal = ({
   log('initializing', { withQrCode, uri });
 
   const ledgerLiveDeepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
+  // const ledgerLiveDeepLink = uri;
 
   const onUseLedgerLiveClick = () => {
     window.location.href = ledgerLiveDeepLink;
@@ -44,14 +45,16 @@ const ConnectWithLedgerLiveModal = ({
       <ModalSection textAlign="center">
         <ModalTitle>Do you have Ledger Live?</ModalTitle>
 
-        {withQrCode && ledgerLiveDeepLink !== '' &&
+        {/* {withQrCode && ledgerLiveDeepLink !== '' && */}
+        {withQrCode && uri !== '' &&
           <>
             <ModalText>
               Scan with your mobile.
             </ModalText>
 
             <QrCodeSection>
-              <QrCode value={ledgerLiveDeepLink} size={310} />
+              {/* <QrCode value={ledgerLiveDeepLink} size={310} /> */}
+              <QrCode value={uri} size={310} />
             </QrCodeSection>
 
             <ModalText noMargin>or</ModalText>

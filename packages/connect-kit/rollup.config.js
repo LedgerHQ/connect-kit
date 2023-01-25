@@ -5,6 +5,8 @@ import dts from "rollup-plugin-dts";
 import image from '@rollup/plugin-image';
 import replace from '@rollup/plugin-replace';
 import { terser } from "rollup-plugin-terser";
+import json from '@rollup/plugin-json';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const packageJson = require("./package.json");
 
@@ -13,21 +15,27 @@ export default [
     input: "src/index.ts",
     output: [
       {
-        file: packageJson.module,
+        exports: "named",
+        file: packageJson.main,
         format: "umd",
-        sourcemap: true,
+        inlineDynamicImports: true,
         name: "ledgerConnectKit",
+        sourcemap: true,
       },
     ],
     plugins: [
       resolve({
         preferBuiltins: false
       }),
-      commonjs(),
+      commonjs({
+        transformMixedEsModules: true,
+      }),
+      nodePolyfills(),
       replace({
         'process.env.NODE_ENV': JSON.stringify('production'),
         preventAssignment: true,
       }),
+      json(),
       typescript({ tsconfig: "./tsconfig.json" }),
       image(),
       terser(),

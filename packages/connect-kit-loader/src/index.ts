@@ -1,3 +1,5 @@
+import type { CoreTypes } from '@walletconnect/types';
+
 // chain
 
 export enum SupportedChains {
@@ -16,7 +18,21 @@ export type EnableDebugLogsFunction = () => void;
 // support
 
 export type CheckSupportOptions = {
+  version?: number;
   providerType: SupportedProviders;
+
+  // WalletConnect v2 init parameters
+  projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
+  chains?: number[];               // REQUIRED ethereum chains, has default
+  optionalChains?: number[];       // OPTIONAL ethereum chains
+  methods?: string[];              // REQUIRED ethereum methods, has default
+  optionalMethods?: string[];      // OPTIONAL ethereum methods
+  events?: string[];               // REQUIRED ethereum events, has default
+  optionalEvents?: string[];       // OPTIONAL ethereum events
+  rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
+  metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
+
+  // WalletConnect v1 init parameters
   chainId?: number;
   bridge?: string;
   infuraId?: string;
@@ -79,7 +95,9 @@ export interface LedgerConnectKit {
 };
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
+  // const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
+  const src = "https://statuesque-naiad-0cb980.netlify.app/umd/index.js";
+  // const src = "https://idyllic-kelpie-25742f.netlify.app/umd/index.js";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {

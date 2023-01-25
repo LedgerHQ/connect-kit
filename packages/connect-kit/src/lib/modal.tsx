@@ -7,6 +7,9 @@ import {
 } from "../components";
 import { ConnectWithLedgerLiveModalProps } from "../components/ConnectWithLedgerLiveModal/ConnectWithLedgerLiveModal";
 import { ExtensionUnavailableModalProps } from "../components/ExtensionUnavailableModal/ExtensionUnavailableModal";
+import { getBrowser } from "./browser";
+import { getSupportResult } from "./support";
+import { UserRejectedRequestError } from "./errors";
 
 type ModalType =
   'ConnectWithLedgerLiveModal' |
@@ -15,6 +18,9 @@ type ModalType =
 
 let root: Root | null = null;
 
+/**
+ * Shows a modal component.
+ */
 export function showModal(
   modalType: ModalType,
   props?: ExtensionUnavailableModalProps | ConnectWithLedgerLiveModalProps
@@ -46,4 +52,33 @@ export function showModal(
   }
 
   setIsModalOpen(true);
+}
+
+/**
+ * Shows one of two modals depending on if the extension is supported or not.
+ */
+export function showExtensionOrLLModal(uri: string, callback: Function) {
+  const device = getBrowser();
+  const supportResults = getSupportResult();
+
+  // direct user to install the extension if supported
+  if (supportResults.isLedgerConnectSupported &&
+    supportResults.isChainIdSupported) {
+    showModal('ExtensionUnavailableModal', {
+      // pass an onClose callback that throws when the modal is closed
+      onClose: () => {
+        callback(new UserRejectedRequestError());
+      }
+    });
+  } else {
+    showModal('ConnectWithLedgerLiveModal', {
+      // show the QR code if we are on a desktop browser
+      withQrCode: device.type === 'desktop',
+      uri,
+      // pass an onClose callback that throws when the modal is closed
+      onClose: () => {
+        callback(new UserRejectedRequestError());
+      }
+    });
+  }
 }

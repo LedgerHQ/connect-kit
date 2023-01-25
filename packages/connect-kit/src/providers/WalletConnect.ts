@@ -1,47 +1,126 @@
-import WalletConnectProvider from '@walletconnect/ethereum-provider/dist/umd/index.min.js';
-import { getErrorLogger, getDebugLogger } from '../lib/logger';
-import { EthereumProvider, EthereumRequestPayload } from './Ethereum';
-import { showModal } from '../lib/modal';
-import { UserRejectedRequestError } from '../lib/errors';
-import { getBrowser } from '../lib/browser';
+import WalletConnectProvider, { default as EthereumProvider } from '@walletconnect/ethereum-provider/dist/index.umd.js';
 import { setIsModalOpen } from '../components/Modal/Modal';
+import { getBrowser } from '../lib/browser';
+import { getDebugLogger, getErrorLogger } from "../lib/logger";
+import { showExtensionOrLLModal } from '../lib/modal';
+import { DEFAULT_REQUIRED_CHAINS } from '../lib/provider';
+import { CheckSupportWalletConnectProviderOptions, getSupportOptions } from '../lib/supportOptions';
+import { EthereumRequestPayload } from './Extension';
 
-const log = getDebugLogger('WalletConnect');
-const logError = getErrorLogger('WalletConnect');
+const log = getDebugLogger('WalletConnect v2');
+const logError = getErrorLogger('WalletConnect v2');
 
 let walletConnectProvider: WalletConnectProvider;
-let walletConnectOptions: initWalletConnectProviderOptions;
+let walletConnectProviderOptions: WalletConnectProviderOptions;
 
-export interface initWalletConnectProviderOptions {
-  chainId?: number;
-  bridge?: string;
-  infuraId?: string;
-  rpc?: { [chainId: number]: string };
+const DEFAULT_WCV2_CONFIG = {
+  chains: DEFAULT_REQUIRED_CHAINS,
+  methods: [
+    'eth_sendTransaction',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v4',
+    'personal_sign',
+  ],
+  events: [
+    'accountsChanged',
+    'chainChanged'
+  ],
 }
 
-export function setWalletConnectOptions(options: initWalletConnectProviderOptions) {
-  log('setWalletConnectOptions');
-  walletConnectOptions = options;
+/**
+ * Specifies the required options for the provider.
+ */
+export type WalletConnectProviderOptions =
+  CheckSupportWalletConnectProviderOptions & {
+  projectId: string;
+  chains: number[];
+  // TODO
+  // methods: string[];          // OPTIONAL ethereum methods
+  // events: string[];           // OPTIONAL ethereum events
 }
 
-export async function initWalletConnectProvider(): Promise<void> {
+/**
+ * Gets the WalletConnect provider.
+ */
+export async function getWalletConnectProvider(): Promise<WalletConnectProvider> {
+  log('getWalletConnectProvider');
+
+  try {
+    await initWalletConnectProvider();
+
+    return walletConnectProvider;
+  } catch (err) {
+    const error = (err instanceof Error) ? err : new Error(String(err));
+    logError('error', error);
+    throw error;
+  }
+}
+
+// internal
+
+/**
+ * Initializes a WalletConnect's provider instance.
+ */
+async function initWalletConnectProvider(): Promise<void> {
   log('initWalletConnectProvider');
 
-  const provider = new WalletConnectProvider({
-    ...walletConnectOptions,
-    qrcode: false,
-  });
+  const supportOptions = getSupportOptions();
+  walletConnectProviderOptions = { ...supportOptions };
+  log('walletConnectProviderOptions is', walletConnectProviderOptions);
 
-  assignProviderEvents(provider);
+  if (!walletConnectProvider) {
+    const ethereumInitOpts = {
+      projectId: walletConnectProviderOptions.projectId,
+      chains: walletConnectProviderOptions.chains || DEFAULT_WCV2_CONFIG.chains,
+      optionalChains: walletConnectProviderOptions.optionalChains,
+      // methods: null,
+      methods: walletConnectProviderOptions.methods || DEFAULT_WCV2_CONFIG.methods,
+      optionalMethods: walletConnectProviderOptions.optionalMethods,
+      // events: null,
+      events: walletConnectProviderOptions.events || DEFAULT_WCV2_CONFIG.events,
+      optionalEvents: walletConnectProviderOptions.optionalEvents,
+      // rpcMap: null,
+      rpcMap: walletConnectProviderOptions.rpcMap,
+      // metadata: null,
+      metadata: walletConnectProviderOptions.metadata,
+      showQrModal: false,
+    }
+    log('ethereum init options are', ethereumInitOpts);
 
-  log('creating new provider instance');
-  walletConnectProvider = provider;
+    try {
+      const provider: WalletConnectProvider = await EthereumProvider.init(ethereumInitOpts);
+
+      // replace the provider's request function with the patched one
+      provider.request = patchWalletConnectProviderRequest(provider);
+
+      log('created a new provider instance', walletConnectProvider);
+      walletConnectProvider = provider;
+    } catch (err) {
+      logError('Error while initializing ethereum provider');
+      throw err;
+    }
+  } else {
+    log('reusing provider instance', walletConnectProvider);
+  }
+
+  // assign events each time we get the provider because they are removed
+  // when disconnecting
+  //
+  // TODO still wouldn't be called if DApp just calls eth_requestAccounts on
+  //   connect?
+  assignWalletConnectProviderEvents(walletConnectProvider);
 }
 
-function patchProviderRequest (provider: WalletConnectProvider) {
+/**
+ * Patches the eth_requestAccounts request to show our custom modal.
+ */
+function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
+  log('patchWalletConnectProviderRequest');
+
   // get the provider's request function so we can call it later
   const baseRequest = provider.request.bind(provider);
-  const device = getBrowser();
 
   return async function <T = unknown>({ method, params }: EthereumRequestPayload): Promise<T> {
     // patch eth_requestAccounts to handle the modal
@@ -50,21 +129,25 @@ function patchProviderRequest (provider: WalletConnectProvider) {
 
       return new Promise(async (resolve, reject) => {
         try {
-          if (!isWalletConnectProviderConnected()) {
-            await provider.connector.createSession({
-              chainId: walletConnectOptions.chainId
-            });
-            log('new session with handshakeTopic', provider.connector.handshakeTopic);
+          if (!provider?.session?.connected) {
+            // TODO provider.signer.uri is not available at this point, and is
+            //   only set when the session is created by calling connect
+            //
+            // console.log('uri', provider.signer.uri);
+            // showExtensionOrLLModal(provider.signer.uri, reject),
 
-            showModal('ConnectWithLedgerLiveModal', {
-              // show the QR code if we are on a desktop browser
-              withQrCode: device.type === 'desktop',
-              uri: provider.connector.uri,
-              // pass an onClose callback that throws when the modal is closed
-              onClose: () => {
-                reject(new UserRejectedRequestError());
-              }
-            });
+            // TODO doing it this way doesn't allow us to unregister the event
+            //
+            // const handlerDisplayUri = (uri: string) => {
+            //   log('displayUriHandler', uri);
+            //   showExtensionOrLLModal(uri, reject),
+            // }
+            // provider.on('display_uri', handlerDisplayUri);
+
+            // connect initializes the session and waits for connection
+            await provider.connect();
+          } else {
+            log('reusing existing session');
           }
 
           // call the original provider request
@@ -82,49 +165,56 @@ function patchProviderRequest (provider: WalletConnectProvider) {
   }
 }
 
-function assignProviderEvents(provider: WalletConnectProvider) {
-  log('assignProviderEvents');
+/**
+ * Assigns the provider event handlers.
+ */
+function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
+  log('assignWalletConnectProviderEvents');
 
-  provider.connector.on('connect', connectHandler);
-  provider.on('disconnect', disconnectHandler);
-
-  function connectHandler(error: Error | null, payload: any) {
-    log('connectHandler', payload);
-
-    // close modal when QR code is scanned
-    setIsModalOpen(false);
-
-    if (error) {
-      logError('error', error);
-      throw error;
-    }
-  }
+  provider.on('connect', connectHandler);
+  provider.on('session_event', sessionEventHandler);
+  provider.on('session_update', sessionEventHandler);
+  provider.on('session_delete', disconnectHandler);
+  provider.on('accountsChanged', accountsChangedHandler);
+  provider.on('chainChanged', chainChangedHandler);
+  provider.on('display_uri', displayUriHandler);
 
   function disconnectHandler(code: number, reason: string) {
     log('disconnectHandler', code, reason);
 
-    provider.removeListener("disconnect", disconnectHandler);
+    provider.removeListener('connect', connectHandler);
+    provider.removeListener('session_event', sessionEventHandler);
+    provider.removeListener('session_update', sessionEventHandler);
+    provider.removeListener('session_delete', disconnectHandler);
+    provider.removeListener('accountsChanged', accountsChangedHandler);
+    provider.removeListener('chainChanged', chainChangedHandler);
+    provider.removeListener("display_uri", displayUriHandler);
   }
 };
 
-export function isWalletConnectProviderConnected() {
-  log('isWalletConnectProviderConnected', walletConnectProvider.connected);
+function connectHandler(props: any) {
+  log('connectHandler', props);
 
-  return walletConnectProvider.connected;
+  setIsModalOpen(false);
 }
 
-export async function getWalletConnectProvider(): Promise<EthereumProvider> {
-  log('getWalletConnectProvider');
+function sessionEventHandler(params: any) {
+  log('eventHandler', params);
+}
 
-  try {
-    await initWalletConnectProvider();
-    // replace the provider's request function with the patched one
-    walletConnectProvider.request = patchProviderRequest(walletConnectProvider);
+function accountsChangedHandler(params: any) {
+  log('accountsChangedHandler', params);
+}
 
-    return walletConnectProvider as unknown as EthereumProvider;
-  } catch (err) {
-    const error = (err instanceof Error) ? err : new Error(String(err));
-    logError('error', error);
-    throw error;
-  }
+function chainChangedHandler(params: any) {
+  log('chainChangedHandler', params);
+}
+
+function displayUriHandler(uri: string) {
+  log('displayUriHandler', uri);
+  const device = getBrowser();
+
+  showExtensionOrLLModal(uri, (err: any) => { throw err })
+
+  // TODO call setUri on LL modal
 }

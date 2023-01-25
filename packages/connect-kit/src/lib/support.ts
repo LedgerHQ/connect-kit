@@ -1,28 +1,26 @@
-import { getEthereumProvider } from "../providers/Ethereum";
+import {
+  areAllChainsSupported,
+  getExtensionProvider,
+  isExtensionSupported
+} from "../providers/Extension";
 import { getSolanaProvider } from "../providers/Solana";
-import { setWalletConnectOptions } from "../providers/WalletConnect";
-import { isLedgerConnectSupported } from "./connectSupport";
 import { getBrowser } from "./browser";
 import {
-  ConnectSupportedChains,
   SupportedProviders,
-  isChainIdSupported,
   setProviderImplementation,
   SupportedProviderImplementations,
-  setProviderType,
 } from "./provider";
 import { getDebugLogger } from "./logger";
 import { showModal } from "./modal";
+import {
+  CheckSupportOptions,
+  getSupportOptions,
+  setSupportOptions,
+  ValidatedSupportOptions
+} from "./supportOptions";
 
-const log = getDebugLogger('checkSupport');
-
-export type CheckSupportOptions = {
-  providerType: SupportedProviders;
-  chainId?: number;
-  bridge?: string;
-  infuraId?: string;
-  rpc?: { [chainId: number]: string; };
-}
+const log = getDebugLogger('support');
+let moduleSupportResult: CheckSupportResult;
 
 export type CheckSupportResult = {
   isLedgerConnectSupported?: boolean;
@@ -31,60 +29,76 @@ export type CheckSupportResult = {
   providerImplementation: SupportedProviderImplementations;
 }
 
+/**
+ * Check support for user's platform.
+ */
 export function checkSupport(options: CheckSupportOptions): CheckSupportResult {
-  log('initializing', options);
+  log('checkSupport', options);
 
-  setProviderType(options.providerType);
+  setSupportOptions(options);
+  const supportOptions = getSupportOptions();
+  let checkSupportResult: CheckSupportResult;
 
-  // default to Ethereum Mainnet if not specified
-  const chainId = options.chainId || 1;
-
-  switch (options.providerType) {
+  switch (supportOptions.providerType) {
     case SupportedProviders.Ethereum:
-      return checkEthereumSupport({ ...options, chainId });
+      checkSupportResult = checkEthereumSupport(supportOptions);
       break;
     case SupportedProviders.Solana:
-      return checkSolanaSupport();
-      break
+      checkSupportResult = checkSolanaSupport();
+      break;
   }
+
+  log('checkSupportResult is', checkSupportResult);
+
+  moduleSupportResult = checkSupportResult;
+  return checkSupportResult;
 }
 
-// same as CheckSupportOptions but chainId is now required
-export type CheckEthereumSupportOptions = CheckSupportOptions & {
-  chainId: ConnectSupportedChains;
+/**
+ * Gets support results.
+ */
+export function getSupportResult(): CheckSupportResult {
+  log('getSupportResult');
+
+  return moduleSupportResult;
 }
 
-function checkEthereumSupport(options: CheckEthereumSupportOptions) {
+/**
+ * Check support for Ethereum.
+ */
+function checkEthereumSupport(options: ValidatedSupportOptions) {
+  log('checkEthereumSupport', options);
+
   const device = getBrowser();
   let isLedgerConnectEnabled: boolean = false;
 
   try {
     // just check if we can get the Connect provider
-    const ethereumProvider = getEthereumProvider();
+    const ethereumProvider = getExtensionProvider();
     isLedgerConnectEnabled = !!ethereumProvider;
   } catch (err) {
     // swallow any error
   }
 
   const checkSupportResult: CheckSupportResult = {
-    isLedgerConnectSupported: isLedgerConnectSupported(device),
+    isLedgerConnectSupported: isExtensionSupported(device),
     isLedgerConnectEnabled: !!isLedgerConnectEnabled,
-    isChainIdSupported: isChainIdSupported(options.chainId),
+    isChainIdSupported: areAllChainsSupported(options.chains),
+    // set initial provider implementation to the extension
     providerImplementation: SupportedProviderImplementations.LedgerConnect,
   };
 
+  // set implementation to WalletConnect if
+  // - platform not supported
+  // - required chains not supported
+  // - extension not enabled (so we can guide users to install it)
   if (
     !checkSupportResult.isLedgerConnectSupported ||
+    !checkSupportResult.isLedgerConnectEnabled ||
     !checkSupportResult.isChainIdSupported
   ) {
-    // unsupported platform or chainId, use WalletConnect
+    // unsupported platform or chainId, or extension not enabled, use WalletConnect
     checkSupportResult.providerImplementation = SupportedProviderImplementations.WalletConnect;
-    setWalletConnectOptions({
-      chainId: options.chainId,
-      bridge: options.bridge,
-      infuraId: options.infuraId,
-      rpc: options.rpc,
-    })
   }
 
   setProviderImplementation(checkSupportResult.providerImplementation);
@@ -92,7 +106,12 @@ function checkEthereumSupport(options: CheckEthereumSupportOptions) {
   return checkSupportResult;
 }
 
+/**
+ * Check support for Solana.
+ */
 function checkSolanaSupport() {
+  log('checkSolanaSupport');
+
   const device = getBrowser();
   let isLedgerConnectEnabled: boolean = false;
 
@@ -105,11 +124,12 @@ function checkSolanaSupport() {
   }
 
   const checkSupportResult: CheckSupportResult = {
-    isLedgerConnectSupported: isLedgerConnectSupported(device),
+    isLedgerConnectSupported: isExtensionSupported(device),
     isLedgerConnectEnabled: !!isLedgerConnectEnabled,
     providerImplementation: SupportedProviderImplementations.LedgerConnect,
   }
 
+  // TODO check solana architecture
   if (!checkSupportResult.isLedgerConnectSupported) {
     showModal("PlatformNotSupportedModal");
   } else if (
