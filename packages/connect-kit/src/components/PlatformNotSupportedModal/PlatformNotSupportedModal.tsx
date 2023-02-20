@@ -6,7 +6,6 @@ import {
 } from "../Modal/Modal.styles";
 import { BrowserList, BrowserListItem } from "./PlatformNotSupportedModal.styles";
 import { default as SafariIcon } from "../../assets/svg/SafariIcon.svg";
-import NeedALedgerSection from "../NeedALedgerSection";
 import { getDebugLogger } from "../../lib/logger";
 
 const log = getDebugLogger('PlatformNotSupportedModal')
@@ -35,8 +34,6 @@ const PlatformNotSupportedModal = () => {
             </BrowserListItem>
           </BrowserList>
         </ModalSection>
-
-        <NeedALedgerSection variant="primary" />
       </>
     </Modal>
   );

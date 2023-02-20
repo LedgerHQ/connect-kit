@@ -7,7 +7,6 @@ import {
 import { ConnectFeature } from "./ExtensionUnavailableModal.styles";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
-import NeedALedgerSection from "../NeedALedgerSection";
 import { getDebugLogger } from "../../lib/logger";
 
 const log = getDebugLogger('ExtensionUnavailableModal')
@@ -27,7 +26,7 @@ const ExtensionUnavailableModal = ({
     <Modal onClose={() => onClose()}>
       <>
         <ModalSection>
-          <ModalTitle>Try Ledger Connect</ModalTitle>
+          <ModalTitle>Try the Ledger Extension</ModalTitle>
           <ConnectFeature>
             <img src={LightbulbSvg} />
             One secure wallet and extension that works across all dApps.
@@ -36,10 +35,8 @@ const ExtensionUnavailableModal = ({
             <img src={CheckmarkSvg} />
             Stay safe and prevent harmful transactions with Web3 Check.
           </ConnectFeature>
-          <ModalButton variant="primary" onClick={onJoinBetaClick}>Install now</ModalButton>
+          <ModalButton variant="primary" onClick={onJoinBetaClick}>Install</ModalButton>
         </ModalSection>
-
-        <NeedALedgerSection />
       </>
     </Modal>
   );
