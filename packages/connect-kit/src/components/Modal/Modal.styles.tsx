@@ -43,8 +43,8 @@ export const ModalContent = styled.div`
   transition: opacity .25s,transform .25s;
 
   @media ${devices.notPhone} {
-    margin: 15px;
     max-width: 340px;
+    margin: auto;
     border-radius: ${borderRadius};
   }
 `;
