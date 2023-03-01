@@ -1,3 +1,3 @@
-export { default as ExtensionUnavailableModal } from "./ExtensionUnavailableModal";
-export { default as ConnectWithLedgerLiveModal } from "./ConnectWithLedgerLiveModal";
+export { default as ExtensionInstallModal } from "./ExtensionInstallModal";
+export { default as UseLedgerLiveModal } from "./UseLedgerLiveModal";
 export { default as PlatformNotSupportedModal } from "./PlatformNotSupportedModal";

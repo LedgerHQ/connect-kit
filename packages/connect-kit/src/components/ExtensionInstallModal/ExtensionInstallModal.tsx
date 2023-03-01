@@ -4,18 +4,18 @@ import {
   ModalSection,
   ModalTitle,
 } from "../Modal/Modal.styles";
-import { ConnectFeature } from "./ExtensionUnavailableModal.styles";
+import { ConnectFeature } from "./ExtensionInstallModal.styles";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
 import { getDebugLogger } from "../../lib/logger";
 
-const log = getDebugLogger('ExtensionUnavailableModal')
+const log = getDebugLogger('ExtensionInstallModal')
 
-export type ExtensionUnavailableModalProps = ModalProps;
+export type ExtensionInstallModalProps = ModalProps;
 
-const ExtensionUnavailableModal = ({
+const ExtensionInstallModal = ({
   onClose = () => void 0,
-}: ExtensionUnavailableModalProps) => {
+}: ExtensionInstallModalProps) => {
   log('initializing');
 
   const onInstallLedgerExtensionClick = () => {
@@ -42,4 +42,4 @@ const ExtensionUnavailableModal = ({
   );
 };
 
-export default ExtensionUnavailableModal;
+export default ExtensionInstallModal;

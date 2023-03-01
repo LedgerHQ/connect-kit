@@ -1,3 +1,5 @@
+import type { CoreTypes } from '@walletconnect/types';
+
 // chain
 
 export enum SupportedProviderImplementations {
@@ -12,7 +14,21 @@ export type EnableDebugLogsFunction = () => void;
 // support
 
 export type CheckSupportOptions = {
+  version?: number;
   providerType: SupportedProviders;
+
+  // WalletConnect v2 init parameters
+  projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
+  chains?: number[];               // REQUIRED ethereum chains, has default
+  optionalChains?: number[];       // OPTIONAL ethereum chains
+  methods?: string[];              // REQUIRED ethereum methods, has default
+  optionalMethods?: string[];      // OPTIONAL ethereum methods
+  events?: string[];               // REQUIRED ethereum events, has default
+  optionalEvents?: string[];       // OPTIONAL ethereum events
+  rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
+  metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
+
+  // WalletConnect v1 init parameters
   chainId?: number;
   bridge?: string;
   infuraId?: string;
@@ -37,7 +53,7 @@ export type EthereumRequestPayload = {
 
 export interface EthereumProvider {
   providers?: EthereumProvider[];
-  connector?: unknown,
+  connector?: unknown;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
   emit(eventName: string | symbol, ...args: any[]): boolean;

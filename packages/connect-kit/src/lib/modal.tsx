@@ -1,23 +1,29 @@
 import { setIsModalOpen } from "../components/Modal/Modal";
 import { createRoot, Root } from "react-dom/client";
 import {
-  ExtensionUnavailableModal,
-  ConnectWithLedgerLiveModal,
+  ExtensionInstallModal,
+  UseLedgerLiveModal,
   PlatformNotSupportedModal
 } from "../components";
-import { ConnectWithLedgerLiveModalProps } from "../components/ConnectWithLedgerLiveModal/ConnectWithLedgerLiveModal";
-import { ExtensionUnavailableModalProps } from "../components/ExtensionUnavailableModal/ExtensionUnavailableModal";
+import { UseLedgerLiveModalProps } from "../components/UseLedgerLiveModal/UseLedgerLiveModal";
+import { ExtensionInstallModalProps } from "../components/ExtensionInstallModal/ExtensionInstallModal";
+import { getBrowser } from "./browser";
+import { getSupportResult } from "./support";
+import { UserRejectedRequestError } from "./errors";
 
 type ModalType =
-  'ConnectWithLedgerLiveModal' |
+  'UseLedgerLiveModal' |
   'PlatformNotSupportedModal' |
-  'ExtensionUnavailableModal'
+  'ExtensionInstallModal'
 
 let root: Root | null = null;
 
+/**
+ * Shows a modal component.
+ */
 export function showModal(
   modalType: ModalType,
-  props?: ExtensionUnavailableModalProps | ConnectWithLedgerLiveModalProps
+  props?: ExtensionInstallModalProps | UseLedgerLiveModalProps
 ) {
   if (!root) {
     const el = document.body;
@@ -31,14 +37,14 @@ export function showModal(
     let component;
 
     switch (modalType) {
-      case 'ConnectWithLedgerLiveModal':
-        component = <ConnectWithLedgerLiveModal {...props} />;
+      case 'UseLedgerLiveModal':
+        component = <UseLedgerLiveModal {...props} />;
         break;
       case "PlatformNotSupportedModal":
         component = <PlatformNotSupportedModal />
         break
-      case 'ExtensionUnavailableModal':
-        component = <ExtensionUnavailableModal {...props} />
+      case 'ExtensionInstallModal':
+        component = <ExtensionInstallModal {...props} />
         break;
     }
 
@@ -46,4 +52,33 @@ export function showModal(
   }
 
   setIsModalOpen(true);
+}
+
+/**
+ * Shows one of two modals depending on if the extension is supported or not.
+ */
+export function showExtensionOrLLModal(uri: string, callback: Function) {
+  const device = getBrowser();
+  const supportResults = getSupportResult();
+
+  // direct user to install the extension if supported
+  if (supportResults.isLedgerConnectSupported &&
+    supportResults.isChainIdSupported) {
+    showModal('ExtensionInstallModal', {
+      // pass an onClose callback that throws when the modal is closed
+      onClose: () => {
+        callback(new UserRejectedRequestError());
+      }
+    });
+  } else {
+    showModal('UseLedgerLiveModal', {
+      // show the QR code if we are on a desktop browser
+      isDesktop: device.type === 'desktop',
+      uri,
+      // pass an onClose callback that throws when the modal is closed
+      onClose: () => {
+        callback(new UserRejectedRequestError());
+      }
+    });
+  }
 }
