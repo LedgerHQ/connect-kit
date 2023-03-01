@@ -1,23 +1,21 @@
 import { ProviderTypeIsNotSupportedError } from "./errors";
-import { EthereumProvider, getEthereumProvider } from "../providers/Ethereum";
-import { getSolanaProvider, SolanaProvider } from "../providers/Solana";
-import { getWalletConnectProvider } from "../providers/WalletConnect";
+import { EvmProvider, getExtensionProvider } from "../providers/ExtensionEvm";
+import { getSolanaProvider, SolanaProvider } from "../providers/ExtensionSolana";
+import { getWalletConnectLegacyProvider } from "../providers/WalletConnectLegacy";
+import { getWalletConnectProvider } from "../providers/WalletConnectEvm";
 import { getDebugLogger } from "./logger";
+import { getSupportOptions } from "./supportOptions";
 
 const log = getDebugLogger('getProvider');
 
 // chains
 
-export enum ConnectSupportedChains {
-  EthereumMainnet = 1,
-  Polygon = 137,
-}
-
-export function isChainIdSupported(chainId: number): boolean {
-  return !!ConnectSupportedChains[chainId];
-}
+export const DEFAULT_CHAIN_ID: number = 1;
+export const DEFAULT_REQUIRED_CHAINS: number[] = [DEFAULT_CHAIN_ID];
 
 // providers
+
+export const DEFAULT_WALLETCONNECT_VERSION: number = 1;
 
 export enum SupportedProviders {
   Ethereum = 'Ethereum',
@@ -29,17 +27,13 @@ export enum SupportedProviderImplementations {
   WalletConnect = 'WalletConnect',
 }
 
-export type ProviderResult = EthereumProvider | SolanaProvider
+export type ProviderResult = EvmProvider | SolanaProvider
 
-let moduleProviderType: SupportedProviders;
 let moduleProviderImplementation: SupportedProviderImplementations;
 
-export function setProviderType(providerType: SupportedProviders): void {
-  log('setProviderType', providerType);
-
-  moduleProviderType = providerType;
-}
-
+/**
+ * Sets the provider implementation to be used by getProvider.
+ */
 export function setProviderImplementation(
   providerImplementation: SupportedProviderImplementations
 ): void {
@@ -48,20 +42,25 @@ export function setProviderImplementation(
   moduleProviderImplementation = providerImplementation;
 }
 
+/**
+ * Gets a provider instance based on the implementation set earlier.
+ */
 export async function getProvider (): Promise<ProviderResult> {
-  log('getProvider', moduleProviderType, moduleProviderImplementation);
+  log('getProvider', moduleProviderImplementation);
 
-  switch (moduleProviderType) {
+  const supportOptions = getSupportOptions();
+
+  switch (supportOptions.providerType) {
     case SupportedProviders.Ethereum:
-      let provider: EthereumProvider;
-
       if (moduleProviderImplementation === SupportedProviderImplementations.LedgerConnect) {
-        provider = getEthereumProvider();
-      } else {
-        provider = await getWalletConnectProvider();
+        return getExtensionProvider();
       }
 
-      return provider;
+      if (supportOptions.version === 1) {
+        return await getWalletConnectLegacyProvider();
+      }
+
+      return await getWalletConnectProvider();
       break;
     case SupportedProviders.Solana:
       return getSolanaProvider();

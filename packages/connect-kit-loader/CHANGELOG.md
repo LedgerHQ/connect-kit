@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Support for WalletConnect v2, check the docs for how to enable it.
+
 ## 1.0.2 - 2022-12-21
 ### Changed
 - Expose WalletConnect's connector property as optional in the
