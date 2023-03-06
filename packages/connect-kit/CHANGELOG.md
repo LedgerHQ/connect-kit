@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Changed
 - Remove the "Need a Ledger?" section from the modals.
-- Replace Connect to Ledger Extension.
+- Replace Connect with Ledger Extension.
+- Center the modal.
 
 ## 1.0.11 - 2023-02-24
 ### Changed
