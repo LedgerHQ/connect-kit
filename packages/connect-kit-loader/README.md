@@ -1,33 +1,20 @@
 # Ledger Connect Kit
 
-The Ledger Connect Kit can be used to check the level of support for [Ledger
-Connect](https://get-connect.ledger.com) on the user's platform. We will guide
-the user to install Connect or use a fallback connection to the Ledger Live
-app. The code is designed to be loaded at runtime from a CDN so that the logic
-and UI can be updated as we release new updates to Connect without the wait for
-wallet libraries and dapps updating package versions and releasing new builds.
+The Ledger DApps Connect Kit enables developers to connect their DApps to
+Ledger hardware wallets using the Ledger Extension or Ledger Live.
+We will guide the user to install the Ledger Extension in case it is supported
+on the platform they're on, or install Ledger Live if it's not.
 
-The `@ledgerhq/connect-kit-loader` allows developers to consume Connect Kit in
-a transparent way.
-
-
-## Support status
-
-Ledger Connect is currently only supported on Safari iOS. There are two edge
-cases in the detection logic:
-
-- Safari on iPadOS is shown as supported if the user requests the mobile
-  website, as it sets the userAgent string to be the same as iOS, otherwise
-  the userAgent string is the same as Safari on MacOS, which is not supported
-  yet.
-- Brave on iOS is shown as supported because it sets the userAgest string to
-  be the same as Safari on iOS, but Connect will not work.
+The `@ledgerhq/connect-kit-loader` allows DApps to load Connect Kit at runtime
+from a CDN so that we can improve the logic and UI without users having to wait
+for wallet libraries and DApps updating package versions and releasing new builds.
 
 
 ## Connect Kit loader
 
 To use Connect Kit you just have to add the `@ledgerhq/connect-kit-loader`
-package as a dependency using your preferred package manager, using yarn as an example
+package as a dependency using your preferred package manager, using yarn as an
+example
 
 ```sh
 yarn add @ledgerhq/connect-kit-loader
@@ -112,18 +99,21 @@ type ConnectSupport = type CheckSupportResult = {
 
 #### Description
 
-Lets you know the level of support for Ledger Connect on the user's platform,
-and shows a UI to guide the user.
+This call initializes Connect Kit and lets you know if the user's platform
+supports the Ledger Extension.
 
-If the Connect extension is installed and enabled you will just get the response
-and no UI will be shown. If Connect is not available on the user's platform one
-of these modals will be shown:
+Based on the parameters that you pass and on the user's platform, Connect Kit
+will decide what provider will be returned when you call `getProvider`.
 
-- Try Ledger Connect, in case the user's platform supports Connect but
-  it is not installed or enabled; a button will be shown to let the user
-  install the browser extension.
-- Connect with Ledger Live, in case the user's platform does not support
-  Connect they will be able to use Ledger Live Mobile or Desktop to connect.
+If the Ledger Extension is installed and enabled it will pop up when the DApp
+calls the provider's `eth_requestAccounts`, else the user will be presented one
+of two modals.
+
+- "Try the Ledger Extension", in case the user's platform supports the Extension
+  but it is not installed or enabled; a button will be shown to let the user
+  install the Extension.
+- "Do you have Ledger Live?", in case the user's platform does not support
+  the Extension they will be able to use Ledger Live Mobile or Desktop.
 
 ### `getProvider`
 
@@ -133,16 +123,15 @@ of these modals will be shown:
 
 #### Description
 
-Based on the options passed to `checkSupport` it returns a promise to a Ledger
-Connect Ethereum provider, Ledger Connect Solana Provider or a WalletConnect
-provider.
+Based on the options passed to `checkSupport` it will return an instance of the
+Ledger Extension provider or a WalletConnect provider.
 
 ### Example
 
 An example function using the *Ledger Connect Kit* and *ethers.js*, that would
 be called when pressing the connect button on a React app.
 
-`setProvider`, `setLibrary`, `setAccount`, `setChainId` and `setError` are just
+`setProvider`, `setAccount`, `setChainId` and `setError` are just
 simple `useState` functions to keep app state.
 
 ```js
@@ -173,8 +162,6 @@ const connectWallet = async () => {
     if (accounts) setAccount(accounts[0]);
 
     const library = new ethers.providers.Web3Provider(provider);
-    setLibrary(library);
-
     const network = await library.getNetwork();
     setChainId(network.chainId);
   } catch (error) {
