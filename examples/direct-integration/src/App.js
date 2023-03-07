@@ -21,13 +21,15 @@ export default function Home() {
   const [message, setMessage] = useState("");
 
   const connectWallet = async () => {
+    console.log('> connectWallet');
+
     resetState();
 
     try {
       const connectKit = await loadConnectKit();
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
-        chainId: 1,
+        chainId: 137,
         providerType: SupportedProviders.Ethereum,
         rpc: {
           1: `https://cloudflare-eth.com/`, // Mainnet
@@ -54,7 +56,10 @@ export default function Home() {
   };
 
   const disconnectWallet = async () => {
+    console.log('> disconnectWallet');
+
     if (provider.disconnect) {
+      console.log('> calling provider.disconnect()');
       provider.disconnect();
     }
 
@@ -64,6 +69,8 @@ export default function Home() {
   }
 
   const resetState = async () => {
+    console.log('> resetState');
+
     setAccount();
     setChainId();
     setProvider();
@@ -72,6 +79,8 @@ export default function Home() {
   };
 
   useEffect(() => {
+    console.log('> useEffect');
+
     if (provider?.on) {
       const handleDisconnect = (props) => {
         console.log('> handleDisconnect', props);
@@ -96,6 +105,8 @@ export default function Home() {
 
       return () => {
         if (provider.removeListener) {
+          console.log('> removing event listeners');
+
           provider.removeListener('chainChanged', handleChainChanded);
           provider.removeListener('accountsChanged', handleAccountsChanged);
           provider.removeListener("disconnect", handleDisconnect);
