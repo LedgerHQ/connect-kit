@@ -47,12 +47,20 @@ export const Button = styled.button`
   padding: 0.5rem 1rem;
 
   font: inherit;
+  cursor: pointer;
 
-  &:hover {
-    background-color: #d0d0d0;
-  }
-  &:active {
-    background-color: #c0c0c0;
+  ${({disabled}) => disabled
+  ? css`
+    color: #8e8e8e;
+  `
+  : css`
+    &:hover {
+      background-color: #d0d0d0;
+    }
+    &:active {
+      background-color: #c0c0c0;
+    }
+  `
   }
 `;
 
