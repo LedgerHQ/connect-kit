@@ -142,6 +142,7 @@ export const ModalButton = styled.button<{ variant: string, extraMargin?: boolea
   line-height: 17px;
 
   transition: all .5s ease;
+  cursor: pointer;
 
   ${({variant}) => (variant == 'primary' ? css`
   border: none;
