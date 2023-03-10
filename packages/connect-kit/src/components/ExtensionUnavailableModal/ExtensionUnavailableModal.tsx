@@ -18,7 +18,7 @@ const ExtensionUnavailableModal = ({
 }: ExtensionUnavailableModalProps) => {
   log('initializing');
 
-  const onJoinBetaClick = () => {
+  const onInstallClick = () => {
     window.open("https://get-connect.ledger.com/onboarding", "_blank");
   };
 
@@ -26,16 +26,16 @@ const ExtensionUnavailableModal = ({
     <Modal onClose={() => onClose()}>
       <>
         <ModalSection>
-          <ModalTitle>Try the Ledger Extension</ModalTitle>
+          <ModalTitle>With Ledger Extension, you can:</ModalTitle>
           <ConnectFeature>
             <img src={LightbulbSvg} />
-            One secure wallet and extension that works across all dApps.
+            Connect your Ledger to any dApp directly.
           </ConnectFeature>
           <ConnectFeature>
             <img src={CheckmarkSvg} />
-            Stay safe and prevent harmful transactions with Web3 Check.
+            Get warnings about risky transactions before signing them.
           </ConnectFeature>
-          <ModalButton variant="primary" onClick={onJoinBetaClick}>Install</ModalButton>
+          <ModalButton variant="primary" onClick={onInstallClick}>Install Ledger Extension</ModalButton>
         </ModalSection>
       </>
     </Modal>
