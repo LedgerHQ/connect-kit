@@ -29,7 +29,7 @@ const ExtensionUnavailableModal = ({
           <ModalTitle>With Ledger Extension, you can:</ModalTitle>
           <ConnectFeature>
             <img src={LightbulbSvg} />
-            Connect your Ledger to any compatible dApp.
+            Connect your Ledger directly to any dApp on Ethereum and Polygon
           </ConnectFeature>
           <ConnectFeature>
             <img src={CheckmarkSvg} />
