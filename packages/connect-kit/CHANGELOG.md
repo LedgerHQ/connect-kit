@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.0.13 - 2023-03-13
+
 ## 1.0.12 - 2023-03-13
 ### Changed
 - Remove the "Need a Ledger?" section from the modals.
