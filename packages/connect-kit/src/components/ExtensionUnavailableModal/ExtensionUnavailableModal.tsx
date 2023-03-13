@@ -18,8 +18,8 @@ const ExtensionUnavailableModal = ({
 }: ExtensionUnavailableModalProps) => {
   log('initializing');
 
-  const onInstallClick = () => {
-    window.open("https://get-connect.ledger.com/onboarding", "_blank");
+  const onInstallLedgerExtensionClick = () => {
+    window.open("https://apps.apple.com/app/ledger-extension-browse-web3/id1627727841", "_blank");
   };
 
   return (
@@ -35,7 +35,7 @@ const ExtensionUnavailableModal = ({
             <img src={CheckmarkSvg} />
             Get warnings about risky transactions before signing them.
           </ConnectFeature>
-          <ModalButton variant="primary" onClick={onInstallClick}>Install Ledger Extension</ModalButton>
+          <ModalButton variant="primary" onClick={onInstallLedgerExtensionClick}>Install Ledger Extension</ModalButton>
         </ModalSection>
       </>
     </Modal>
