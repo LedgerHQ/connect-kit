@@ -1,13 +1,12 @@
 {
   "name": "connect-kit-integration",
   "version": "0.1.0",
-  "description": "Adding a Ledger button to your dapp using Connect Kit loader",
+  "description": "Adding a Ledger button to your dApp using Connect Kit loader",
   "keywords": [],
   "license": "MIT",
   "main": "src/index.js",
   "dependencies": {
     "@ledgerhq/connect-kit-loader": "^1.0.2",
-    "ethers": "5.5.4",
     "react": "18",
     "react-dom": "18",
     "react-is": "^18",

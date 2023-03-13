@@ -12,16 +12,16 @@ import { QrCode, QrCodeSection } from "./ConnectWithLedgerLiveModal.styles";
 const log = getDebugLogger('ConnectWithLedgerLiveModal');
 
 export type ConnectWithLedgerLiveModalProps = {
-  withQrCode?: boolean;
+  isDesktop?: boolean;
   uri?: string;
 } & ModalProps;
 
 const ConnectWithLedgerLiveModal = ({
-  withQrCode = false,
+  isDesktop = false,
   uri = '',
   onClose = () => void 0,
 }: ConnectWithLedgerLiveModalProps) => {
-  log('initializing', { withQrCode, uri });
+  log('initializing', { isDesktop, uri });
 
   const ledgerLiveDeepLink = `ledgerlive://wc?uri=${encodeURIComponent(uri)}`;
 
@@ -42,12 +42,12 @@ const ConnectWithLedgerLiveModal = ({
   return (
     <Modal onClose={() => onClose()}>
       <ModalSection textAlign="center">
-        <ModalTitle>Do you have Ledger Live?</ModalTitle>
+        <ModalTitle>Connect with Ledger Live</ModalTitle>
 
-        {withQrCode && ledgerLiveDeepLink !== '' &&
+        {isDesktop && ledgerLiveDeepLink !== '' &&
           <>
             <ModalText>
-              Scan with your mobile.
+            Scan for Ledger Live mobile
             </ModalText>
 
             <QrCodeSection>
@@ -57,19 +57,22 @@ const ConnectWithLedgerLiveModal = ({
             <ModalText noMargin>or</ModalText>
 
             <ModalButton variant="primary" onClick={onUseLedgerLiveClick}>
-              Open Ledger Live Desktop
+            Connect with Ledger Live desktop
             </ModalButton>
           </>
         }
 
-        {!withQrCode && ledgerLiveDeepLink !== '' &&
+        {!isDesktop && ledgerLiveDeepLink !== '' &&
           <ModalButton variant="primary" onClick={onUseLedgerLiveClick} extraMargin>
-            Open Ledger Live
+            Connect with Ledger Live mobile
           </ModalButton>
         }
 
-        <ModalText>Don't have Ledger Live? <Link onClick={onInstallLedgerLiveClick}>
-          Install</Link>
+        <ModalText>
+          Don't have Ledger Live for {isDesktop ? 'desktop' : 'mobile'}?
+        </ModalText>
+        <ModalText noMargin>
+          <Link onClick={onInstallLedgerLiveClick}>Install it</Link>
         </ModalText>
       </ModalSection>
     </Modal>

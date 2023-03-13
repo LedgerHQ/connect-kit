@@ -7,7 +7,6 @@ import {
 import { ConnectFeature } from "./ExtensionUnavailableModal.styles";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
-import NeedALedgerSection from "../NeedALedgerSection";
 import { getDebugLogger } from "../../lib/logger";
 
 const log = getDebugLogger('ExtensionUnavailableModal')
@@ -19,7 +18,7 @@ const ExtensionUnavailableModal = ({
 }: ExtensionUnavailableModalProps) => {
   log('initializing');
 
-  const onJoinBetaClick = () => {
+  const onInstallClick = () => {
     window.open("https://get-connect.ledger.com/onboarding", "_blank");
   };
 
@@ -27,19 +26,17 @@ const ExtensionUnavailableModal = ({
     <Modal onClose={() => onClose()}>
       <>
         <ModalSection>
-          <ModalTitle>Try Ledger Connect</ModalTitle>
+          <ModalTitle>With Ledger Extension, you can:</ModalTitle>
           <ConnectFeature>
             <img src={LightbulbSvg} />
-            One secure wallet and extension that works across all dApps.
+            Connect your Ledger to any compatible dApp.
           </ConnectFeature>
           <ConnectFeature>
             <img src={CheckmarkSvg} />
-            Stay safe and prevent harmful transactions with Web3 Check.
+            Get warnings about risky transactions before signing them.
           </ConnectFeature>
-          <ModalButton variant="primary" onClick={onJoinBetaClick}>Install now</ModalButton>
+          <ModalButton variant="primary" onClick={onInstallClick}>Install Ledger Extension</ModalButton>
         </ModalSection>
-
-        <NeedALedgerSection />
       </>
     </Modal>
   );

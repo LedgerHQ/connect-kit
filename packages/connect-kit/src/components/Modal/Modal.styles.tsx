@@ -43,8 +43,8 @@ export const ModalContent = styled.div`
   transition: opacity .25s,transform .25s;
 
   @media ${devices.notPhone} {
-    margin: 15px;
     max-width: 340px;
+    margin: auto;
     border-radius: ${borderRadius};
   }
 `;
@@ -142,6 +142,7 @@ export const ModalButton = styled.button<{ variant: string, extraMargin?: boolea
   line-height: 17px;
 
   transition: all .5s ease;
+  cursor: pointer;
 
   ${({variant}) => (variant == 'primary' ? css`
   border: none;

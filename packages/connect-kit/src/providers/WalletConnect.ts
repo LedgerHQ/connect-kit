@@ -58,7 +58,7 @@ function patchProviderRequest (provider: WalletConnectProvider) {
 
             showModal('ConnectWithLedgerLiveModal', {
               // show the QR code if we are on a desktop browser
-              withQrCode: device.type === 'desktop',
+              isDesktop: device.type === 'desktop',
               uri: provider.connector.uri,
               // pass an onClose callback that throws when the modal is closed
               onClose: () => {
