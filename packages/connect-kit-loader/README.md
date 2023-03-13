@@ -1,13 +1,13 @@
 # Ledger Connect Kit
 
-The Ledger DApps Connect Kit enables developers to connect their DApps to
+The Ledger dApps Connect Kit enables developers to connect their dApps to
 Ledger hardware wallets using the Ledger Extension or Ledger Live.
 We will guide the user to install the Ledger Extension in case it is supported
 on the platform they're on, or install Ledger Live if it's not.
 
-The `@ledgerhq/connect-kit-loader` allows DApps to load Connect Kit at runtime
+The `@ledgerhq/connect-kit-loader` allows dApps to load Connect Kit at runtime
 from a CDN so that we can improve the logic and UI without users having to wait
-for wallet libraries and DApps updating package versions and releasing new builds.
+for wallet libraries and dApps updating package versions and releasing new builds.
 
 
 ## Connect Kit loader
@@ -69,7 +69,7 @@ possible problem.
 
 Once Connect Kit is loaded you can call it from the browser's developer tools
 console with `window.ledgerConnectKit.enableDebugLogs()` and call the other
-Connect Kit functions to see the debug messages. Just reload the dapp to
+Connect Kit functions to see the debug messages. Just reload the dApp to
 disable them.
 
 ### `checkSupport`
@@ -105,7 +105,7 @@ supports the Ledger Extension.
 Based on the parameters that you pass and on the user's platform, Connect Kit
 will decide what provider will be returned when you call `getProvider`.
 
-If the Ledger Extension is installed and enabled it will pop up when the DApp
+If the Ledger Extension is installed and enabled it will pop up when the dApp
 calls the provider's `eth_requestAccounts`, else the user will be presented one
 of two modals.
 

@@ -29,7 +29,7 @@ const ExtensionUnavailableModal = ({
           <ModalTitle>With Ledger Extension, you can:</ModalTitle>
           <ConnectFeature>
             <img src={LightbulbSvg} />
-            Connect your Ledger to any dApp directly.
+            Connect your Ledger to any compatible dApp.
           </ConnectFeature>
           <ConnectFeature>
             <img src={CheckmarkSvg} />
