@@ -16,7 +16,7 @@ export default function Home() {
   const [provider, setProvider] = useState();
   const [account, setAccount] = useState();
   const [chainId, setChainId] = useState();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const connectWallet = async () => {
     console.log('> connectWallet');
@@ -70,7 +70,7 @@ export default function Home() {
     setAccount();
     setChainId();
     setProvider();
-    setMessage();
+    setMessage('');
   };
 
   const requestAccounts = async (provider) => {
@@ -97,12 +97,13 @@ export default function Home() {
   }
 
   const switchChains = async (chainId) => {
+    setMessage('');
+
     try {
       await provider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chainId.toString(16)}` }],
       });
-      setMessage();
     } catch (error) {
       console.error(error)
       setMessage(error);
