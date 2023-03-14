@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { On, Off, Heading, Button, Box, Text, Stack } from './components';
 import { ethers } from 'ethers';
-import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader';
+//import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader';
 
-export const shortenAddress = (address) => {
+/*export const shortenAddress = (address) => {
   if (!address) return "none";
 
   const match = address.match(
@@ -11,16 +11,16 @@ export const shortenAddress = (address) => {
   );
 
   return match ? `${match[1]}...${match[2]}` : address;
-};
+};*/
 
 export default function Home() {
-  const [provider, setProvider] = useState();
-  const [library, setLibrary] = useState();
-  const [account, setAccount] = useState();
-  const [chainId, setChainId] = useState();
-  const [error, setError] = useState("");
+  //const [provider, setProvider] = useState();
+  //const [library, setLibrary] = useState();
+  //const [account, setAccount] = useState();
+  //const [chainId, setChainId] = useState();
+  //const [error, setError] = useState("");
 
-  const connectWallet = async (chainId = 1) => {
+  /*const connectWallet = async (chainId = 1) => {
     try {
       const connectKit = await loadConnectKit();
       connectKit.enableDebugLogs();
@@ -49,16 +49,16 @@ export default function Home() {
     } catch (error) {
       setError(error);
     }
-  };
+  };*/
 
-  const disconnect = async () => {
+  /*const disconnect = async () => {
     setAccount();
     setChainId();
     setProvider();
     setLibrary();
-  };
+  };*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (provider?.on) {
       const handleDisconnect = (error) => {
         disconnect();
@@ -72,33 +72,33 @@ export default function Home() {
         }
       };
     }
-  }, [provider]);
+  }, [provider]);*/
 
   return (
     <>
       <Stack direction="column" justifyContent="center" height="100vh">
         <Heading>Connect with Ledger Connect Kit</Heading>
 
-        <Box>Status: {account
+        <Box>Status: {/*account
           ? (<On>Connected</On>)
           : (<Off>Not connected</Off>)
-        }</Box>
+  */}</Box>
 
-        {account && (
+        {/*account && (
           <>
             <Box>{`Network Id: ${chainId ? chainId : "none"}`}</Box>
             <Box>{`Account: ${shortenAddress(account)}`}</Box>
           </>
-        )}
+        )*/}
 
-        <Box>{error ? error.message : null}</Box>
+        <Box>{/*error ? error.message : null*/}</Box>
 
         <Box>
-          {!account ? (
+          {/*!account ? (
             <Button bg='primary' onClick={() => connectWallet(1)}>Connect Wallet</Button>
           ) : (
             <Button onClick={disconnect}>Disconnect</Button>
-          )}
+          )*/}
         </Box>
       </Stack>
     </>
