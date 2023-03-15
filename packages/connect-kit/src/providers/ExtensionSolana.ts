@@ -1,4 +1,4 @@
-import { ProviderNotFoundError } from "../lib/errors";
+import { NoServerSideError, ProviderNotFoundError } from "../lib/errors";
 import { ProviderResult } from "../lib/provider";
 import { getDebugLogger } from "../lib/logger";
 
@@ -25,6 +25,10 @@ interface WindowWithSolana {
  */
 export function getSolanaProvider (): ProviderResult {
   log('getSolanaProvider');
+
+  if (typeof window === 'undefined') {
+    throw new NoServerSideError();
+  }
 
   const provider = (window as WindowWithSolana)[EXTENSION_SOLANA_PROVIDER];
 

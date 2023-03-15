@@ -8,6 +8,7 @@ import { ConnectFeature } from "./ExtensionInstallModal.styles";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
 import { getDebugLogger } from "../../lib/logger";
+import { useCallback } from "react";
 
 const log = getDebugLogger('ExtensionInstallModal')
 
@@ -18,12 +19,12 @@ const ExtensionInstallModal = ({
 }: ExtensionInstallModalProps) => {
   log('initializing');
 
-  const onInstallLedgerExtensionClick = () => {
+  const onInstallLedgerExtensionClick = useCallback(() => {
     window.open("https://apps.apple.com/app/ledger-extension-browse-web3/id1627727841", "_blank");
-  };
+  }, []);
 
   return (
-    <Modal onClose={() => onClose()}>
+    <Modal onClose={onClose}>
       <>
         <ModalSection>
           <ModalTitle>With Ledger Extension, you can:</ModalTitle>

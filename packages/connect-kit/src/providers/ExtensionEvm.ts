@@ -1,6 +1,6 @@
 import { getDebugLogger } from "../lib/logger";
 import { Device } from "../lib/browser";
-import { ProviderNotFoundError } from "../lib/errors";
+import { NoServerSideError, ProviderNotFoundError } from "../lib/errors";
 
 const log = getDebugLogger('ExtensionEvm');
 
@@ -67,6 +67,10 @@ interface WindowWithEthereum {
  */
 export function getExtensionProvider (): EvmProvider {
   log('getEthereumProvider');
+
+  if (typeof window === 'undefined') {
+    throw new NoServerSideError();
+  }
 
   let provider = (window as WindowWithEthereum)[EXTENSION_EVM_GLOBAL];
 
