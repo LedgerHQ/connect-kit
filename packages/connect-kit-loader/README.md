@@ -74,12 +74,70 @@ disable them.
 
 ### `checkSupport`
 
-#### Parameters
+#### Parameters for WalletConnect v2
 
 ```ts
 type CheckSupportOptions = {
   providerType: SupportedProviders;
-  chainId: ConnectSupportedChains;
+  version?: number;
+
+  // WalletConnect v2 init parameters
+  projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
+  chains?: number[];               // REQUIRED ethereum chains, has default
+  optionalChains?: number[];       // OPTIONAL ethereum chains
+  methods?: string[];              // REQUIRED ethereum methods, has default
+  optionalMethods?: string[];      // OPTIONAL ethereum methods
+  events?: string[];               // REQUIRED ethereum events, has default
+  optionalEvents?: string[];       // OPTIONAL ethereum events
+  rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
+  metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
+}
+```
+
+To enable WalletConnect v2 you should update to version 1.1.0 of Connect Kit
+Loader.
+
+The simplest use case is to just specify the `providerType`, `version` and
+`projectId` parameters.
+
+- `providerType: SupportedProviders.Ethereum`
+- `version: 2` - use WallertConnect v2, default is 1
+- `projectId` - required for WalletConnect v2 projects, create one at
+  [cloud.walletconnect.com](https://cloud.walletconnect.com/)
+
+You can specify other parameters to
+
+- `chains` - an array of integer chain ids that the wallet must support, the
+  connection will be refused if not all ids are supported, defaults to `[1]`
+- `rpcMap` - a map of chainIds to URLs
+- `optionalChains` - an array of integer chain ids that the wallet might connect to
+- `methods` - an array of method names that the wallet must support
+- `optionalMethods` - an array of method names that the wallet may support
+- `events` - an array of event names that the wallet must support
+- `optionalEvents` - an array of method names that the wallet may support
+- `metadata` - an object that specifies some properties of your dApp, that will be presented to the user by the wallet when connecting
+
+```ts
+interface Metadata {
+  name: string;
+  description: string;
+  url: string;
+  icons: string[];
+}
+```
+
+#### Parameters for WalletConnect v1
+
+Note that WalletConnect v1 is deprecated and will stop working on June 28.
+Version 1 is still the default in Connect Kit in order to not break existing
+apps.
+
+```ts
+type CheckSupportOptions = {
+  providerType: SupportedProviders;
+
+  // WalletConnect v1 init parameters
+  chainId?: ConnectSupportedChains;
   bridge?: string;
   infuraId?: string;
   rpc: { [chainId: number]: string; };
@@ -126,13 +184,56 @@ of two modals.
 Based on the options passed to `checkSupport` it will return an instance of the
 Ledger Extension provider or a WalletConnect provider.
 
-### Example
+### Example for WalletConnect v2
 
 An example function using the *Ledger Connect Kit* and *ethers.js*, that would
 be called when pressing the connect button on a React app.
 
 `setProvider`, `setAccount`, `setChainId` and `setError` are just
-simple `useState` functions to keep app state.
+simple `useState` functions to manage the app state.
+
+```ts
+// click handler function
+const connectWallet = async () => {
+  try {
+    const connectKit = await loadConnectKit();
+    connectKit.enableDebugLogs();
+    const checkSupportResult = connectKit.checkSupport({
+      providerType: SupportedProviders.Ethereum,
+      version: 2,
+      projectId: 'YOUR_PROJECT_ID_HERE',
+      chains: [1, 137],
+      optionalChains: [5],
+      rpcMap: {
+        '1': 'https://cloudflare-eth.com/',
+        '5': 'https://goerli.optimism.io',
+        '137': 'https://polygon-rpc.com/',
+      },
+    });
+    console.log('checkSupportResult is', checkSupportResult);
+
+    const provider = await connectKit.getProvider();
+    setProvider(provider);
+
+    const accounts = await provider.request({ method: 'eth_requestAccounts' });
+    if (accounts) setAccount(accounts[0]);
+
+    const library = new ethers.providers.Web3Provider(provider);
+    const network = await library.getNetwork();
+    setChainId(network.chainId);
+  } catch (error) {
+    setError(error);
+  }
+}
+```
+
+### Example for WalletConnect v1
+
+An example function using the *Ledger Connect Kit* and *ethers.js*, that would
+be called when pressing the connect button on a React app.
+
+`setProvider`, `setAccount`, `setChainId` and `setError` are just
+simple `useState` functions to manage the app state.
 
 ```js
 // JSX code
@@ -146,12 +247,13 @@ const connectWallet = async () => {
     const connectKit = await loadConnectKit();
     connectKit.enableDebugLogs();
     const checkSupportResult = connectKit.checkSupport({
-      chainId: 1,
       providerType: SupportedProviders.Ethereum,
+      chainId: 1,
       rpc: {
-        1: `https://cloudflare-eth.com`, // Mainnet
+        1: `https://cloudflare-eth.com`,                 // Mainnet
+        5: 'https://goerli.optimism.io',                 // Goerli
         137: "https://matic-mainnet.chainstacklabs.com", // Polygon
-      }
+      },
     });
     console.log('checkSupportResult is', checkSupportResult);
 
