@@ -94,19 +94,19 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
     if (method === 'eth_requestAccounts') {
       log('calling patched', method, params);
 
-      return new Promise(async (resolve, reject) => {
+      return new Promise((resolve, reject) => {
         try {
           if (!provider?.session?.connected) {
             showExtensionOrLLModal('', reject),
 
             // connect initializes the session and waits for connection
-            await provider.connect();
+            provider.connect().then(() => {
+              // call the original provider request
+              resolve(baseRequest({ method, params }));
+            });
           } else {
             log('reusing existing session');
           }
-
-          // call the original provider request
-          return resolve(await baseRequest({ method, params }));
         } catch(err) {
           logError('error', err);
           return reject(err);

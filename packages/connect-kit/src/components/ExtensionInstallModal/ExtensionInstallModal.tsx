@@ -8,6 +8,7 @@ import { ConnectFeature } from "./ExtensionInstallModal.styles";
 import { default as LightbulbSvg } from "../../assets/svg/Lightbulb.svg";
 import { default as CheckmarkSvg } from "../../assets/svg/Checkmark.svg";
 import { getDebugLogger } from "../../lib/logger";
+import { useCallback } from "react";
 
 const log = getDebugLogger('ExtensionInstallModal')
 
@@ -26,7 +27,7 @@ const ExtensionInstallModal = ({
   };
 
   return (
-    <Modal onClose={() => onClose()}>
+    <Modal onClose={onClose}>
       <>
         <ModalSection>
           <ModalTitle>With Ledger Extension, you can:</ModalTitle>
