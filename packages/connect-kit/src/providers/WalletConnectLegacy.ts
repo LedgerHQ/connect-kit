@@ -72,19 +72,19 @@ function patchWalletConnectLegacyProviderRequest (provider: WalletConnectProvide
     if (method === 'eth_requestAccounts') {
       log('calling patched', method, params);
 
-      return new Promise(async (resolve, reject) => {
+      return new Promise((resolve, reject) => {
         try {
           if (!provider.connected) {
-            await provider.connector.createSession({
+            provider.connector.createSession({
               chainId: supportOptions.chainId
+            }).then(() => {
+              // show the extension install modal or the WC URI
+              showExtensionOrLLModal(provider.connector.uri, reject);
+
+              // call the original provider request
+              resolve(baseRequest({ method, params }));
             });
-
-            // show the extension install modal or the WC URI
-            showExtensionOrLLModal(provider.connector.uri, reject);
           }
-
-          // call the original provider request
-          return resolve(await baseRequest({ method, params }));
         } catch(err) {
           logError('error', err);
           return reject(err);

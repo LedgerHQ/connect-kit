@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getDebugLogger } from "../../lib/logger";
 import Modal, { ModalProps, setIsModalOpen } from "../Modal/Modal";
 import {
@@ -48,7 +48,7 @@ const UseLedgerLiveModal = ({
     previousUriRef.current = uri;
   });
 
-  const onUseLedgerLiveClick = () => {
+  const onUseLedgerLiveClick = useCallback(() => {
     log('loading Ledger Live, ', wcUri);
     window.location.href = `ledgerlive://wc?uri=${encodeURIComponent(wcUri)}`;
 
@@ -56,15 +56,15 @@ const UseLedgerLiveModal = ({
     setIsModalOpen(false);
 
     return false;
-  };
+  }, [wcUri]);
 
-  const onInstallLedgerLiveClick = () => {
+  const onInstallLedgerLiveClick = useCallback(() => {
     window.open('https://www.ledger.com/ledger-live');
     return false;
-  };
+  }, []);
 
   return (
-    <Modal onClose={() => onClose()}>
+    <Modal onClose={onClose}>
       <ModalSection textAlign="center">
         <ModalTitle>Connect with Ledger Live</ModalTitle>
 

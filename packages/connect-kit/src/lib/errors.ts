@@ -2,7 +2,7 @@ export class ProviderNotFoundError extends Error {
   public constructor() {
     super();
     this.name = this.constructor.name;
-    this.message = "The Ledger Connect extension was not found.";
+    this.message = 'The Ledger Extension was not found.';
   }
 }
 
@@ -10,15 +10,16 @@ export class ProviderTypeIsNotSupportedError extends Error {
   public constructor() {
     super();
     this.name = this.constructor.name;
-    this.message = "The specified provider is not supported.";
+    this.message = 'The specified provider is not supported.';
   }
 }
 
 export class ProviderRpcError extends Error {
-  code: any;
+  readonly code: number;
 
-  constructor(code: any, message: string) {
+  public constructor(code: number, message: string) {
     super();
+    this.name = this.constructor.name;
     this.code = code;
     this.message = message;
   }
@@ -29,11 +30,19 @@ export class ProviderRpcError extends Error {
 }
 
 export class UserRejectedRequestError extends Error {
-  name = 'UserRejectedRequestError';
   readonly code: number;
 
-  constructor() {
-    super('User rejected request');
+  public constructor() {
+    super();
+    this.name = this.constructor.name;
     this.code = 4001;
+    this.message = 'User rejected request';
+  }
+}
+
+export class NoServerSideError extends Error {
+  public constructor() {
+    super();
+    this.message = 'Connect Kit does not support server side.';
   }
 }
