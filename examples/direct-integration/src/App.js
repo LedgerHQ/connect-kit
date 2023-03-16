@@ -15,17 +15,21 @@ import { ethers } from 'ethers';
 
 export default function Home() {
   //const [provider, setProvider] = useState();
-  //const [library, setLibrary] = useState();
   //const [account, setAccount] = useState();
   //const [chainId, setChainId] = useState();
-  //const [error, setError] = useState("");
+  //const [library, setLibrary] = useState();
+  //const [message, setMessage] = useState("");
 
-  /*const connectWallet = async (chainId = 1) => {
+  /*const connectWallet = async () => {
+    console.log('> connectWallet');
+
+    resetState();
+
     try {
       const connectKit = await loadConnectKit();
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
-        chainId,
+        chainId: 137,
         providerType: SupportedProviders.Ethereum,
         rpc: {
           1: `https://cloudflare-eth.com/`, // Mainnet
@@ -47,27 +51,62 @@ export default function Home() {
       const network = await library.getNetwork();
       setChainId(network.chainId);
     } catch (error) {
-      setError(error);
+      setMessage(error);
     }
   };*/
 
-  /*const disconnect = async () => {
+  /*const disconnectWallet = async () => {
+    console.log('> disconnectWallet');
+
+    if (provider.disconnect) {
+      console.log('> calling provider.disconnect()');
+      provider.disconnect();
+    }
+
+    // needs to be called here
+    // the Ledger Extension does not fire a disconnect event
+    resetState();
+  }*/
+
+  /*const resetState = async () => {
+    console.log('> resetState');
+
     setAccount();
     setChainId();
     setProvider();
-    setLibrary();
+    setMessage();
   };*/
 
   /*useEffect(() => {
+    console.log('> useEffect');
+
     if (provider?.on) {
-      const handleDisconnect = (error) => {
-        disconnect();
+      const handleDisconnect = (props) => {
+        console.log('> handleDisconnect', props);
+
+        resetState();
       };
 
+      const handleChainChanded = async (chainId) => {
+        console.log('> handleChainChanded', chainId);
+        setChainId(chainId);
+      }
+
+      const handleAccountsChanged = async (accounts) => {
+        console.log('> handleAccountsChanged', accounts);
+        setAccount(accounts[0]);
+      }
+
+      provider.on('chainChanged', handleChainChanded);
+      provider.on('accountsChanged', handleAccountsChanged);
       provider.on("disconnect", handleDisconnect);
 
       return () => {
         if (provider.removeListener) {
+          console.log('> removing event listeners');
+
+          provider.removeListener('chainChanged', handleChainChanded);
+          provider.removeListener('accountsChanged', handleAccountsChanged);
           provider.removeListener("disconnect", handleDisconnect);
         }
       };
@@ -91,13 +130,13 @@ export default function Home() {
           </>
         )*/}
 
-        <Box>{/*error ? error.message : null*/}</Box>
+        <Box>{/*message ? message.message : null*/}</Box>
 
         <Box>
           {/*!account ? (
-            <Button bg='primary' onClick={() => connectWallet(1)}>Connect Wallet</Button>
+            <Button bg='primary' onClick={connectWallet}>Connect Wallet</Button>
           ) : (
-            <Button onClick={disconnect}>Disconnect</Button>
+            <Button onClick={disconnectWallet}>Disconnect</Button>
           )*/}
         </Box>
       </Stack>
