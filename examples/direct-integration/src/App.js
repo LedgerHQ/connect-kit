@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { On, Off, Heading, Button, Box, Stack } from './components';
 import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader';
 
@@ -18,6 +18,8 @@ export default function Home() {
   const [chainId, setChainId] = useState();
   const [message, setMessage] = useState('');
 
+  // click handlers
+
   const connectWallet = async () => {
     console.log('> connectWallet');
 
@@ -27,9 +29,11 @@ export default function Home() {
       const connectKit = await loadConnectKit();
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
-        chainId: 137,
         providerType: SupportedProviders.Ethereum,
-        rpc: {
+        version: 2,
+        projectId: '85a25426af6e359da0d3508466a95a1d',
+        chains: [137],
+        rpcMap: {
           1: 'https://cloudflare-eth.com/',  // Mainnet
           5: 'https://goerli.optimism.io/',  // Goerli
           137: 'https://polygon-rpc.com/',   // Polygon
@@ -42,9 +46,6 @@ export default function Home() {
 
       const requestAccountsResponse = await (requestAccounts(connectKitProvider));
       if (requestAccountsResponse) setAccount(requestAccountsResponse[0]);
-
-      const chainIdResponse = await getChainId(connectKitProvider);
-      if (chainIdResponse) setChainId(chainIdResponse);
     } catch (error) {
       console.error(error)
       setMessage(error);
@@ -62,42 +63,10 @@ export default function Home() {
     // needs to be called here
     // the Extension does not emit a disconnect event
     resetState();
-  }
-
-  const resetState = async () => {
-    console.log('> resetState');
-
-    setAccount();
-    setChainId();
-    setProvider();
-    setMessage('');
   };
 
-  const requestAccounts = async (provider) => {
-    try {
-      return await provider.request({ method: 'eth_requestAccounts' });
-    } catch (error) {
-      console.error(error)
-      setMessage(error);
-    }
-  }
-
-  const getChainId = async (provider) => {
-    try {
-      return await provider.request({ method: 'eth_chainId' });
-    } catch (error) {
-      console.error(error)
-      setMessage(error);
-    }
-  }
-
-  const isRequestedChainId = (requestedChainId) => {
-    console.log(`comparing ${requestedChainId} to ${chainId}`)
-    return chainId === requestedChainId || chainId === `0x${requestedChainId.toString(16)}`;
-  }
-
-  const switchChains = async (chainId) => {
-    setMessage('');
+  const switchChain = useCallback(async (chainId) => {
+    setMessage('> switchChain', chainId);
 
     try {
       await provider.request({
@@ -108,10 +77,12 @@ export default function Home() {
       console.error(error)
       setMessage(error);
     }
-  }
+  });
+
+  // effects
 
   useEffect(() => {
-    console.log('> useEffect');
+    console.log('> set provider events useEffect');
 
     if (provider?.on) {
       const handleDisconnect = (props) => {
@@ -136,6 +107,8 @@ export default function Home() {
       provider.on("disconnect", handleDisconnect);
 
       return () => {
+        console.log('> unset provider events useEffect');
+
         // handle removing event listeners here,
         // when disconnecting from the Extension no disconnect event is emited
         if (provider.removeListener) {
@@ -148,6 +121,31 @@ export default function Home() {
       };
     }
   }, [provider]);
+
+  // utils
+
+  const resetState = async () => {
+    console.log('> resetState');
+
+    setAccount();
+    setChainId();
+    setProvider();
+    setMessage('');
+  };
+
+  const requestAccounts = async (provider) => {
+    try {
+      return await provider.request({ method: 'eth_requestAccounts' });
+    } catch (error) {
+      console.error(error)
+      setMessage(error);
+    }
+  };
+
+  const isRequestedChainId = (requestedChainId) => {
+    console.log(`comparing ${requestedChainId} to ${chainId}`)
+    return chainId === requestedChainId || chainId === `0x${requestedChainId.toString(16)}`;
+  };
 
   return (
     <>
@@ -179,13 +177,13 @@ export default function Home() {
             </Box>
 
             <Box>
-              <Button disabled={isRequestedChainId(137)} onClick={() => switchChains(137)}>Switch to Polygon</Button>
+              <Button disabled={isRequestedChainId(137)} onClick={() => switchChain(137)}>Switch to Polygon</Button>
             </Box>
             <Box>
-              <Button disabled={isRequestedChainId(5)} onClick={() => switchChains(5)}>Switch to Göerli</Button>
+              <Button disabled={isRequestedChainId(5)} onClick={() => switchChain(5)}>Switch to Göerli</Button>
             </Box>
             <Box>
-              <Button disabled={isRequestedChainId(1)} onClick={() => switchChains(1)}>Switch to Mainnet</Button>
+              <Button disabled={isRequestedChainId(1)} onClick={() => switchChain(1)}>Switch to Mainnet</Button>
             </Box>
             </>
         )}
