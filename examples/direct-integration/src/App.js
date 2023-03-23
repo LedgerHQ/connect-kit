@@ -31,8 +31,10 @@ export default function Home() {
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
         providerType: SupportedProviders.Ethereum,
-        chainId: 137,
-        rpc: {
+        version: 2,
+        projectId: '85a25426af6e359da0d3508466a95a1d',
+        chains: [137],
+        rpcMap: {
           1: 'https://cloudflare-eth.com/',  // Mainnet
           5: 'https://goerli.optimism.io/',  // Goerli
           137: 'https://polygon-rpc.com/',   // Polygon
@@ -45,9 +47,6 @@ export default function Home() {
 
       const requestAccountsResponse = await (requestAccounts(connectKitProvider));
       if (requestAccountsResponse) setAccount(requestAccountsResponse[0]);
-
-      const chainIdResponse = await getChainId(connectKitProvider);
-      if (chainIdResponse) setChainId(chainIdResponse);
     } catch (error) {
       console.error(error)
       setMessage(error.message);
