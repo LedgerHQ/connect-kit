@@ -18,8 +18,11 @@ const ExtensionUnavailableModal = ({
 }: ExtensionUnavailableModalProps) => {
   log('initializing');
 
+  const APP_STORE_URL = 'https://apps.apple.com/app/ledger-extension-browse-web3/id1627727841';
+  const CAMPAIGN_URL_PARAMS = '?pt=516048&ct=ledger_button&mt=8';
+
   const onInstallLedgerExtensionClick = () => {
-    window.open("https://apps.apple.com/app/ledger-extension-browse-web3/id1627727841", "_blank");
+    window.open(`${APP_STORE_URL}${CAMPAIGN_URL_PARAMS}`, "_blank");
   };
 
   return (
