@@ -8,7 +8,7 @@ export let setIsModalOpen = (isModalOpen: boolean) => {};
 
 export interface ModalProps {
   isOpen?: boolean;
-  onClose?: () => void;
+  onClose?: Function;
   children?: ReactElement | null;
 }
 
