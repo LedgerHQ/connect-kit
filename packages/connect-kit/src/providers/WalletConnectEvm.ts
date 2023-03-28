@@ -3,6 +3,7 @@ import WalletConnectProvider, {
 } from '@walletconnect/ethereum-provider/dist/index.umd.js';
 import { setIsModalOpen } from '../components/Modal/Modal';
 import { setWalletConnectUri } from '../components/UseLedgerLiveModal/UseLedgerLiveModal';
+import { UserRejectedRequestError } from '../lib/errors';
 import { getDebugLogger, getErrorLogger } from "../lib/logger";
 import { showExtensionOrLLModal } from '../lib/modal';
 import {
@@ -97,7 +98,12 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
       return new Promise((resolve, reject) => {
         try {
           if (!provider?.session?.connected) {
-            showExtensionOrLLModal('', reject),
+            showExtensionOrLLModal({
+              uri: '',
+              onClose: () => {
+                reject(new UserRejectedRequestError());
+              }
+            });
 
             // connect initializes the session and waits for connection
             provider.connect().then(() => {
@@ -137,7 +143,7 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
 
     provider.removeListener('connect', connectHandler);
     provider.removeListener('session_delete', disconnectHandler);
-    provider.removeListener("display_uri", displayUriHandler);
+    // provider.removeListener("display_uri", displayUriHandler);
   }
 
   log('provider is', provider);

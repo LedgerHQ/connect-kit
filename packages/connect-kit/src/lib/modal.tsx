@@ -57,7 +57,7 @@ export function showModal(
 /**
  * Shows one of two modals depending on if the extension is supported or not.
  */
-export function showExtensionOrLLModal(uri: string, callback: Function) {
+export function showExtensionOrLLModal(props: { uri: string, onClose: Function }) {
   const device = getBrowser();
   const supportResults = getSupportResult();
 
@@ -66,19 +66,15 @@ export function showExtensionOrLLModal(uri: string, callback: Function) {
     supportResults.isChainIdSupported) {
     showModal('ExtensionInstallModal', {
       // pass an onClose callback that throws when the modal is closed
-      onClose: () => {
-        callback(new UserRejectedRequestError());
-      }
+      onClose: props.onClose,
     });
   } else {
     showModal('UseLedgerLiveModal', {
       // show the QR code if we are on a desktop browser
       isDesktop: device.type === 'desktop',
-      uri,
+      uri: props.uri,
       // pass an onClose callback that throws when the modal is closed
-      onClose: () => {
-        callback(new UserRejectedRequestError());
-      }
+      onClose: props.onClose,
     });
   }
 }

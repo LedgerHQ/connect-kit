@@ -8,6 +8,7 @@ import {
   CheckSupportWalletConnectLegacyProviderOptions,
   getSupportOptions
 } from '../lib/supportOptions';
+import { UserRejectedRequestError } from "../lib/errors";
 
 const log = getDebugLogger('WalletConnectLegacy');
 const logError = getErrorLogger('WalletConnectLegacy');
@@ -79,7 +80,12 @@ function patchWalletConnectLegacyProviderRequest (provider: WalletConnectProvide
               chainId: supportOptions.chainId
             }).then(() => {
               // show the extension install modal or the WC URI
-              showExtensionOrLLModal(provider.connector.uri, reject);
+              showExtensionOrLLModal({
+                uri: provider.connector.uri,
+                onClose: () => {
+                  reject(new UserRejectedRequestError());
+                }
+              });
 
               // call the original provider request
               resolve(baseRequest({ method, params }));
