@@ -54,9 +54,10 @@ export type EthereumRequestPayload = {
 export interface EthereumProvider {
   providers?: EthereumProvider[];
   connector?: unknown;
+  session?: unknown;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
-  emit(eventName: string | symbol, ...args: any[]): boolean;
+  // emit(eventName: string | symbol, ...args: any[]): boolean;
   on(event: any, listener: any): void;
   removeListener(event: string, listener: any): void;
 }
@@ -91,7 +92,7 @@ export interface LedgerConnectKit {
 };
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
+  const src = "https://statuesque-naiad-0cb980.netlify.app/umd/index.js";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {

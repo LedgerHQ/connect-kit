@@ -1,6 +1,4 @@
-import WalletConnectProvider, {
-  default as EthereumProvider
-} from '@walletconnect/ethereum-provider/dist/index.umd.js';
+import { default as WalletConnectProvider } from '../support/EthereumProvider/EthereumProvider';
 import { setIsModalOpen } from '../components/Modal/Modal';
 import { setWalletConnectUri } from '../components/UseLedgerLiveModal/UseLedgerLiveModal';
 import { UserRejectedRequestError } from '../lib/errors';
@@ -65,7 +63,7 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
   log('ethereum init options are', ethereumInitOpts);
 
   try {
-    const provider: WalletConnectProvider = await EthereumProvider.init(ethereumInitOpts);
+    const provider = await WalletConnectProvider.init(ethereumInitOpts);
 
     // provider.setDefaultChain(supportOptions.chainId);
     assignWalletConnectProviderEvents(provider);
@@ -101,17 +99,21 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
             showExtensionOrLLModal({
               uri: '',
               onClose: () => {
+                logError('user rejected');
                 reject(new UserRejectedRequestError());
               }
             });
 
             // connect initializes the session and waits for connection
             provider.connect().then(() => {
+              log('creating a new session');
               // call the original provider request
-              resolve(baseRequest({ method, params }));
+              return resolve(baseRequest({ method, params }));
             });
           } else {
             log('reusing existing session');
+            // call the original provider request
+            resolve(baseRequest({ method, params }));
           }
         } catch(err) {
           logError('error', err);
@@ -139,7 +141,7 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
   function disconnectHandler(params: any) {
     log('disconnectHandler', params);
 
-    provider.connector?.disconnect();
+    provider.disconnect();
 
     provider.removeListener('connect', connectHandler);
     provider.removeListener('session_delete', disconnectHandler);
