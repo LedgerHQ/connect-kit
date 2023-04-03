@@ -1,6 +1,6 @@
-import WalletConnectProvider from "@walletconnect/legacy-provider/dist/umd/index.min.js";
+import WalletConnectProvider from '@walletconnect/legacy-provider/dist/umd/index.min.js';
 import { getErrorLogger, getDebugLogger } from '../lib/logger';
-import { EvmProvider, EthereumRequestPayload } from './ExtensionEvm';
+import { EthereumProvider, EthereumRequestPayload } from './ExtensionEvm';
 import { showExtensionOrLLModal } from '../lib/modal';
 import { setIsModalOpen } from '../components/Modal/Modal';
 import {
@@ -19,11 +19,11 @@ export type WalletConnectLegacyProviderOptions = CheckSupportWalletConnectLegacy
 /**
  * Gets the legacy WalletConnect provider.
  */
-export async function getWalletConnectLegacyProvider(): Promise<EvmProvider> {
+export async function getWalletConnectLegacyProvider(): Promise<EthereumProvider> {
   log('getWalletConnectLegacyProvider');
 
   try {
-    return await initWalletConnectLegacyProvider() as unknown as EvmProvider;
+    return await initWalletConnectLegacyProvider() as unknown as EthereumProvider;
   } catch (err) {
     const error = (err instanceof Error) ? err : new Error(String(err));
     logError('error', error);
@@ -79,17 +79,23 @@ function patchWalletConnectLegacyProviderRequest (provider: WalletConnectProvide
             provider.connector.createSession({
               chainId: supportOptions.chainId
             }).then(() => {
+              log('created a new session');
               // show the extension install modal or the WC URI
               showExtensionOrLLModal({
                 uri: provider.connector.uri,
                 onClose: () => {
-                  reject(new UserRejectedRequestError());
+                  logError('user rejected');
+                  return reject(new UserRejectedRequestError());
                 }
               });
 
               // call the original provider request
               resolve(baseRequest({ method, params }));
             });
+          } else {
+            log('reusing existing session');
+            // call the original provider request
+            resolve(baseRequest({ method, params }));
           }
         } catch(err) {
           logError('error', err);
