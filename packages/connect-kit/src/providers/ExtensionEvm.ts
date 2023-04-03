@@ -1,6 +1,7 @@
 import { getDebugLogger } from "../lib/logger";
 import { Device } from "../lib/browser";
 import { NoServerSideError, ProviderNotFoundError } from "../lib/errors";
+import { getSupportOptions } from "../lib/supportOptions";
 
 const log = getDebugLogger('ExtensionEvm');
 
@@ -44,17 +45,20 @@ export type EthereumRequestPayload = {
 /**
  * A common interface for all the returned providers.
  */
-export interface EvmProvider {
-  providers?: EvmProvider[];
+export interface EthereumProvider {
+  providers?: EthereumProvider[];
   connector?: unknown;
+  session?: unknown;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
+  // emit(eventName: string | symbol, ...args: any[]): boolean;
   on(event: any, listener: any): void;
   removeListener(event: string, listener: any): void;
 }
 
-export interface ExtensionEvmProvider extends EvmProvider {
+export interface ExtensionEvmProvider extends EthereumProvider {
   [EXTENSION_EVM_PROP]: boolean;
+  chainId: string;
 }
 
 interface WindowWithEthereum {
@@ -65,7 +69,7 @@ interface WindowWithEthereum {
  * Gets the extension provider. In case it does not exist returns an instance
  * of the install provider.
  */
-export function getExtensionProvider (): EvmProvider {
+export function getExtensionProvider (): EthereumProvider {
   log('getEthereumProvider');
 
   if (typeof window === 'undefined') {
@@ -79,6 +83,15 @@ export function getExtensionProvider (): EvmProvider {
     typeof provider[EXTENSION_EVM_PROP] === "undefined"
   ) {
     throw new ProviderNotFoundError();
+  }
+
+  // TODO switch chains if not the same
+  log('chainId is', provider.chainId);
+  const supportOptions = getSupportOptions();
+  const hexChainId = `0x${supportOptions.chainId?.toString(16) || 0}`
+  log('hex chainId is', hexChainId);
+  if (provider.chainId != hexChainId) {
+    log ('chainIds are different, changing to', hexChainId);
   }
 
   return provider;

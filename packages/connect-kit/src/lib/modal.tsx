@@ -9,7 +9,6 @@ import { UseLedgerLiveModalProps } from "../components/UseLedgerLiveModal/UseLed
 import { ExtensionInstallModalProps } from "../components/ExtensionInstallModal/ExtensionInstallModal";
 import { getBrowser } from "./browser";
 import { getSupportResult } from "./support";
-import { UserRejectedRequestError } from "./errors";
 
 type ModalType =
   'UseLedgerLiveModal' |
