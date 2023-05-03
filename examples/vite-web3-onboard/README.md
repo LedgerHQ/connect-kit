@@ -1,4 +1,4 @@
-## Example with Vite with web3-onboard
+## Example with Vite and web3-onboard
 
 This is an example application using vite and web3-onboard to show how to integrate the Ledger button.
 
@@ -20,7 +20,7 @@ This is just the standard Vite web project with no web3 functionalities. We are 
 - `src/main.tsx`, we wrap the main app with the web3-onboard provider and add global styles
 - `src/App.tsx`, we add some buttons and functions to this one
 
-Add web3-onboard the web3-onboard Ledger connector with
+Add the web3-onboard react and Ledger connector packages with
 
     $ pnpm add @web3-onboard/react @web3-onboard/ledger
 
