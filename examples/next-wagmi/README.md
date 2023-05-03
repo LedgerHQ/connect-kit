@@ -14,7 +14,7 @@ Run the project with
 
     $ pnpm dev
 
-This is just the standard Next.js web project with no web3 functionalities. We are adding and changing the following files to use wagmi
+This is just the standard Next.js web project with no web3 functionalities. We are adding or changing the following files to use wagmi
 
 - `src/pages/_app.tsx`, setup wagmi
 - `src/pages/index.tsx`, reference the components we want to show
@@ -193,4 +193,9 @@ Test it again with
 $ pnpm dev
 ```
 
-You should now see a "Ledger" button and be able to interact with your Ledger wallet using the Ledger Extension or Ledger Live.
+If you now open the app in your browser (usually in http://localhost:3000/) you should now see a "Ledger" button and be able to interact with your Ledger wallet using Ledger Live.
+
+For more information see
+
+- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
+- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
