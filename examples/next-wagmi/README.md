@@ -7,7 +7,7 @@ You can recreate this project from scratch using these instructions. We're using
 
 Create a project and install the dependencies with
 
-    $ pnpm create next-app next-ledger-wagmi
+    $ pnpm create next-app ledger-next-wagmi
     $ pnpm install
 
 Run the project with

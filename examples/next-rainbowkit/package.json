@@ -1,0 +1,30 @@
+{
+  "name": "ledger-next-rainbowkit",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@babel/core": "7.21.8",
+    "@rainbow-me/rainbowkit": "^0.12.12",
+    "ethers": "^5.5.1",
+    "next": "^12.3.4",
+    "next-auth": "4.22.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-is": "18.2.0",
+    "styled-components": "5.3.9",
+    "wagmi": "^0.12.12"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.45",
+    "@types/react": "^18.2.5",
+    "eslint": "^8.39.0",
+    "eslint-config-next": "^12.3.4",
+    "typescript": "^4.9.5"
+  }
+}
