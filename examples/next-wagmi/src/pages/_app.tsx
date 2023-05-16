@@ -1,18 +1,18 @@
 import type { AppProps } from 'next/app'
-import { WagmiConfig, configureChains, createClient, goerli, Connector } from 'wagmi'
+import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
-import { mainnet, polygon } from 'wagmi/chains'
+import { mainnet, polygon, goerli } from 'wagmi/chains'
 import { LedgerConnector } from 'wagmi/connectors/ledger'
 import { WalletConnectLegacyConnector } from 'wagmi/connectors/walletConnectLegacy'
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli, polygon],
   [publicProvider()],
 )
 
 export { chains };
 
-const client = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
     new LedgerConnector({
@@ -27,14 +27,14 @@ const client = createClient({
       options: {
         chainId: 1,
       },
-    }) as unknown as Connector<any, any, any>,
+    }),
   ],
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 })
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <WagmiConfig client={client}>
+  return <WagmiConfig config={wagmiConfig}>
       <Component {...pageProps} />
     </WagmiConfig>
 }
