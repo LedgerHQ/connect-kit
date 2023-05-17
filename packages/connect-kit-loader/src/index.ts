@@ -16,6 +16,8 @@ export type EnableDebugLogsFunction = () => void;
 export type CheckSupportOptions = {
   version?: number;
   providerType: SupportedProviders;
+  _forceWcV1?: boolean;
+  _forceWcV2?: boolean;
 
   // WalletConnect v2 init parameters
   projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
@@ -57,7 +59,6 @@ export interface EthereumProvider {
   session?: unknown;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
-  // emit(eventName: string | symbol, ...args: any[]): boolean;
   on(event: any, listener: any): void;
   removeListener(event: string, listener: any): void;
 }
