@@ -1,7 +1,7 @@
-import { verifyTypedData } from 'ethers/lib/utils'
-import { useNetwork, useSignTypedData } from 'wagmi'
+import { Address, useNetwork, useSignTypedData } from 'wagmi'
 import { Box, Button } from './StyledComponents'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { recoverTypedDataAddress } from 'viem'
 
 const domain = {
   name: 'Ether Mail',
@@ -23,7 +23,7 @@ const types = {
   ],
 } as const
 
-const value = {
+const message = {
   from: {
     name: 'Cow',
     wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
@@ -41,18 +41,35 @@ export const SignTypedData = () => {
 
   const { data, error, isLoading, signTypedData } = useSignTypedData({
     domain,
+    message,
+    primaryType: 'Mail',
     types,
-    value,
   })
+  const [recoveredAddress, setRecoveredAddress] = useState<Address|undefined>()
 
   useEffect(() => {
-    if (data) {
-      alert(`signature ${data}\n\n` +
-        `recovered address ${verifyTypedData(domain, types, value, data)}`)
+    if (!data) return
+    ;(async () => {
+      setRecoveredAddress(
+        await recoverTypedDataAddress({
+          domain,
+          types,
+          message,
+          primaryType: 'Mail',
+          signature: data,
+        }),
+      )
+    })()
+  }, [data])
+
+  useEffect(() => {
+    if (recoveredAddress) {
+      alert(`signature ${data}\n\nrecovered address ${recoveredAddress}`)
+      setRecoveredAddress(undefined)
     } else if (error) {
       alert(error?.message ?? 'Failed to sign message')
     }
-  }, [data, error])
+  }, [recoveredAddress, data, error])
 
   if (!!chain) {
     return (<Box>
