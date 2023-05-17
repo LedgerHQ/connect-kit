@@ -9,6 +9,7 @@ import { UseLedgerLiveModalProps } from "../components/UseLedgerLiveModal/UseLed
 import { ExtensionInstallModalProps } from "../components/ExtensionInstallModal/ExtensionInstallModal";
 import { getBrowser } from "./browser";
 import { getSupportResult } from "./support";
+import { getSupportOptions } from "./supportOptions";
 
 type ModalType =
   'UseLedgerLiveModal' |
@@ -59,10 +60,15 @@ export function showModal(
 export function showExtensionOrLLModal(props: { uri: string, onClose: Function }) {
   const device = getBrowser();
   const supportResults = getSupportResult();
+  const supportOptions = getSupportOptions();
 
   // direct user to install the extension if supported
-  if (supportResults.isLedgerConnectSupported &&
-    supportResults.isChainIdSupported) {
+  if (
+    !supportOptions._forceWcV2 &&
+    !supportOptions._forceWcV1 &&
+    supportResults.isLedgerConnectSupported &&
+    supportResults.isChainIdSupported
+  ) {
     showModal('ExtensionInstallModal', {
       // pass an onClose callback that throws when the modal is closed
       onClose: props.onClose,

@@ -52,18 +52,22 @@ export async function getProvider (): Promise<ProviderResult> {
 
   switch (supportOptions.providerType) {
     case SupportedProviders.Ethereum:
-      if (moduleProviderImplementation === SupportedProviderImplementations.LedgerConnect) {
+      if (
+        !supportOptions._forceWcV2 &&
+        !supportOptions._forceWcV1 &&
+        moduleProviderImplementation === SupportedProviderImplementations.LedgerConnect
+      ) {
         return getExtensionProvider();
       }
 
-      if (supportOptions.version === 1) {
+      if (
+        !supportOptions._forceWcV2 &&
+        (supportOptions.version === 1 || supportOptions._forceWcV1)
+      ) {
         return await getWalletConnectLegacyProvider();
       }
 
       return await getWalletConnectProvider();
-
-      // TODO switch chain
-      // if (chainId) await this.switchChain(chainId)
       break;
     case SupportedProviders.Solana:
       return getSolanaProvider();
