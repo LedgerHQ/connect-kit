@@ -15,10 +15,6 @@ let moduleSupportOptions: ValidatedSupportOptions;
 type CheckSupportCommonOptions = {
   version?: number;                  // OPTIONAL, has default
   providerType: SupportedProviders;  // REQUIRED
-  // force falling back to WC v2
-  _forceWcV2?: boolean;
-  // force falling back to WC v1
-  _forceWcV1?: boolean;
 }
 
 // WalletConnect v2 init parameters
