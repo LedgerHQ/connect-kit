@@ -53,16 +53,16 @@ export async function getProvider (): Promise<ProviderResult> {
   switch (supportOptions.providerType) {
     case SupportedProviders.Ethereum:
       if (
-        !supportOptions._forceWcV2 &&
-        !supportOptions._forceWcV1 &&
+        !localStorage?.getItem('connectKit_forceWcV2') &&
+        !localStorage?.getItem('connectKit_forceWcV1') &&
         moduleProviderImplementation === SupportedProviderImplementations.LedgerConnect
       ) {
         return getExtensionProvider();
       }
 
       if (
-        !supportOptions._forceWcV2 &&
-        (supportOptions.version === 1 || supportOptions._forceWcV1)
+        !localStorage?.getItem('connectKit_forceWcV2') &&
+        (supportOptions.version === 1 || localStorage?.getItem('connectKit_forceWcV1'))
       ) {
         return await getWalletConnectLegacyProvider();
       }

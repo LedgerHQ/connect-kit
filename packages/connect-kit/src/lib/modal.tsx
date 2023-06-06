@@ -64,8 +64,8 @@ export function showExtensionOrLLModal(props: { uri: string, onClose: Function }
 
   // direct user to install the extension if supported
   if (
-    !supportOptions._forceWcV2 &&
-    !supportOptions._forceWcV1 &&
+    !localStorage?.getItem('connectKit_forceWcV2') &&
+    !localStorage?.getItem('connectKit_forceWcV1') &&
     supportResults.isLedgerConnectSupported &&
     supportResults.isChainIdSupported
   ) {
