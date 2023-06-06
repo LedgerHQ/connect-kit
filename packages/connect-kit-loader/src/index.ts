@@ -16,8 +16,6 @@ export type EnableDebugLogsFunction = () => void;
 export type CheckSupportOptions = {
   version?: number;
   providerType: SupportedProviders;
-  _forceWcV1?: boolean;
-  _forceWcV2?: boolean;
 
   // WalletConnect v2 init parameters
   projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
