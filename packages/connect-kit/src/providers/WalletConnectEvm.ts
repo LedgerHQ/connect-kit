@@ -9,6 +9,7 @@ import {
   getSupportOptions
 } from '../lib/supportOptions';
 import { EthereumRequestPayload } from './ExtensionEvm';
+import { OPTIONAL_EVENTS, OPTIONAL_METHODS } from '../support/EthereumProvider/constants';
 
 const log = getDebugLogger('WalletConnectEvm');
 const logError = getErrorLogger('WalletConnectEvm');
@@ -53,9 +54,9 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
     chains: providerOptions.chains,
     optionalChains: providerOptions.optionalChains,
     methods: providerOptions.methods,
-    optionalMethods: providerOptions.optionalMethods,
+    optionalMethods: providerOptions.optionalMethods || OPTIONAL_METHODS,
     events: providerOptions.events,
-    optionalEvents: providerOptions.optionalEvents,
+    optionalEvents: providerOptions.optionalEvents || OPTIONAL_EVENTS,
     rpcMap: providerOptions.rpcMap,
     metadata: providerOptions.metadata,
     showQrModal: false,
