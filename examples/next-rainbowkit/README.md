@@ -35,7 +35,7 @@ import { configureChains } from 'wagmi'
 import { mainnet, goerli, polygon } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli, polygon],
   [publicProvider()],
 )
@@ -65,7 +65,7 @@ const client = createClient({
   autoConnect: true,
   connectors,
   provider,
-  webSocketProvider,
+  webSocketPublicClient,
 })
 ```
 

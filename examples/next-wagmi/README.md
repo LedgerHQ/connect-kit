@@ -41,7 +41,7 @@ import { configureChains } from 'wagmi'
 import { mainnet, polygon } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, polygon],
   [publicProvider()],
 )
@@ -54,7 +54,7 @@ import { createClient } from 'wagmi'
 import { LedgerConnector } from 'wagmi/connectors/ledger'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
-const client = createClient({
+const wagmiConfig = createClient({
   autoConnect: true,
   connectors: [
     new LedgerConnector({
@@ -65,8 +65,8 @@ const client = createClient({
       },
     }),
   ],
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 })
 ```
 
@@ -78,7 +78,7 @@ Still on the same file, wrap the main component in `WagmiConfig`
 import { WagmiConfig } from 'wagmi'
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <WagmiConfig client={client}>
+  return <WagmiConfig config={wagmiConfig}>
       <Component {...pageProps} />
     </WagmiConfig>
 }
@@ -86,7 +86,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ### Connecting
 
-The file `src/components/Connect.tsx` renders a connect button for each configured connector, and an error message if it can't connect, and uses the `useAccount` and `useConnect` wagmi hooks
+The file `src/components/Connect.tsx` renders a connect button for each configured connector and an error message if it can't connect, and uses the `useAccount` and `useConnect` wagmi hooks. This is a simplified version of the code
 
 ```ts
   const { connector } = useAccount()
@@ -149,7 +149,7 @@ The file `src/components/NetworkSwitcher.tsx` shows a button for each configured
 The file `src/components/SignMessage.tsx` uses the `useSignMessage` hook to allow signing a message by calling `signMessage({ message })`; the other properties are used to access the operation status and response.
 
 ```ts
-  const { variables, data, error, isLoading, signMessage } = useSignMessage()
+  const { data: signature, variables, error, isLoading, signMessage } = useSignMessage()
   // ...
   // TSX
     <Button
@@ -158,12 +158,13 @@ The file `src/components/SignMessage.tsx` uses the `useSignMessage` hook to allo
     >...
 ```
 
-The file `src/components/SignMessage.tsx` is similar and uses the `useSignTypedData` hook to allow signing a predefined set of data, composed by `domain`, `types` and `value`.
+The file `src/components/SignTypedData.tsx` is similar and uses the `useSignTypedData` hook to allow signing a predefined set of data, composed by `domain`, `types` and `value`.
 
 ```ts
   const { data, error, isLoading, signTypedData } = useSignTypedData({
     domain,
     types,
+    primaryType: 'Mail',
     value,
   })
   // ...
