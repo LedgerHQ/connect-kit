@@ -46,6 +46,88 @@ function App() {
       alert(`Signed message is: ${signedMessage}`)
     } catch (error) {
       console.error(error)
+      alert((error as Error).message)
+    }
+  }, [wallet])
+
+  const signTypedData = useCallback(async () => {
+    console.log('> signTypedData')
+
+    const messageData = {
+      domain: {
+        // This defines the network, in this case, Mainnet.
+        chainId: 1,
+        // Give a user-friendly name to the specific contract you're signing for.
+        name: 'Ether Mail',
+        // Add a verifying contract to make sure you're establishing contracts with the proper entity.
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        // This identifies the latest version.
+        version: '1',
+      },
+
+      // This defines the message you're proposing the user to sign, is dapp-specific, and contains
+      // anything you want. There are no required fields. Be as explicit as possible when building out
+      // the message schema.
+      message: {
+        contents: 'Hello, Bob!',
+        attachedMoneyInEth: 4.2,
+        from: {
+          name: 'Cow',
+          wallets: [
+            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          ],
+        },
+        to: [
+          {
+            name: 'Bob',
+            wallets: [
+              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            ],
+          },
+        ],
+      },
+      // This refers to the keys of the following types object.
+      primaryType: 'Mail',
+      types: {
+        // This refers to the domain the contract is hosted on.
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        // Not an EIP712Domain definition.
+        Group: [
+          { name: 'name', type: 'string' },
+          { name: 'members', type: 'Person[]' },
+        ],
+        // Refer to primaryType.
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person[]' },
+          { name: 'contents', type: 'string' },
+        ],
+        // Not an EIP712Domain definition.
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallets', type: 'address[]' },
+        ],
+      },
+    }
+    // eth_signTypedData_v4 parameters. All of these parameters affect the resulting signature.
+    const from = wallet?.accounts[0].address
+    const msgParams = JSON.stringify(messageData)
+
+    try {
+      const signedMessage = await wallet?.provider.request({
+        method: 'eth_signTypedData_v4',
+        params: [from, msgParams],
+      })
+      console.log(`Signed message is: ${signedMessage}`)
+      alert(`Signed message is: ${signedMessage}`)
+    } catch (error) {
+      console.error(error)
+      alert((error as Error).message)
     }
   }, [wallet])
 
@@ -80,6 +162,9 @@ function App() {
 
           <Box>
             <Button onClick={personalSign}>Personal sign</Button>
+          </Box>
+          <Box>
+            <Button onClick={signTypedData}>Sign typed data</Button>
           </Box>
 
           <Box>

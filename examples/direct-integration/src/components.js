@@ -31,6 +31,10 @@ export const Box = styled.div`
   margin-bottom: 0.6rem;
 `;
 
+export const Message = styled.div`
+  margin: 0.6rem;
+`;
+
 export const Heading = styled.h2`
   font-weight: normal;
   font-size: 2rem;

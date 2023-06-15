@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { On, Off, Heading, Button, Box, Stack } from './components';
+import { useCallback, useEffect, useState } from 'react';
 import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader';
+import { Buffer } from 'buffer';
+import { On, Off, Heading, Button, Box, Stack, Message } from './components';
 
 export const shortenAddress = (address) => {
   if (!address) return "none";
@@ -18,6 +19,8 @@ export default function Home() {
   const [chainId, setChainId] = useState();
   const [message, setMessage] = useState('');
 
+  // click handlers
+
   const connectWallet = async () => {
     console.log('> connectWallet');
 
@@ -27,13 +30,13 @@ export default function Home() {
       const connectKit = await loadConnectKit();
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
-        chainId: 137,
         providerType: SupportedProviders.Ethereum,
+        chainId: 137,
         rpc: {
           1: 'https://cloudflare-eth.com/',  // Mainnet
           5: 'https://goerli.optimism.io/',  // Goerli
           137: 'https://polygon-rpc.com/',   // Polygon
-        }
+        },
       });
       console.log('checkSupportResult is', checkSupportResult);
 
@@ -47,7 +50,7 @@ export default function Home() {
       if (chainIdResponse) setChainId(chainIdResponse);
     } catch (error) {
       console.error(error)
-      setMessage(error);
+      setMessage(error.message);
     }
   };
 
@@ -62,41 +65,10 @@ export default function Home() {
     // needs to be called here
     // the Extension does not emit a disconnect event
     resetState();
-  }
-
-  const resetState = async () => {
-    console.log('> resetState');
-
-    setAccount();
-    setChainId();
-    setProvider();
-    setMessage('');
   };
 
-  const requestAccounts = async (provider) => {
-    try {
-      return await provider.request({ method: 'eth_requestAccounts' });
-    } catch (error) {
-      console.error(error)
-      setMessage(error);
-    }
-  }
-
-  const getChainId = async (provider) => {
-    try {
-      return await provider.request({ method: 'eth_chainId' });
-    } catch (error) {
-      console.error(error)
-      setMessage(error);
-    }
-  }
-
-  const isRequestedChainId = (requestedChainId) => {
-    console.log(`comparing ${requestedChainId} to ${chainId}`)
-    return chainId === requestedChainId || chainId === `0x${requestedChainId.toString(16)}`;
-  }
-
-  const switchChains = async (chainId) => {
+  const switchChain = useCallback(async (chainId) => {
+    console.log('> switchChain', chainId);
     setMessage('');
 
     try {
@@ -106,12 +78,116 @@ export default function Home() {
       });
     } catch (error) {
       console.error(error)
-      setMessage(error);
+      setMessage(error.message);
     }
-  }
+  });
+
+  const personalSign = useCallback(async () => {
+    console.log('> personalSign');
+    setMessage('');
+
+    const exampleMessage = 'Example message';
+    try {
+      const from = account;
+      const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`;
+      const signedMessage = await provider.request({
+        method: 'personal_sign',
+        params: [msg, from, 'no password'],
+      });
+      setMessage(`Signed message is: ${signedMessage}`);
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message);
+    }
+  });
+
+  const signTypedData = useCallback(async () => {
+    console.log('> signTypedData');
+    setMessage('');
+
+    console.log('chainId is', chainId);
+
+    const messageData = {
+      domain: {
+        // This defines the network, in this case, Mainnet.
+        chainId,
+        // Give a user-friendly name to the specific contract you're signing for.
+        name: 'Ether Mail',
+        // Add a verifying contract to make sure you're establishing contracts with the proper entity.
+        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        // This identifies the latest version.
+        version: '1',
+      },
+
+      // This defines the message you're proposing the user to sign, is dapp-specific, and contains
+      // anything you want. There are no required fields. Be as explicit as possible when building out
+      // the message schema.
+      message: {
+        contents: 'Hello, Bob!',
+        attachedMoneyInEth: 4.2,
+        from: {
+          name: 'Cow',
+          wallets: [
+            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          ],
+        },
+        to: [
+          {
+            name: 'Bob',
+            wallets: [
+              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            ],
+          },
+        ],
+      },
+      // This refers to the keys of the following types object.
+      primaryType: 'Mail',
+      types: {
+        // This refers to the domain the contract is hosted on.
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        // Not an EIP712Domain definition.
+        Group: [
+          { name: 'name', type: 'string' },
+          { name: 'members', type: 'Person[]' },
+        ],
+        // Refer to primaryType.
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person[]' },
+          { name: 'contents', type: 'string' },
+        ],
+        // Not an EIP712Domain definition.
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallets', type: 'address[]' },
+        ],
+      },
+    };
+
+    const from = account;
+    const msgParams = JSON.stringify(messageData)
+
+    try {
+      const signedMessage = await provider.request({
+        method: 'eth_signTypedData_v4',
+        params: [from, msgParams],
+      });
+      setMessage(`Signed message is: ${signedMessage}`);
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message);
+    }
+  });
+
+  // effects
 
   useEffect(() => {
-    console.log('> useEffect');
+    console.log('> set provider events useEffect');
 
     if (provider?.on) {
       const handleDisconnect = (props) => {
@@ -120,6 +196,15 @@ export default function Home() {
         // needs to be called here to handle disconnect from Ledger Live
         resetState();
       };
+
+      const handleConnect = async () => {
+        console.log('> handleConnect');
+
+        console.log('provider is', provider);
+
+        setChainId(provider.chainId);
+        setAccount(provider.account);
+      }
 
       const handleChainChanded = async (chainId) => {
         console.log('> handleChainChanded', chainId);
@@ -131,11 +216,14 @@ export default function Home() {
         setAccount(accounts[0]);
       }
 
+      provider.on('connect', handleConnect);
       provider.on('chainChanged', handleChainChanded);
       provider.on('accountsChanged', handleAccountsChanged);
       provider.on("disconnect", handleDisconnect);
 
       return () => {
+        console.log('> unset provider events useEffect');
+
         // handle removing event listeners here,
         // when disconnecting from the Extension no disconnect event is emited
         if (provider.removeListener) {
@@ -148,6 +236,39 @@ export default function Home() {
       };
     }
   }, [provider]);
+
+  // utils
+
+  const resetState = async () => {
+    console.log('> resetState');
+
+    setAccount();
+    setChainId();
+    setProvider();
+    setMessage('');
+  };
+
+  const getChainId = async (provider) => {
+    try {
+      return await provider.request({ method: 'eth_chainId' });
+    } catch (error) {
+      console.error(error)
+      setMessage(error);
+    }
+  }
+
+  const requestAccounts = async (provider) => {
+    try {
+      return await provider.request({ method: 'eth_requestAccounts' });
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message);
+    }
+  };
+
+  const isRequestedChainId = (requestedChainId) => {
+    return chainId === requestedChainId || chainId === `0x${requestedChainId.toString(16)}`;
+  };
 
   return (
     <>
@@ -166,7 +287,7 @@ export default function Home() {
           </>
         )}
 
-        <Box>{message ? message.message : null}</Box>
+        <Message>{message ? message : null}</Message>
 
         {!account ? (
           <Box>
@@ -179,13 +300,20 @@ export default function Home() {
             </Box>
 
             <Box>
-              <Button disabled={isRequestedChainId(137)} onClick={() => switchChains(137)}>Switch to Polygon</Button>
+              <Button onClick={personalSign}>Personal sign</Button>
             </Box>
             <Box>
-              <Button disabled={isRequestedChainId(5)} onClick={() => switchChains(5)}>Switch to Göerli</Button>
+              <Button onClick={signTypedData}>Sign typed data</Button>
+            </Box>
+
+            <Box>
+              <Button disabled={isRequestedChainId(137)} onClick={() => switchChain(137)}>Switch to Polygon</Button>
             </Box>
             <Box>
-              <Button disabled={isRequestedChainId(1)} onClick={() => switchChains(1)}>Switch to Mainnet</Button>
+              <Button disabled={isRequestedChainId(5)} onClick={() => switchChain(5)}>Switch to Göerli</Button>
+            </Box>
+            <Box>
+              <Button disabled={isRequestedChainId(1)} onClick={() => switchChain(1)}>Switch to Mainnet</Button>
             </Box>
             </>
         )}

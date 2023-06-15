@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 import { Box, Button } from './StyledComponents'
 
@@ -6,8 +5,6 @@ export const NetworkSwitcher = () => {
   const { chain } = useNetwork()
   const { chains, isError, error, pendingChainId, switchNetwork, status } =
     useSwitchNetwork()
-
-    console.log(chain, chains)
 
   return (
     <Box>
