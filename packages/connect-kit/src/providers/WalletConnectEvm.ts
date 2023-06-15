@@ -30,7 +30,12 @@ export async function getWalletConnectProvider(): Promise<WalletConnectProvider>
   log('getWalletConnectProvider');
 
   try {
-    return await initWalletConnectProvider();
+    const provider = await initWalletConnectProvider();
+    assignWalletConnectProviderEvents(provider);
+    // replace the provider's request function with the patched one
+    provider.request = patchWalletConnectProviderRequest(provider);
+
+    return provider;
   } catch (err) {
     const error = (err instanceof Error) ? err : new Error(String(err));
     logError('error', error);
@@ -62,18 +67,10 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
     showQrModal: false,
   }
   log('ethereum init options are', ethereumInitOpts);
+  log('creating a new provider instance');
 
   try {
-    const provider = await WalletConnectProvider.init(ethereumInitOpts);
-
-    // provider.setDefaultChain(supportOptions.chainId);
-    assignWalletConnectProviderEvents(provider);
-
-    // replace the provider's request function with the patched one
-    provider.request = patchWalletConnectProviderRequest(provider);
-
-    log('created a new provider instance', provider);
-    return provider;
+    return WalletConnectProvider.init(ethereumInitOpts);
   } catch (err) {
     logError('Error while initializing ethereum provider');
     throw err;
@@ -89,12 +86,15 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
   // get the provider's request function so we can call it later
   const baseRequest = provider.request.bind(provider);
 
+  const providerOptions: WalletConnectProviderOptions = getSupportOptions();
+  log('walletConnectProviderOptions is', providerOptions);
+
   return async function <T = unknown>({ method, params }: EthereumRequestPayload): Promise<T> {
     // patch eth_requestAccounts to handle the modal
     if (method === 'eth_requestAccounts') {
       log('calling patched', method, params);
 
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         try {
           if (!provider?.session?.connected) {
             showExtensionOrLLModal({
@@ -105,18 +105,21 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
               }
             });
 
+            log('creating a new session');
             // connect initializes the session and waits for connection
-            provider.connect().then(() => {
-              log('creating a new session');
-              // call the original provider request
-              return resolve(baseRequest({ method, params }));
-            });
+            await provider.connect({
+              chains: providerOptions.chains,
+              optionalChains: providerOptions.optionalChains,
+            })
+            // call the original provider request
+            resolve(baseRequest({ method, params }));
           } else {
             log('reusing existing session');
             // call the original provider request
             resolve(baseRequest({ method, params }));
           }
         } catch(err) {
+          // should catch both user reject and connection declining
           logError('error', err);
           return reject(err);
         }
@@ -146,7 +149,7 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
 
     provider.removeListener('connect', connectHandler);
     provider.removeListener('session_delete', disconnectHandler);
-    // provider.removeListener("display_uri", displayUriHandler);
+    provider.removeListener("display_uri", displayUriHandler);
   }
 
   log('provider is', provider);
