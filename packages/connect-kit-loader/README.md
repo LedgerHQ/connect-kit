@@ -82,12 +82,12 @@ type CheckSupportOptions = {
   version?: number;
 
   // WalletConnect v2 init parameters
-  projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
-  chains?: number[];               // REQUIRED ethereum chains, has default
+  projectId?: string;              // REQUIRED WC v2 project id
+  chains?: number[];               // REQUIRED ethereum chains
   optionalChains?: number[];       // OPTIONAL ethereum chains
-  methods?: string[];              // REQUIRED ethereum methods, has default
+  methods?: string[];              // REQUIRED ethereum methods
   optionalMethods?: string[];      // OPTIONAL ethereum methods
-  events?: string[];               // REQUIRED ethereum events, has default
+  events?: string[];               // REQUIRED ethereum events
   optionalEvents?: string[];       // OPTIONAL ethereum events
   rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
   metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
@@ -103,9 +103,9 @@ The simplest use case is to just specify the `providerType`, `version` and
 - `providerType: SupportedProviders.Ethereum`
 - `version: 2` - use WallertConnect v2, default is 1
 - `projectId` - required for WalletConnect v2 projects, create one at
-  [cloud.walletconnect.com](https://cloud.walletconnect.com/)
+  [WalletConnect Cloud](https://cloud.walletconnect.com/)
 
-You can specify other parameters to
+You can also specify these parameters
 
 - `chains` - an array of integer chain ids that the wallet must support, the
   connection will be refused if not all ids are supported, defaults to `[1]`
@@ -115,16 +115,6 @@ You can specify other parameters to
 - `optionalMethods` - an array of method names that the wallet may support
 - `events` - an array of event names that the wallet must support
 - `optionalEvents` - an array of method names that the wallet may support
-- `metadata` - an object that specifies some properties of your dApp, that will be presented to the user by the wallet when connecting
-
-```ts
-interface Metadata {
-  name: string;
-  description: string;
-  url: string;
-  icons: string[];
-}
-```
 
 #### Parameters for WalletConnect v1
 
@@ -170,19 +160,33 @@ of two modals.
 - "Try the Ledger Extension", in case the user's platform supports the Extension
   but it is not installed or enabled; a button will be shown to let the user
   install the Extension.
-- "Do you have Ledger Live?", in case the user's platform does not support
-  the Extension they will be able to use Ledger Live Mobile or Desktop.
+- "Connect with Ledger Live", in case the user's platform does not support
+  the Extension they will be able to use or install Ledger Live Mobile or Desktop.
 
 ### `getProvider`
 
 #### Returns
 
-`Promise<EthereumProvider | SolanaProvider>`
+`Promise<EthereumProvider>`
 
 #### Description
 
-Based on the options passed to `checkSupport` it will return an instance of the
+Based on the parameters passed to `checkSupport` it will return an instance of the
 Ledger Extension provider or a WalletConnect provider.
+
+
+## Migration to WalletConnect v2
+
+To migrate from WaletConnect version 1 to version 2:
+
+- Get a project id from the WalletConnect Cloud, it's free
+- Update Connect Kit loader to the latest version
+- Add `version: 2` and `projectId: 'id from step 1'` and rename `rpc` to `rpcMap` on your `checkSupport` parameters
+
+Have a look at the example velow and the full list of WalletConnect v2 options above.
+
+
+## Examples
 
 ### Example for WalletConnect v2
 
@@ -201,7 +205,7 @@ const connectWallet = async () => {
     const checkSupportResult = connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
       version: 2,
-      projectId: 'YOUR_PROJECT_ID_HERE',
+      projectId: 'YOUR_PROJECT_ID',
       chains: [1, 137],
       optionalChains: [5],
       rpcMap: {
@@ -228,6 +232,8 @@ const connectWallet = async () => {
 ```
 
 ### Example for WalletConnect v1
+
+If you are currently using WalletConnect version 1 you should migrate to version 2 as soon as possible, as the servers for version 1 are going to be shutdown on 28 June.
 
 An example function using the *Ledger Connect Kit* and *ethers.js*, that would
 be called when pressing the connect button on a React app.
