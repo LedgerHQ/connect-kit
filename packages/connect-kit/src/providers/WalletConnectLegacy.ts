@@ -23,7 +23,12 @@ export async function getWalletConnectLegacyProvider(): Promise<EthereumProvider
   log('getWalletConnectLegacyProvider');
 
   try {
-    return await initWalletConnectLegacyProvider() as unknown as EthereumProvider;
+    const provider = await initWalletConnectLegacyProvider() as unknown as EthereumProvider;
+    assignWalletConnectLegacyProviderEvents(provider);
+    // replace the provider's request function with the patched one
+    provider.request = patchWalletConnectLegacyProviderRequest(provider);
+
+    return provider;
   } catch (err) {
     const error = (err instanceof Error) ? err : new Error(String(err));
     logError('error', error);
@@ -41,21 +46,15 @@ async function initWalletConnectLegacyProvider(): Promise<void> {
 
   const providerOptions: WalletConnectLegacyProviderOptions = getSupportOptions();
   log('walletConnectProviderOptions is', providerOptions);
+  log('created a new legacy provider instance');
 
-  const provider = new WalletConnectProvider({
+  return new WalletConnectProvider({
     chainId: providerOptions.chainId,
     bridge: providerOptions.bridge,
     infuraId: providerOptions.infuraId,
     rpc: providerOptions.rpc,
     qrcode: false,
   });
-  assignWalletConnectLegacyProviderEvents(provider);
-
-  // replace the provider's request function with the patched one
-  provider.request = patchWalletConnectLegacyProviderRequest(provider);
-
-  log('created a new legacy provider instance', provider);
-  return provider;
 }
 
 /**
@@ -73,29 +72,29 @@ function patchWalletConnectLegacyProviderRequest (provider: WalletConnectProvide
     if (method === 'eth_requestAccounts') {
       log('calling patched', method, params);
 
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         try {
           if (!provider.connected) {
-            provider.connector.createSession({
+            await provider.connector.createSession({
               chainId: supportOptions.chainId
-            }).then(() => {
-              log('created a new session');
-              // show the extension install modal or the WC URI
-              showExtensionOrLLModal({
-                uri: provider.connector.uri,
-                onClose: () => {
-                  logError('user rejected');
-                  return reject(new UserRejectedRequestError());
-                }
-              });
-
-              // call the original provider request
-              resolve(baseRequest({ method, params }));
             });
+
+            log('created a new session');
+            // show the extension install modal or the WC URI
+            showExtensionOrLLModal({
+              uri: provider.connector.uri,
+              onClose: () => {
+                logError('user rejected');
+                reject(new UserRejectedRequestError());
+              }
+            });
+
+            // call the original provider request
+            return resolve(await baseRequest({ method, params }));
           } else {
             log('reusing existing session');
             // call the original provider request
-            resolve(baseRequest({ method, params }));
+            resolve(await baseRequest({ method, params }));
           }
         } catch(err) {
           logError('error', err);
@@ -116,8 +115,14 @@ function patchWalletConnectLegacyProviderRequest (provider: WalletConnectProvide
 function assignWalletConnectLegacyProviderEvents(provider: WalletConnectProvider) {
   log('assignWalletConnectLegacyProviderEvents');
 
-  provider.connector.on('connect', connectHandler);
+  provider.on('connect', connectHandler);
   provider.on('disconnect', disconnectHandler);
+
+  function connectHandler(props: any) {
+    log('connectHandler', props);
+
+    setIsModalOpen(false);
+  }
 
   function disconnectHandler(code: number, reason: string) {
     log('disconnectHandler', code, reason);
@@ -130,9 +135,3 @@ function assignWalletConnectLegacyProviderEvents(provider: WalletConnectProvider
     provider.removeListener("disconnect", disconnectHandler);
   }
 };
-
-function connectHandler(props: any) {
-  log('connectHandler', props);
-
-  setIsModalOpen(false);
-}
