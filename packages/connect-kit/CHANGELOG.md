@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.1.0-beta.0 - 2023-06-16
+
 ## 1.0.16 - 2023-04-04
 ### Changed
 - Add campaign params to App Store link.
