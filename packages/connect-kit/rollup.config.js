@@ -6,6 +6,7 @@ import image from '@rollup/plugin-image';
 import replace from '@rollup/plugin-replace';
 import { terser } from "rollup-plugin-terser";
 import json from '@rollup/plugin-json';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 const packageJson = require("./package.json");
 
@@ -30,6 +31,7 @@ export default [
       commonjs({
         transformMixedEsModules: true,
       }),
+      nodePolyfills(),
       replace({
         'process.env.NODE_ENV': JSON.stringify('production'),
         preventAssignment: true,
