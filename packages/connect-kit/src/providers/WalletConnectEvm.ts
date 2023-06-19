@@ -1,5 +1,5 @@
 import { default as WalletConnectProvider } from '../support/EthereumProvider/EthereumProvider';
-import { setIsModalOpen } from '../components/Modal/Modal';
+import { isModalOpen, setIsModalOpen } from '../components/Modal/Modal';
 import { setWalletConnectUri } from '../components/UseLedgerLiveModal/UseLedgerLiveModal';
 import { UserRejectedRequestError } from '../lib/errors';
 import { getDebugLogger, getErrorLogger } from "../lib/logger";
@@ -112,11 +112,11 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
               optionalChains: providerOptions.optionalChains,
             })
             // call the original provider request
-            resolve(baseRequest({ method, params }));
+            resolve(await baseRequest({ method, params }));
           } else {
             log('reusing existing session');
             // call the original provider request
-            resolve(baseRequest({ method, params }));
+            resolve(await baseRequest({ method, params }));
           }
         } catch(err) {
           // should catch both user reject and connection declining
@@ -138,18 +138,24 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
 function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
   log('assignWalletConnectProviderEvents');
 
+  if (!provider) return;
+  removeEvents(provider);
   provider.on('connect', connectHandler);
   provider.on('display_uri', displayUriHandler);
   provider.on('session_delete', disconnectHandler);
+
+  function removeEvents(provider: WalletConnectProvider) {
+    if (!provider) return;
+    provider.removeListener('connect', connectHandler);
+    provider.removeListener('session_delete', disconnectHandler);
+    provider.removeListener("display_uri", displayUriHandler);
+  }
 
   function disconnectHandler(params: any) {
     log('disconnectHandler', params);
 
     provider.disconnect();
-
-    provider.removeListener('connect', connectHandler);
-    provider.removeListener('session_delete', disconnectHandler);
-    provider.removeListener("display_uri", displayUriHandler);
+    removeEvents(provider);
   }
 
   log('provider is', provider);
@@ -164,6 +170,8 @@ function connectHandler(props: any) {
 function displayUriHandler(uri: string) {
   log('displayUriHandler', uri);
 
-  // update the modal URI when we get it
-  setWalletConnectUri(uri);
+  if (isModalOpen()) {
+    // update the modal URI when we get it
+    setWalletConnectUri(uri);
+  }
 }
