@@ -3,7 +3,9 @@ import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 import { mainnet, polygon, goerli } from 'wagmi/chains'
 import { LedgerConnector } from 'wagmi/connectors/ledger'
-import { WalletConnectLegacyConnector } from 'wagmi/connectors/walletConnectLegacy'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+
+const testProjectId = '85a25426af6e359da0d3508466a95a1d';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli, polygon],
@@ -19,13 +21,14 @@ const wagmiConfig = createConfig({
       chains,
       options: {
         enableDebugLogs: true,
-        chainId: 1,
+        projectId: testProjectId,
+        requiredChains: [1],
       }
     }),
-    new WalletConnectLegacyConnector({
+    new WalletConnectConnector({
       chains,
       options: {
-        chainId: 1,
+        projectId: testProjectId,
       },
     }),
   ],
