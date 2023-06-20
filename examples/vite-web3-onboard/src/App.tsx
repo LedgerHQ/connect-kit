@@ -56,7 +56,7 @@ function App() {
     const messageData = {
       domain: {
         // This defines the network, in this case, Mainnet.
-        chainId: 1,
+        chainId: connectedChain?.id,
         // Give a user-friendly name to the specific contract you're signing for.
         name: 'Ether Mail',
         // Add a verifying contract to make sure you're establishing contracts with the proper entity.
@@ -129,7 +129,7 @@ function App() {
       console.error(error)
       alert((error as Error).message)
     }
-  }, [wallet])
+  }, [wallet, connectedChain?.id])
 
   return (
     <Stack className="App" direction="column" justifyContent="center" height="100vh">

@@ -2,11 +2,20 @@ import ledgerModule from '@web3-onboard/ledger'
 import walletConnectModule from '@web3-onboard/walletconnect'
 import { init } from '@web3-onboard/react'
 
+const testProjectId = '85a25426af6e359da0d3508466a95a1d';
+
 const ledger = ledgerModule({
-  chainId: 1,
+  enableDebugLogs: true,
+  version: 2,
+  projectId: testProjectId,
+  requiredChains: [1],
 })
 
-const walletConnect = walletConnectModule()
+const walletConnect = walletConnectModule({
+  version: 2,
+  projectId: testProjectId,
+  requiredChains: [1],
+})
 
 import icon from './icon'
 

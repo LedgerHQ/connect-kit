@@ -3,6 +3,8 @@ import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader
 import { Buffer } from 'buffer';
 import { On, Off, Heading, Button, Box, Stack, Message } from './components';
 
+const testProjectId = '85a25426af6e359da0d3508466a95a1d';
+
 export const shortenAddress = (address) => {
   if (!address) return "none";
 
@@ -32,7 +34,7 @@ export default function Home() {
       const checkSupportResult = connectKit.checkSupport({
         providerType: SupportedProviders.Ethereum,
         version: 2,
-        projectId: '85a25426af6e359da0d3508466a95a1d',
+        projectId: testProjectId,
         chains: [137],
         rpcMap: {
           1: 'https://cloudflare-eth.com/',  // Mainnet
@@ -46,7 +48,11 @@ export default function Home() {
       setProvider(connectKitProvider);
 
       const requestAccountsResponse = await (requestAccounts(connectKitProvider));
-      if (requestAccountsResponse) setAccount(requestAccountsResponse[0]);
+      if (requestAccountsResponse) {
+        setAccount(requestAccountsResponse[0]);
+        const chainIdResponse = await getChainId(connectKitProvider);
+        if (chainIdResponse) setChainId(chainIdResponse);
+      }
     } catch (error) {
       console.error(error)
       setMessage(error.message);
@@ -227,7 +233,7 @@ export default function Home() {
         // when disconnecting from the Extension no disconnect event is emited
         if (provider.removeListener) {
           console.log('> removing event listeners');
-
+          provider.removeListener('connect', handleConnect);
           provider.removeListener('chainChanged', handleChainChanded);
           provider.removeListener('accountsChanged', handleAccountsChanged);
           provider.removeListener("disconnect", handleDisconnect);
