@@ -1,5 +1,5 @@
 import { default as WalletConnectProvider } from '../support/EthereumProvider/EthereumProvider';
-import { isModalOpen, setIsModalOpen } from '../components/Modal/Modal';
+import { setIsModalOpen } from '../components/Modal/Modal';
 import { setWalletConnectUri } from '../components/UseLedgerLiveModal/UseLedgerLiveModal';
 import { UserRejectedRequestError } from '../lib/errors';
 import { getDebugLogger, getErrorLogger } from "../lib/logger";
@@ -110,7 +110,8 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
             await provider.connect({
               chains: providerOptions.chains,
               optionalChains: providerOptions.optionalChains,
-            })
+            });
+
             // call the original provider request
             resolve(await baseRequest({ method, params }));
           } else {
@@ -147,8 +148,22 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
   function removeEvents(provider: WalletConnectProvider) {
     if (!provider) return;
     provider.removeListener('connect', connectHandler);
-    provider.removeListener('session_delete', disconnectHandler);
     provider.removeListener("display_uri", displayUriHandler);
+    provider.removeListener('session_delete', disconnectHandler);
+  }
+
+  function connectHandler(props: any) {
+    log('connectHandler', props);
+
+    provider.removeListener("display_uri", displayUriHandler);
+    setIsModalOpen(false);
+  }
+
+  function displayUriHandler(uri: string) {
+    log('displayUriHandler', uri);
+
+    // update the modal URI when we get it
+    setWalletConnectUri(uri);
   }
 
   function disconnectHandler(params: any) {
@@ -159,19 +174,4 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
   }
 
   log('provider is', provider);
-}
-
-function connectHandler(props: any) {
-  log('connectHandler', props);
-
-  setIsModalOpen(false);
-}
-
-function displayUriHandler(uri: string) {
-  log('displayUriHandler', uri);
-
-  if (isModalOpen()) {
-    // update the modal URI when we get it
-    setWalletConnectUri(uri);
-  }
 }

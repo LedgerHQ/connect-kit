@@ -8,7 +8,6 @@ import { getDebugLogger } from "../../lib/logger";
 const log = getDebugLogger('Modal')
 
 export let setIsModalOpen = (isModalOpen: boolean) => {};
-export let isModalOpen: Function;
 
 export interface ModalProps {
   isOpen?: boolean;
@@ -20,10 +19,6 @@ export const Modal = ({ onClose, children }: ModalProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   // assign the set state function to the exported one
   setIsModalOpen = setIsOpen;
-  isModalOpen = (): boolean => {
-    log('isOpen is ', isOpen);
-    return isOpen
-  };
 
   const handleClose = () => {
     setIsModalOpen(false);
