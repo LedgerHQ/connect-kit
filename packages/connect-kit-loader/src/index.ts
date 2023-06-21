@@ -14,7 +14,7 @@ export type EnableDebugLogsFunction = () => void;
 // support
 
 export type CheckSupportOptions = {
-  version?: number;
+  walletConnectVersion?: number;
   providerType: SupportedProviders;
 
   // WalletConnect v2 init parameters

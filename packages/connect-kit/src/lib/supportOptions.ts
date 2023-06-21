@@ -12,7 +12,7 @@ const log = getDebugLogger('supportOptions');
 let moduleSupportOptions: ValidatedSupportOptions;
 
 type CheckSupportCommonOptions = {
-  version?: number;                  // OPTIONAL, has default
+  walletConnectVersion?: number;     // OPTIONAL, has default
   providerType: SupportedProviders;  // REQUIRED
 }
 
@@ -53,7 +53,7 @@ export type ValidatedSupportOptions = CheckSupportOptions &
 export const setSupportOptions = (options: CheckSupportOptions): void => {
   log('setSupportOptions', options);
 
-  const version = options.version || DEFAULT_WALLETCONNECT_VERSION;
+  const walletConnectVersion = options.walletConnectVersion || DEFAULT_WALLETCONNECT_VERSION;
 
   let chains: number[];
   let chainId: number;
@@ -62,7 +62,7 @@ export const setSupportOptions = (options: CheckSupportOptions): void => {
   // set default chains and chainId
   // for WalletConnect v1 we only care about chainId
   // for WalletConnect v2 we only care about chains
-  if (version === 1) {
+  if (walletConnectVersion === 1) {
     chainId = options.chainId || DEFAULT_CHAIN_ID;
     chains = [chainId];
   } else {
@@ -82,14 +82,14 @@ export const setSupportOptions = (options: CheckSupportOptions): void => {
 
   const validatedOptions: ValidatedSupportOptions = {
     ...options,
-    version,
+    walletConnectVersion,
     chains,
     chainId,
     optionalChains,
     projectId: options.projectId || '',
   };
 
-  if (version === 2 && (!options.projectId || options.projectId === '')) {
+  if (walletConnectVersion === 2 && (!options.projectId || options.projectId === '')) {
     throw new Error(
       'WalletConnect requires a projectId. Please visit https://cloud.walletconnect.com to get one.'
     )

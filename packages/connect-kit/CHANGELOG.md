@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Changed
+- Rename the version parameter to walletConnectVersion.
 - Internal improvements.
 
 ## 1.1.0-beta.1 - 2023-06-19

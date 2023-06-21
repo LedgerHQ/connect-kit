@@ -79,7 +79,7 @@ disable them.
 ```ts
 type CheckSupportOptions = {
   providerType: SupportedProviders;
-  version?: number;
+  walletConnectVersion?: number;
 
   // WalletConnect v2 init parameters
   projectId?: string;              // REQUIRED WC v2 project id
@@ -96,11 +96,11 @@ type CheckSupportOptions = {
 To enable WalletConnect v2 you should update to version 1.1.0 of Connect Kit
 Loader.
 
-The simplest use case is to just specify the `providerType`, `version` and
+The simplest use case is to just specify the `providerType`, `walletConnectVersion` and
 `projectId` parameters.
 
 - `providerType: SupportedProviders.Ethereum`
-- `version: 2` - use WallertConnect v2, default is 1
+- `walletConnectVersion: 2` - use WallertConnect v2, default is 1
 - `projectId` - required for WalletConnect v2 projects, create one at
   [WalletConnect Cloud](https://cloud.walletconnect.com/)
 
@@ -180,7 +180,7 @@ To migrate from WaletConnect version 1 to version 2:
 
 - Get a project id from the WalletConnect Cloud, it's free
 - Update Connect Kit loader to the latest version
-- Add `version: 2` and `projectId: 'id from step 1'` and rename `rpc` to `rpcMap` on your `checkSupport` parameters
+- Add `walletConnectVersion: 2` and `projectId: 'id from step 1'` and rename `rpc` to `rpcMap` on your `checkSupport` parameters
 
 Have a look at the example velow and the full list of WalletConnect v2 options above.
 
@@ -203,7 +203,7 @@ const connectWallet = async () => {
     connectKit.enableDebugLogs();
     const checkSupportResult = connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
-      version: 2,
+      walletConnectVersion: 2,
       projectId: 'YOUR_PROJECT_ID',
       chains: [1, 137],
       optionalChains: [5],
@@ -252,6 +252,7 @@ const connectWallet = async () => {
     connectKit.enableDebugLogs();
     const checkSupportResult = connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
+      walletConnectVersion: 1,
       chainId: 1,
       rpc: {
         1: `https://cloudflare-eth.com`,                 // Mainnet
