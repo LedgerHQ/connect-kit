@@ -10,7 +10,7 @@ from a CDN so that we can improve the logic and UI without users having to wait
 for wallet libraries and dApps updating package versions and releasing new builds.
 
 
-## Connect Kit loader
+## Using Connect Kit loader
 
 To use Connect Kit you just have to add the `@ledgerhq/connect-kit-loader`
 package as a dependency using your preferred package manager, using yarn as an
@@ -178,7 +178,8 @@ Ledger Extension provider or a WalletConnect provider.
 
 To migrate from WaletConnect version 1 to version 2:
 
-- Get a project id from the WalletConnect Cloud, it's free
+- Create a project id from the [WalletConnect Cloud](https://cloud.walletconnect.com/),
+  it's free
 - Update Connect Kit loader to the latest version
 - Add `walletConnectVersion: 2` and `projectId: 'id from step 1'` and rename `rpc` to `rpcMap` on your `checkSupport` parameters
 
@@ -276,3 +277,38 @@ const connectWallet = async () => {
   }
 }
 ```
+
+
+## Development
+
+If you want to fix a bug or develop a new feature for Connect Kit follow these steps:
+
+- clone the repository
+
+    git clone https://github.com/LedgerHQ/connect-kit
+
+- build the Connect Kit package
+
+    cd packages/connect-kit
+    yarn && yarn build
+
+- deploy it somewhere by using a service like vercel or netlify for test builds; e.g.
+
+    netlify deploy -d dist/ --prod
+
+- update the URL on the Connect Kit loader
+
+    // packages/connect-kit-loader/src/index.ts
+    const src = "https://DEPLOY_ADDRESS/umd/index.js";
+
+- build and link it locally; e.g.
+
+    yarn build && yarn link
+
+- use the linked loader package on your app
+
+    cd <my_app>
+    yarn
+    yarn link @ledgerhq/connect-kit-loader
+
+Your app will now use the local version of the Connect Kit loader and you just need to deploy new changes to the same URL and reload the app to test them.
