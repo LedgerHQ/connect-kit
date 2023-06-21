@@ -33,7 +33,7 @@ export default function Home() {
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
         providerType: SupportedProviders.Ethereum,
-        version: 2,
+        walletConnectVersion: 2,
         projectId: testProjectId,
         chains: [137],
         rpcMap: {

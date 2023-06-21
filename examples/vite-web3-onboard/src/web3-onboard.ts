@@ -6,7 +6,7 @@ const testProjectId = '85a25426af6e359da0d3508466a95a1d';
 
 const ledger = ledgerModule({
   enableDebugLogs: true,
-  version: 2,
+  walletConnectVersion: 2,
   projectId: testProjectId,
   requiredChains: [1],
 })

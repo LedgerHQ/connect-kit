@@ -62,7 +62,7 @@ export async function getProvider (): Promise<ProviderResult> {
 
       if (
         !localStorage?.getItem('connectKit_forceWcV2') &&
-        (supportOptions.version === 1 || localStorage?.getItem('connectKit_forceWcV1'))
+        (supportOptions.walletConnectVersion === 1 || localStorage?.getItem('connectKit_forceWcV1'))
       ) {
         return await getWalletConnectLegacyProvider();
       }
