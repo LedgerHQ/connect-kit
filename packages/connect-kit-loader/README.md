@@ -90,7 +90,6 @@ type CheckSupportOptions = {
   events?: string[];               // REQUIRED ethereum events
   optionalEvents?: string[];       // OPTIONAL ethereum events
   rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
-  metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
 }
 ```
 
@@ -214,7 +213,6 @@ const connectWallet = async () => {
         '137': 'https://polygon-rpc.com/',
       },
     });
-    console.log('checkSupportResult is', checkSupportResult);
 
     const provider = await connectKit.getProvider();
     setProvider(provider);
