@@ -26,7 +26,6 @@ export type CheckSupportOptions = {
   events?: string[];               // REQUIRED ethereum events, has default
   optionalEvents?: string[];       // OPTIONAL ethereum events
   rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
-  metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
 
   // WalletConnect v1 init parameters
   chainId?: number;

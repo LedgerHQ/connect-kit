@@ -1,4 +1,3 @@
-import type { CoreTypes } from '@walletconnect/types';
 import { WalletConnectProviderOptions } from "../providers/WalletConnectEvm";
 import { WalletConnectLegacyProviderOptions } from '../providers/WalletConnectLegacy';
 import { getDebugLogger } from "./logger";
@@ -27,7 +26,6 @@ export type CheckSupportWalletConnectProviderOptions = {
   events?: string[];               // REQUIRED ethereum events, has default
   optionalEvents?: string[];       // OPTIONAL ethereum events
   rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
-  metadata?: CoreTypes.Metadata;   // OPTIONAL metadata of your app
 }
 
 // WalletConnect v1 init parameters
