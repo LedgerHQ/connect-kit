@@ -8,13 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 Connect Kit now supports WalletConnect v2.
 
-To migrate to WaletConnect version 2:
-
-- Create a project id on the [WalletConnect Cloud](https://cloud.walletconnect.com/), it's
-  free.
-- Update Connect Kit loader to version 1.1.0.
-- Add `walletConnectVersion: 2`, `projectId: 'id from step 1'` and rename
- `rpc` to `rpcMap` on your `checkSupport` parameters.
+To migrate to WaletConnect version 2 you will need to create a project id on the
+[WalletConnect Cloud](https://cloud.walletconnect.com/) (it's free), update
+Connect Kit loader to version 1.1.0 and add `walletConnectVersion: 2`,
+`projectId: 'id from step 1'` and rename `rpc` to `rpcMap` on your
+`checkSupport` parameters.
 
 Have a look at the documentation for more details.
 
