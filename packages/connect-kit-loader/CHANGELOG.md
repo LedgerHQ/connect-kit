@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 1.1.0 - 2023-06-22
 Connect Kit now supports WalletConnect v2.
 
 To migrate to WaletConnect version 2 you will need to create a project id on the
