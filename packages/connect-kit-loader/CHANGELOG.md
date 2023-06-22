@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+Connect Kit now supports WalletConnect v2.
+
+To migrate to WaletConnect version 2:
+
+- Create a project id on the [WalletConnect Cloud](https://cloud.walletconnect.com/), it's
+  free.
+- Update Connect Kit loader to version 1.1.0.
+- Add `walletConnectVersion: 2`, `projectId: 'id from step 1'` and rename
+ `rpc` to `rpcMap` on your `checkSupport` parameters.
+
+Have a look at the documentation for more details.
+
+After 28 June you will need to specify a custom bridge server to
+keep using WalletConnect v1, passing `walletConnectVersion: 1` and
+`bridge: 'https://wc.custom.bridge.com'`.
 
 ## 1.1.0-beta.2 - 2023-06-21
 ### Changed

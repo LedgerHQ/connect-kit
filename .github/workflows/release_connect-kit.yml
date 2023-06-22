@@ -58,8 +58,7 @@ jobs:
         if: startsWith(github.event.inputs.release-type, 'pre')
         run: |
           cd ${{ env.PKG_DIR }}
-          #echo "NEW_VERSION=$(npm --no-git-tag-version --preid=${{ env.DIST_TAG_PRERELEASE }} version $RELEASE_TYPE)" >> $GITHUB_ENV
-          echo "NEW_VERSION=v1.1.0-beta.3" >> $GITHUB_ENV
+          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=${{ env.DIST_TAG_PRERELEASE }} version $RELEASE_TYPE)" >> $GITHUB_ENV
           echo "RELEASE_TAG=${{ env.DIST_TAG_PRERELEASE }}" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release-type }}
