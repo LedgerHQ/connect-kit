@@ -21,6 +21,7 @@ const wagmiConfig = createConfig({
       chains,
       options: {
         enableDebugLogs: true,
+        walletConnectVersion: 2,
         projectId: testProjectId,
         requiredChains: [1],
       }
