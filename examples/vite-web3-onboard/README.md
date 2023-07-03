@@ -7,6 +7,7 @@ You can recreate this project from scratch using these instructions. We're using
 Create a project and install the dependencies with
 
     $ pnpm create vite --template react-ts vite-ledger-web3-onboard
+    $ cd vite-ledger-web3-onboard
     $ pnpm install
 
 Run the project with

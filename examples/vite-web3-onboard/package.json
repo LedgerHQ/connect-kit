@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@web3-onboard/ledger": "^2.4.4",
-    "@web3-onboard/react": "^2.8.0",
-    "@web3-onboard/walletconnect": "^2.3.6",
+    "@web3-onboard/ledger": "^2.5.0",
+    "@web3-onboard/react": "^2.8.8",
+    "@web3-onboard/walletconnect": "^2.3.9",
     "node-stdlib-browser": "^1.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
