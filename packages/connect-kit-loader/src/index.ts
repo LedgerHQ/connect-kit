@@ -1,8 +1,17 @@
+import Analytics from "analytics";
+import segmentPlugin from "@analytics/segment";
+
+declare global {
+  interface Window {
+    analytics: any;
+  }
+}
+
 // chain
 
 export enum SupportedProviderImplementations {
-  LedgerConnect = 'LedgerConnect',
-  WalletConnect = 'WalletConnect',
+  LedgerConnect = "LedgerConnect",
+  WalletConnect = "WalletConnect",
 }
 
 // logging
@@ -16,21 +25,21 @@ export type CheckSupportOptions = {
   providerType: SupportedProviders;
 
   // WalletConnect v2 init parameters
-  projectId?: string;              // REQUIRED WC v2 project id, throws if v2 and not set
-  chains?: number[];               // REQUIRED ethereum chains, has default
-  optionalChains?: number[];       // OPTIONAL ethereum chains
-  methods?: string[];              // REQUIRED ethereum methods, has default
-  optionalMethods?: string[];      // OPTIONAL ethereum methods
-  events?: string[];               // REQUIRED ethereum events, has default
-  optionalEvents?: string[];       // OPTIONAL ethereum events
-  rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
+  projectId?: string; // REQUIRED WC v2 project id, throws if v2 and not set
+  chains?: number[]; // REQUIRED ethereum chains, has default
+  optionalChains?: number[]; // OPTIONAL ethereum chains
+  methods?: string[]; // REQUIRED ethereum methods, has default
+  optionalMethods?: string[]; // OPTIONAL ethereum methods
+  events?: string[]; // REQUIRED ethereum events, has default
+  optionalEvents?: string[]; // OPTIONAL ethereum events
+  rpcMap?: { [chainId: string]: string }; // OPTIONAL rpc urls for each chain
 
   // WalletConnect v1 init parameters
   chainId?: number;
   bridge?: string;
   infuraId?: string;
   rpc?: { [chainId: number]: string };
-}
+};
 
 export type CheckSupportResult = {
   isLedgerConnectSupported: boolean;
@@ -39,14 +48,16 @@ export type CheckSupportResult = {
   providerImplementation: SupportedProviderImplementations;
 };
 
-export type CheckSupportFunction = (options: CheckSupportOptions) => CheckSupportResult
+export type CheckSupportFunction = (
+  options: CheckSupportOptions
+) => CheckSupportResult;
 
 // ethereum
 
 export type EthereumRequestPayload = {
   method: string;
   params?: unknown[] | object;
-}
+};
 
 export interface EthereumProvider {
   providers?: EthereumProvider[];
@@ -54,7 +65,7 @@ export interface EthereumProvider {
   session?: unknown;
   chainId: string | number;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
-  disconnect?: {(): Promise<void>};
+  disconnect?: { (): Promise<void> };
   on(event: any, listener: any): void;
   removeListener(event: string, listener: any): void;
 }
@@ -75,18 +86,36 @@ export interface LedgerConnectKit {
   enableDebugLogs: EnableDebugLogsFunction;
   checkSupport: CheckSupportFunction;
   getProvider: GetProviderFunction;
-};
+}
+
+// load Analytics
+
+function getAnalytics() {
+  const analytics = Analytics({
+    app: "connect-kit",
+    plugins: [
+      segmentPlugin({
+        writeKey: "KEY HERE",
+      }),
+    ],
+  });
+  if (typeof analytics === "undefined") {
+    console.log(new Error("analytics must not be undefined!"));
+  }
+  return analytics;
+}
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
   const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
   const globalName = "ledgerConnectKit";
+  const analytics = getAnalytics();
 
   return new Promise((resolve, reject) => {
     const scriptId = `ledger-ck-script-${globalName}`;
 
     // we don't support server side rendering, reject with no stack trace for now
-    if (typeof document === 'undefined') {
-      reject('Connect Kit does not support server side');
+    if (typeof document === "undefined") {
+      reject("Connect Kit does not support server side");
       return;
     }
 
@@ -98,7 +127,7 @@ export async function loadConnectKit(): Promise<LedgerConnectKit> {
       script.id = scriptId;
       script.addEventListener("load", () => {
         resolve((window as { [key: string]: any })[globalName]);
-      })
+      });
       script.addEventListener("error", (e) => {
         reject(e.error);
       });
