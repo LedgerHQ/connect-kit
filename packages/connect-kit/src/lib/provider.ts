@@ -76,3 +76,17 @@ export async function getProvider (): Promise<ProviderResult> {
       throw new ProviderTypeIsNotSupportedError();
   }
 }
+
+/**
+ * Gets the hex chainId from a number or string.
+ */
+export const getHexChainId = (chainId: string | number) => {
+  log('getHexChainId', chainId);
+
+  // if chainId is a number or a string representing a decimal value
+  if (typeof chainId !== 'string' || !chainId.match(/^0x[0-9A-Fa-f]*$/))
+    return `0x${chainId.toString(16)}`;
+
+  // else asume it is in the correct hexadecimal format
+  return chainId;
+}
