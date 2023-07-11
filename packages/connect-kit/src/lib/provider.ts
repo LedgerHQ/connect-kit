@@ -1,6 +1,5 @@
 import { ProviderTypeIsNotSupportedError } from "./errors";
 import { EthereumProvider, getExtensionProvider } from "../providers/ExtensionEvm";
-import { getSolanaProvider, SolanaProvider } from "../providers/ExtensionSolana";
 import { getWalletConnectLegacyProvider } from "../providers/WalletConnectLegacy";
 import { getWalletConnectProvider } from "../providers/WalletConnectEvm";
 import { getDebugLogger } from "./logger";
@@ -27,7 +26,7 @@ export enum SupportedProviderImplementations {
   WalletConnect = 'WalletConnect',
 }
 
-export type ProviderResult = EthereumProvider | SolanaProvider
+export type ProviderResult = EthereumProvider
 
 let moduleProviderImplementation: SupportedProviderImplementations;
 
@@ -68,9 +67,6 @@ export async function getProvider (): Promise<ProviderResult> {
       }
 
       return await getWalletConnectProvider();
-      break;
-    case SupportedProviders.Solana:
-      return getSolanaProvider();
       break;
     default:
       throw new ProviderTypeIsNotSupportedError();

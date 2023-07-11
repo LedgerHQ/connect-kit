@@ -3,7 +3,6 @@ import {
   getExtensionProvider,
   isExtensionSupported
 } from "../providers/ExtensionEvm";
-import { getSolanaProvider } from "../providers/ExtensionSolana";
 import { getBrowser } from "./browser";
 import {
   SupportedProviders,
@@ -11,7 +10,6 @@ import {
   SupportedProviderImplementations,
 } from "./provider";
 import { getDebugLogger } from "./logger";
-import { showModal } from "./modal";
 import {
   CheckSupportOptions,
   getSupportOptions,
@@ -41,10 +39,8 @@ export function checkSupport(options: CheckSupportOptions): CheckSupportResult {
 
   switch (supportOptions.providerType) {
     case SupportedProviders.Ethereum:
+    default:
       checkSupportResult = checkEthereumSupport(supportOptions);
-      break;
-    case SupportedProviders.Solana:
-      checkSupportResult = checkSolanaSupport();
       break;
   }
 
@@ -102,42 +98,6 @@ function checkEthereumSupport(options: ValidatedSupportOptions) {
   }
 
   setProviderImplementation(checkSupportResult.providerImplementation);
-
-  return checkSupportResult;
-}
-
-/**
- * Check support for Solana.
- */
-function checkSolanaSupport() {
-  log('checkSolanaSupport');
-
-  const device = getBrowser();
-  let isLedgerConnectEnabled: boolean = false;
-
-  try {
-    // just check if we can get the provider
-    const solanaProvider = getSolanaProvider();
-    isLedgerConnectEnabled = !!solanaProvider;
-  } catch (err) {
-    // swallow any error
-  }
-
-  const checkSupportResult: CheckSupportResult = {
-    isLedgerConnectSupported: isExtensionSupported(device),
-    isLedgerConnectEnabled: !!isLedgerConnectEnabled,
-    providerImplementation: SupportedProviderImplementations.LedgerConnect,
-  }
-
-  if (!checkSupportResult.isLedgerConnectSupported) {
-    showModal("PlatformNotSupportedModal");
-  } else if (
-    checkSupportResult.isLedgerConnectSupported &&
-    !checkSupportResult.isLedgerConnectEnabled
-  ) {
-    // if we're on a supported platform but Connect is not enabled
-    showModal("ExtensionInstallModal");
-  }
 
   return checkSupportResult;
 }
