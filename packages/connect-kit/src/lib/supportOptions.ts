@@ -26,6 +26,7 @@ export type CheckSupportWalletConnectProviderOptions = {
   events?: string[];               // REQUIRED ethereum events, has default
   optionalEvents?: string[];       // OPTIONAL ethereum events
   rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
+  relayUrl?: string;
 }
 
 // WalletConnect v1 init parameters
