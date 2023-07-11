@@ -63,6 +63,7 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
     events: providerOptions.events,
     optionalEvents: providerOptions.optionalEvents || OPTIONAL_EVENTS,
     rpcMap: providerOptions.rpcMap,
+    relayUrl: providerOptions.relayUrl,
     showQrModal: false,
   }
   log('ethereum init options are', ethereumInitOpts);
