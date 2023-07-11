@@ -54,6 +54,7 @@ export interface EthereumProvider {
   providers?: EthereumProvider[];
   connector?: unknown;
   session?: unknown;
+  chainId: string | number;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
   on(event: any, listener: any): void;

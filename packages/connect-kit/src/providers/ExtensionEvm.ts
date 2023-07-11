@@ -2,6 +2,7 @@ import { getDebugLogger } from "../lib/logger";
 import { Device } from "../lib/browser";
 import { NoServerSideError, ProviderNotFoundError } from "../lib/errors";
 import { getSupportOptions } from "../lib/supportOptions";
+import { getHexChainId } from "../lib/provider";
 
 const log = getDebugLogger('ExtensionEvm');
 
@@ -49,6 +50,7 @@ export interface EthereumProvider {
   providers?: EthereumProvider[];
   connector?: unknown;
   session?: unknown;
+  chainId: string | number;
   request<T = unknown>(args: EthereumRequestPayload): Promise<T>;
   disconnect?: {(): Promise<void>};
   // emit(eventName: string | symbol, ...args: any[]): boolean;
@@ -58,7 +60,6 @@ export interface EthereumProvider {
 
 export interface ExtensionEvmProvider extends EthereumProvider {
   [EXTENSION_EVM_PROP]: boolean;
-  chainId: string;
 }
 
 interface WindowWithEthereum {
@@ -69,7 +70,7 @@ interface WindowWithEthereum {
  * Gets the extension provider. In case it does not exist returns an instance
  * of the install provider.
  */
-export function getExtensionProvider (): EthereumProvider {
+export function getExtensionProvider(): EthereumProvider {
   log('getEthereumProvider');
 
   if (typeof window === 'undefined') {
@@ -77,6 +78,7 @@ export function getExtensionProvider (): EthereumProvider {
   }
 
   let provider = (window as WindowWithEthereum)[EXTENSION_EVM_GLOBAL];
+  log('provider is', provider);
 
   if (
     typeof provider === "undefined" ||
@@ -85,13 +87,19 @@ export function getExtensionProvider (): EthereumProvider {
     throw new ProviderNotFoundError();
   }
 
-  // TODO switch chains if not the same
-  log('chainId is', provider.chainId);
+  // switch chains if not the same
   const supportOptions = getSupportOptions();
-  const hexChainId = `0x${supportOptions.chainId?.toString(16) || 0}`
-  log('hex chainId is', hexChainId);
-  if (provider.chainId != hexChainId) {
-    log ('chainIds are different, changing to', hexChainId);
+  const requestedChainId = getHexChainId(supportOptions.chainId || 0);
+  const providerChainId = getHexChainId(provider.chainId)
+
+  if (providerChainId != requestedChainId) {
+    log ('chainIds are different, changing to', requestedChainId);
+    // request chain change but don't await on it
+    provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{
+        chainId: requestedChainId,
+      }]});
   }
 
   return provider;
