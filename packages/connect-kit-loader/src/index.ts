@@ -1,5 +1,3 @@
-import type { CoreTypes } from '@walletconnect/types';
-
 // chain
 
 export enum SupportedProviderImplementations {
@@ -61,24 +59,13 @@ export interface EthereumProvider {
   removeListener(event: string, listener: any): void;
 }
 
-// solana
-
-export interface SolanaProvider {
-  signTransaction(...args: unknown[]): Promise<unknown>;
-  signAllTransactions(...args: unknown[]): Promise<unknown>;
-  signAndSendTransaction(...args: unknown[]): Promise<unknown>;
-  connect(): Promise<void>;
-  disconnect(): Promise<void>;
-}
-
 // getProvider
 
 export enum SupportedProviders {
   Ethereum = 'Ethereum',
-  Solana = 'Solana',
 }
 
-export type ProviderResult = EthereumProvider | SolanaProvider;
+export type ProviderResult = EthereumProvider;
 
 export type GetProviderFunction = () => Promise<ProviderResult>;
 
