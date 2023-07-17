@@ -1,11 +1,6 @@
 name: Release Connect Kit Loader
 concurrency: release-${{ github.repository }}
-on:
-  workflow_dispatch:
-    inputs:
-      release-type:
-        description: 'Release type (one of): patch, minor, major, prepatch, preminor, premajor, prerelease'
-        required: true
+on: workflow_dispatch
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -14,7 +9,6 @@ jobs:
       PKG_DIR: 'packages/connect-kit-loader'
       PKG_SPEC: '@ledgerhq/connect-kit-loader'
       GIT_TAG_PREFIX: 'ckl-'
-      DIST_TAG_PRERELEASE: 'beta'
     steps:
       # Checkout project repository
       - name: Checkout
@@ -42,27 +36,13 @@ jobs:
           git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
 
       # Bump package version
-      # Use tag latest
       - name: Bump release version
-        if: startsWith(github.event.inputs.release-type, 'pre') != true
         run: |
           cd ${{ env.PKG_DIR }}
-          #echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE)" >> $GITHUB_ENV
+          # make sure it matches the package.json version field
           echo "NEW_VERSION=v1.1.0" >> $GITHUB_ENV
+          # change for pre-releases, e.g. alpha, beta
           echo "RELEASE_TAG=latest" >> $GITHUB_ENV
-        env:
-          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
-
-      # Bump package pre-release version
-      # Use tag beta for pre-release versions
-      - name: Bump pre-release version
-        if: startsWith(github.event.inputs.release-type, 'pre')
-        run: |
-          cd ${{ env.PKG_DIR }}
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=${{ env.DIST_TAG_PRERELEASE }} version $RELEASE_TYPE)" >> $GITHUB_ENV
-          echo "RELEASE_TAG=${{ env.DIST_TAG_PRERELEASE }}" >> $GITHUB_ENV
-        env:
-          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
 
       # Update changelog unreleased section with new version
       - name: Update changelog
