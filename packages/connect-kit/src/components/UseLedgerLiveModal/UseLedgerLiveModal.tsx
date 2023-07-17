@@ -9,7 +9,6 @@ import {
   Link,
 } from "../Modal/Modal.styles";
 import { QrCode, QrCodeSection } from "./UseLedgerLiveModal.styles";
-//import analyticsInstance from "../../Analytics/Analytics"
 import { useAnalytics } from "../../hooks/useAnalytics";
 
 const log = getDebugLogger('UseLedgerLiveModal');
