@@ -89,7 +89,7 @@ export interface LedgerConnectKit {
 }
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "connect-kit.vercel.app/umd/index.js";
+  const src = ".../umd/index.js";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {

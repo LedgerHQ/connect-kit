@@ -9,6 +9,8 @@ import {
   Link,
 } from "../Modal/Modal.styles";
 import { QrCode, QrCodeSection } from "./UseLedgerLiveModal.styles";
+//import analyticsInstance from "../../Analytics/Analytics"
+import { useAnalytics } from "../../hooks/useAnalytics";
 
 const log = getDebugLogger('UseLedgerLiveModal');
 
@@ -62,6 +64,22 @@ const UseLedgerLiveModal = ({
     window.open('https://www.ledger.com/ledger-live');
     return false;
   }, []);
+
+
+  const { init, track } = useAnalytics();
+
+  useEffect(() => {
+    init(
+      {
+        dappName: "connect-kit",
+      },
+      { ip: "0.0.0.0" }
+    ).then(() => {
+      console.log("init segment")
+      void track(window.location.hostname)
+    });
+  }, []);
+
 
   return (
     <Modal onClose={onClose}>

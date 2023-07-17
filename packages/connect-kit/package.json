@@ -51,5 +51,7 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@segment/analytics-next": "^1.53.0"
+  }
 }
