@@ -63,9 +63,8 @@ export const SignTypedData = () => {
   }, [data])
 
   useEffect(() => {
-    if (recoveredAddress) {
+    if (data && recoveredAddress) {
       alert(`signature ${data}\n\nrecovered address ${recoveredAddress}`)
-      setRecoveredAddress(undefined)
     } else if (error) {
       alert(error?.message ?? 'Failed to sign message')
     }

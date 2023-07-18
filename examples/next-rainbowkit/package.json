@@ -9,22 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@babel/core": "7.21.8",
-    "@rainbow-me/rainbowkit": "^1.0.0",
-    "next": "^12.3.4",
+    "@babel/core": "7.22.9",
+    "@rainbow-me/rainbowkit": "^1.0.6",
+    "next": "^13.4.10",
     "next-auth": "4.22.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "18.2.0",
     "styled-components": "5.3.9",
-    "viem": "0.3.26",
-    "wagmi": "^1.0.5"
+    "viem": "1.3.0",
+    "wagmi": "^1.3.9"
   },
   "devDependencies": {
     "@types/node": "^17.0.45",
-    "@types/react": "^18.2.6",
-    "eslint": "^8.40.0",
-    "eslint-config-next": "^12.3.4",
-    "typescript": "^5.0.4"
+    "@types/react": "^18.2.15",
+    "eslint": "^8.45.0",
+    "eslint-config-next": "^13.4.10",
+    "typescript": "^5.1.6"
   }
 }

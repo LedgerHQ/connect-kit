@@ -9,6 +9,8 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { mainnet, goerli, polygon } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
+const testProjectId = '85a25426af6e359da0d3508466a95a1d';
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli, polygon],
   [publicProvider()]
@@ -18,8 +20,8 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      ledgerWallet({ chains }),
-      walletConnectWallet({ chains }),
+      ledgerWallet({ chains, projectId: testProjectId }),
+      walletConnectWallet({ chains, projectId: testProjectId }),
     ],
   },
 ]);
