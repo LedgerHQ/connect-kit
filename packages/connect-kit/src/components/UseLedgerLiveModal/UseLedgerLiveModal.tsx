@@ -33,6 +33,7 @@ const UseLedgerLiveModal = ({
   onClose = () => void 0,
 }: UseLedgerLiveModalProps) => {
   log('initializing', { isDesktop, uri });
+  const { init, track, sendUserFlow, addStepToFlow } = useAnalytics();
 
   // use the uri prop as the initial start value
   const [wcUri, setWcUri] = useState<string>(uri);
@@ -50,6 +51,8 @@ const UseLedgerLiveModal = ({
   });
 
   const onUseLedgerLiveClick = useCallback(() => {
+    addStepToFlow("Click on 'Connect with Ledger Live desktop/mobile' ")
+    sendUserFlow()
     log('loading Ledger Live, ', wcUri);
     window.location.href = `ledgerlive://wc?uri=${encodeURIComponent(wcUri)}`;
 
@@ -60,12 +63,12 @@ const UseLedgerLiveModal = ({
   }, [wcUri]);
 
   const onInstallLedgerLiveClick = useCallback(() => {
+    addStepToFlow("Click on 'Install Ledger Live' ")
     window.open('https://www.ledger.com/ledger-live');
     return false;
   }, []);
 
 
-  const { init, track } = useAnalytics();
 
   useEffect(() => {
     init(
@@ -74,8 +77,8 @@ const UseLedgerLiveModal = ({
       },
       { ip: "0.0.0.0" }
     ).then(() => {
-      console.log("init segment")
-      void track(window.location.hostname)
+      void track("source", {hostname : window.location.hostname})
+      addStepToFlow("Open Ledger Live Modal")
     });
   }, []);
 

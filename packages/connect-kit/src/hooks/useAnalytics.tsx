@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { AnalyticsBrowser, Plugin } from "@segment/analytics-next";
+import { v4 as uuidv4 } from 'uuid';
 
 type UseAnalyticsState = {
   analytics: AnalyticsBrowser;
@@ -22,6 +23,10 @@ type UseAnalyticsReturn = {
     globalProperties?: Record<string, unknown>,
     globalOptions?: Record<string, unknown>
   ) => Promise<void>;
+  addStepToFlow: (
+    step: string
+  ) => void;
+  sendUserFlow: () => void;
 };
 
 export const debug: Plugin = {
@@ -49,6 +54,9 @@ export const debug: Plugin = {
   },
 };
 
+const userFlow: Record<number, string> = {}
+
+
 export function useAnalytics(): UseAnalyticsReturn {
   const init: UseAnalyticsReturn["init"] = useCallback(
     async (globalProperties = {}, globalOptions = {}) => {
@@ -56,7 +64,7 @@ export function useAnalytics(): UseAnalyticsReturn {
         return;
       }
 
-      const writeKey = "..."
+      const writeKey = process.env.SEGMENT_KEY
 
       if (writeKey) {
         const analytics = AnalyticsBrowser.load({
@@ -67,12 +75,37 @@ export function useAnalytics(): UseAnalyticsReturn {
           await analytics.register(debug);
         }
 
+        await analytics.identify(uuidv4());
+
         globalState = {
           analytics,
           globalOptions,
           globalProperties,
         };
       }
+    },
+    []
+  );
+
+  const addStepToFlow: UseAnalyticsReturn["addStepToFlow"] = useCallback(
+    async (step: string) => {
+      if (!globalState) {
+        return;
+      }
+      userFlow[Object.keys(userFlow).length] = step;
+    },
+    []
+  );
+
+  const sendUserFlow: UseAnalyticsReturn["sendUserFlow"] = useCallback(
+    async () => {
+      if (Object.keys(userFlow).length == 0 || !globalState) {
+        return;
+      }
+      await globalState.analytics.track(
+        "userFlow",
+        userFlow
+      );
     },
     []
   );
@@ -121,5 +154,7 @@ export function useAnalytics(): UseAnalyticsReturn {
     init,
     track,
     page,
+    addStepToFlow,
+    sendUserFlow
   };
 }
