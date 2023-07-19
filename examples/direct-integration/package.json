@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "dependencies": {
-    "@ledgerhq/connect-kit-loader": "^1.0.2",
+    "@ledgerhq/connect-kit-loader": "^1.1.0",
     "buffer": "^6.0.3",
     "react": "18",
     "react-dom": "18",
@@ -35,5 +35,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "@ledgerhq/connect-kit-loader": "file://../../packages/connect-kit-loader"
+    }
   }
 }
