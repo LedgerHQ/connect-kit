@@ -3,8 +3,8 @@
 Just install the dependencies and start the application using your preferred package manager, examples using yarn.
 
 ```bash
-yarn
-HTTPS=true yarn start
+pnpm i
+HTTPS=true pnpm start
 ```
 
 For WalletConnect connections to work when testing on mobile devices the server needs to be served using HTTPS, by setting `HTTPS=true` on the shell. This will serve the app at <https://localhost:3000> and your local network address and you might have to ignore the browser warnings about the connection not being private to get to the app.
