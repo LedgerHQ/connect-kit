@@ -1,0 +1,13 @@
+
+import { getConnection } from '@web3-react/core'
+
+export const switchNetwork = async (chainId: number, connectionType: ConnectionType | null) => {
+  const { connector } = getConnection(connectionType)
+
+  if (connectionType === connectionType.WALLET_CONNECT || connectionType === ConnectionType.NETWORK) {
+    await connector.activate(chainId)
+    return
+  }
+
+
+}

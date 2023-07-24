@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@walletconnect/ethereum-provider": "2.9.2",
+    "@walletconnect/modal": "^2.5.9",
     "@web3-react/core": "8.2.0",
-    "@web3-react/ledger": "file:/Volumes/DevCS/Work/Ledger/web3-react/packages/ledger",
+    "@web3-react/ledger": "file://Volumes/DevCS/Work/Ledger/web3-react/packages/ledger",
     "@web3-react/types": "8.2.0",
     "@web3-react/url": "8.2.0",
+    "@web3-react/walletconnect-v2": "file://Volumes/DevCS/Work/Ledger/web3-react/packages/walletconnect-v2",
+    "eventemitter3": "5.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "6.0.4"
@@ -36,8 +40,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@web3-react/ledger": "file:///Volumes/DevCS/Work/Ledger/web3-react/packages/ledger",
-      "@ledgerhq/connect-kit-loader": "file:///Volumes/DevCS/Work/Ledger/ledgerhq/connect-kit/packages/connect-kit-loader"
+      "@ledgerhq/connect-kit-loader": "../../packages/connect-kit-loader"
     }
   }
 }

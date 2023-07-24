@@ -5,13 +5,32 @@ export const GlobalStyle = createGlobalStyle`
     font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-feature-settings: "kern";
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+  }
+
+  #root {
+    width: 100%;
+    margin: 0 auto;
     text-align: center;
   }
 `;
 
+export const Container = styled.div`
+  background-color: #9e9e9e;
+  color: black;
+
+  margin: 0.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 2rem;
+`
+
 export const Stack = styled.div<{
   direction?: string,
-  justifyContent?: string,
+  justify?: string,
   height?: string
 }>`
   box-sizing: 'border-box';
@@ -22,8 +41,8 @@ export const Stack = styled.div<{
     flex-direction: ${direction};
   `}
 
-  ${({justifyContent}) => css`
-    justify-content: ${justifyContent || 'flex-start'};
+  ${({justify}) => css`
+    justify-content: ${justify || 'flex-start'};
   `}
 
   ${({height}) => height && css`

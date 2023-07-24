@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { Web3ReactProvider, Web3ReactHooks } from '@web3-react/core'
 
 import App from './App.tsx'
-import './index.css'
-import { connectorsObj as allConnectors } from './connectors'
+import { connectorsObj as allConnectors } from './connectors.ts'
 import { Connector } from '@web3-react/types'
 
 const connections: [Connector, Web3ReactHooks][] = Object.values(allConnectors).map(
