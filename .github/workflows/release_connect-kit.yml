@@ -29,6 +29,11 @@ jobs:
           cd ${{ env.PKG_DIR }}
           yarn && yarn build
 
+      # Secret
+      - name: Secret Setup
+        env:
+          MY_SECRET: ${{ secrets.SEGMENT_KEY }}
+
       # Configure Git
       - name: Git configuration
         run: |
