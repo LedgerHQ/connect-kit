@@ -32,10 +32,6 @@ jobs:
           echo "SEGMENT_KEY=${{ env.SEGMENT_KEY }}" > .env
           yarn && yarn build
 
-      # Secret
-      - name: Secret Setup
-
-
       # Configure Git
       - name: Git configuration
         run: |
