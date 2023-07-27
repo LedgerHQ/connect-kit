@@ -4,6 +4,7 @@ import { CloseButton, ModalContent, ModalHeader, ModalWrapper } from "./Modal.st
 import { default as LedgerSvg } from "../../assets/svg/Ledger.svg";
 import { default as XButtonSvg } from "../../assets/svg/X.svg";
 import { getDebugLogger } from "../../lib/logger";
+import { useAnalytics } from "../../hooks/useAnalytics";
 
 const log = getDebugLogger('Modal')
 
@@ -16,12 +17,15 @@ export interface ModalProps {
 }
 
 export const Modal = ({ onClose, children }: ModalProps) => {
+  const { sendUserFlow, addStepToFlow } = useAnalytics()
   const [isOpen, setIsOpen] = useState<boolean>(true);
   // assign the set state function to the exported one
   setIsModalOpen = setIsOpen;
 
   const handleClose = () => {
     setIsModalOpen(false);
+    addStepToFlow('Close')
+    sendUserFlow()
     onClose && onClose();
   };
 

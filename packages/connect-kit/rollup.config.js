@@ -7,6 +7,7 @@ import replace from '@rollup/plugin-replace';
 import { terser } from "rollup-plugin-terser";
 import json from '@rollup/plugin-json';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import dotenv from "rollup-plugin-dotenv"
 
 const packageJson = require("./package.json");
 
@@ -24,6 +25,7 @@ export default [
       },
     ],
     plugins: [
+      dotenv(),
       resolve({
         preferBuiltins: false,
         browser: true,

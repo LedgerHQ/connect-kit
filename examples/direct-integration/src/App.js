@@ -54,7 +54,7 @@ export default function Home() {
         if (chainIdResponse) setChainId(chainIdResponse);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       setMessage(error.message);
     }
   };
