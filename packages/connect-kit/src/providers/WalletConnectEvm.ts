@@ -3,7 +3,7 @@ import { setIsModalOpen } from '../components/Modal/Modal';
 import { setWalletConnectUri } from '../components/UseLedgerLiveModal/UseLedgerLiveModal';
 import { UserRejectedRequestError } from '../lib/errors';
 import { getDebugLogger, getErrorLogger } from "../lib/logger";
-import { showExtensionOrLLModal } from '../lib/modal';
+import { showLLModal } from '../lib/modal';
 import {
   CheckSupportWalletConnectProviderOptions,
   getSupportOptions
@@ -110,7 +110,7 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
       return new Promise(async (resolve, reject) => {
         try {
           if (!provider?.session?.connected) {
-            showExtensionOrLLModal({
+            showLLModal({
               uri: '',
               onClose: () => {
                 logError('user rejected');
