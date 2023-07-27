@@ -1,12 +1,3 @@
-import Analytics from "analytics";
-import segmentPlugin from "@analytics/segment";
-
-declare global {
-  interface Window {
-    analytics: any;
-  }
-}
-
 // chain
 
 export enum SupportedProviderImplementations {

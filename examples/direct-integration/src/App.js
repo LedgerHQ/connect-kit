@@ -25,10 +25,11 @@ export default function Home() {
 
   const connectWallet = async () => {
     console.log('> connectWallet');
+
     resetState();
 
     try {
-      const connectKit = await loadConnectKit();   
+      const connectKit = await loadConnectKit();
       connectKit.enableDebugLogs();
       const checkSupportResult = connectKit.checkSupport({
         providerType: SupportedProviders.Ethereum,
@@ -53,7 +54,8 @@ export default function Home() {
         if (chainIdResponse) setChainId(chainIdResponse);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
+      setMessage(error.message);
     }
   };
 
