@@ -94,6 +94,9 @@ function patchWalletConnectProviderRequest (provider: WalletConnectProvider) {
     if (method === 'eth_requestAccounts') {
       log('calling patched', method, params);
 
+      log('handling display_uri once');
+      provider.once('display_uri', displayUriHandler);
+
       return new Promise(async (resolve, reject) => {
         try {
           if (!provider?.session?.connected) {
@@ -142,28 +145,18 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
   if (!provider) return;
   removeEvents(provider);
   provider.on('connect', connectHandler);
-  provider.on('display_uri', displayUriHandler);
   provider.on('session_delete', disconnectHandler);
 
   function removeEvents(provider: WalletConnectProvider) {
     if (!provider) return;
     provider.removeListener('connect', connectHandler);
-    provider.removeListener("display_uri", displayUriHandler);
     provider.removeListener('session_delete', disconnectHandler);
   }
 
   function connectHandler(props: any) {
     log('connectHandler', props);
 
-    provider.removeListener("display_uri", displayUriHandler);
     setIsModalOpen(false);
-  }
-
-  function displayUriHandler(uri: string) {
-    log('displayUriHandler', uri);
-
-    // update the modal URI when we get it
-    setWalletConnectUri(uri);
   }
 
   function disconnectHandler(params: any) {
@@ -174,4 +167,11 @@ function assignWalletConnectProviderEvents(provider: WalletConnectProvider) {
   }
 
   log('provider is', provider);
+}
+
+function displayUriHandler(uri: string) {
+  log('displayUriHandler', uri);
+
+  // update the modal URI when we get it
+  setWalletConnectUri(uri);
 }
