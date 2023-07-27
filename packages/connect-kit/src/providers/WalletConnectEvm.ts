@@ -54,14 +54,24 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
   const providerOptions: WalletConnectProviderOptions = getSupportOptions();
   log('walletConnectProviderOptions is', providerOptions);
 
+  // merge optionalMethods with WalletConnect defaults ignoring duplicates
+  const optionalMethods = OPTIONAL_METHODS;
+  if (providerOptions.optionalMethods && Array.isArray(providerOptions.optionalMethods))
+    optionalMethods.push(...providerOptions.optionalMethods.filter((id) => optionalMethods.indexOf(id) < 0));
+
+  // merge optionalEvents with WalletConnect defaults ignoring duplicates
+  const optionalEvents = OPTIONAL_EVENTS;
+  if (providerOptions.optionalEvents && Array.isArray(providerOptions.optionalEvents))
+    optionalMethods.push(...providerOptions.optionalEvents.filter((id) => optionalEvents.indexOf(id) < 0));
+
   const ethereumInitOpts = {
     projectId: providerOptions.projectId,
     chains: providerOptions.chains,
     optionalChains: providerOptions.optionalChains,
     methods: providerOptions.methods,
-    optionalMethods: providerOptions.optionalMethods || OPTIONAL_METHODS,
+    optionalMethods,
     events: providerOptions.events,
-    optionalEvents: providerOptions.optionalEvents || OPTIONAL_EVENTS,
+    optionalEvents,
     rpcMap: providerOptions.rpcMap,
     relayUrl: providerOptions.relayUrl,
     showQrModal: false,
