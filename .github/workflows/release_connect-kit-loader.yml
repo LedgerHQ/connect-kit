@@ -8,6 +8,10 @@ jobs:
       PKG_NAME: 'Connect Kit Loader'
       PKG_DIR: 'packages/connect-kit-loader'
       PKG_SPEC: '@ledgerhq/connect-kit-loader'
+      # use 'latest' for release, 'alpha' or 'beta' for pre-releases
+      PKG_RELEASE_TAG: 'beta'
+      # make sure it matches the version on package.json
+      PKG_VERSION: '1.1.1-beta.0'
       GIT_TAG_PREFIX: 'ckl-'
     steps:
       # Checkout project repository
@@ -39,10 +43,7 @@ jobs:
       - name: Bump release version
         run: |
           cd ${{ env.PKG_DIR }}
-          # make sure it matches the package.json version field
-          echo "NEW_VERSION=v1.1.0" >> $GITHUB_ENV
-          # change for pre-releases, e.g. alpha, beta
-          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+          echo "NEW_VERSION=v${{ env.PKG_VERSION }}" >> $GITHUB_ENV
 
       # Update changelog unreleased section with new version
       - name: Update changelog
@@ -65,7 +66,7 @@ jobs:
       - name: Publish
         run: |
           cd ${{ env.PKG_DIR }}
-          yarn publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+          yarn publish --verbose --access public --tag ${{ env.PKG_RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
 

@@ -1,13 +1,25 @@
 name: Release Connect Kit
 concurrency: release-${{ github.repository }}
-on: workflow_dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy as'
+        type: environment
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     env:
       PKG_NAME: 'Connect Kit'
       PKG_DIR: 'packages/connect-kit'
       PKG_SPEC: '@ledgerhq/connect-kit'
+      # use 'latest' for release, 'alpha' or 'beta' for pre-releases
+      PKG_RELEASE_TAG: 'beta'
+      # make sure it matches the version on package.json
+      PKG_VERSION: '1.1.1-beta.0'
       GIT_TAG_PREFIX: 'ck-'
     steps:
       # Checkout project repository
@@ -25,11 +37,9 @@ jobs:
 
       # Build
       - name: Build
-        env:
-          MY_SECRET: ${{ secrets.SEGMENT_KEY }}
         run: |
           cd ${{ env.PKG_DIR }}
-          echo "SEGMENT_KEY=${{ env.SEGMENT_KEY }}" > .env
+          echo "SEGMENT_KEY=${{ secrets.SEGMENT_KEY }}" > .env
           yarn && yarn build
 
       # Configure Git
@@ -42,10 +52,7 @@ jobs:
       - name: Bump release version
         run: |
           cd ${{ env.PKG_DIR }}
-          # make sure it matches the package.json version field
-          echo "NEW_VERSION=v1.1.0" >> $GITHUB_ENV
-          # change for pre-releases, e.g. alpha, beta
-          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+          echo "NEW_VERSION=v${{ env.PKG_VERSION }}" >> $GITHUB_ENV
 
       # Update changelog unreleased section with new version
       - name: Update changelog
@@ -68,7 +75,7 @@ jobs:
       - name: Publish
         run: |
           cd ${{ env.PKG_DIR }}
-          yarn publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+          yarn publish --verbose --access public --tag ${{ env.PKG_RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_TOKEN }}
 
