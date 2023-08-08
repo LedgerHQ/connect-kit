@@ -55,12 +55,16 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
   log('walletConnectProviderOptions is', providerOptions);
 
   // merge optionalMethods with WalletConnect defaults ignoring duplicates
-  const optionalMethods = OPTIONAL_METHODS;
+  // WARN seems to be causing problems with eth_getBalance and eth_call
+  // const optionalMethods = OPTIONAL_METHODS;
+  const optionalMethods: string[] = [];
   if (providerOptions.optionalMethods && Array.isArray(providerOptions.optionalMethods))
     optionalMethods.push(...providerOptions.optionalMethods.filter((id) => optionalMethods.indexOf(id) < 0));
 
   // merge optionalEvents with WalletConnect defaults ignoring duplicates
-  const optionalEvents = OPTIONAL_EVENTS;
+  // WARN seems to be causing problems with eth_getBalance and eth_call
+  // const optionalEvents = OPTIONAL_EVENTS;
+  const optionalEvents: string[] = [];
   if (providerOptions.optionalEvents && Array.isArray(providerOptions.optionalEvents))
     optionalMethods.push(...providerOptions.optionalEvents.filter((id) => optionalEvents.indexOf(id) < 0));
 

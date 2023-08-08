@@ -5,6 +5,37 @@ import { On, Off, Heading, Button, Box, Stack, Message } from './components';
 
 const testProjectId = '85a25426af6e359da0d3508466a95a1d';
 
+const useBalance = (
+  provider,
+  account,
+  chainId
+) => {
+  const [balance, setBalance] = useState(0)
+  let stale = false
+
+  useEffect(() => {
+    (async () => {
+      if (!provider || !account || !chainId || stale) return;
+
+      try {
+        const latestBalance = await provider.request({
+          method: 'eth_getBalance', params: [account, 'latest']
+        });
+        if (latestBalance) setBalance(latestBalance);
+      } catch (error) {
+        console.error(error)
+      }
+    })()
+
+    return () => {
+      stale = true
+      setBalance(0)
+    }
+  }, [provider, account, chainId])
+
+  return balance
+}
+
 export const shortenAddress = (address) => {
   if (!address) return "none";
 
@@ -20,6 +51,7 @@ export default function Home() {
   const [account, setAccount] = useState();
   const [chainId, setChainId] = useState();
   const [message, setMessage] = useState('');
+  const balance = useBalance(provider, account, chainId);
 
   // click handlers
 
@@ -35,7 +67,18 @@ export default function Home() {
         providerType: SupportedProviders.Ethereum,
         walletConnectVersion: 2,
         projectId: testProjectId,
-        chains: [137],
+        chains: [5],
+        optionalChains: [1],
+        methods: [
+          // 'eth_getBalance', // no error on request but no result
+        ],
+        optionalMethods: [
+          'eth_signTypedData_v4', // needed for sign typed data to work
+          // 'eth_getBalance', // error on request
+        ],
+        events: [
+          'block',
+        ],
         rpcMap: {
           1: 'https://cloudflare-eth.com/',  // Mainnet
           5: 'https://goerli.optimism.io/',  // Goerli
@@ -289,6 +332,7 @@ export default function Home() {
           <>
             <Box>{`Chain Id: ${chainId ? chainId : "none"}`}</Box>
             <Box>{`Account: ${shortenAddress(account)}`}</Box>
+            <Box>{`Balance: ${balance}`}</Box>
           </>
         )}
 
