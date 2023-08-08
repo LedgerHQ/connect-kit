@@ -10,23 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.9.2",
-    "@walletconnect/modal": "^2.5.9",
     "@web3-react/core": "8.2.0",
-    "@web3-react/ledger": "file://Volumes/DevCS/Work/Ledger/web3-react/packages/ledger",
+    "@web3-react/ledger": "file:vendor/web3-react-ledger-1.0.0.tgz",
     "@web3-react/types": "8.2.0",
     "@web3-react/url": "8.2.0",
-    "@web3-react/walletconnect-v2": "file://Volumes/DevCS/Work/Ledger/web3-react/packages/walletconnect-v2",
+    "@web3-react/walletconnect-v2": "8.3.7",
     "eventemitter3": "5.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "6.0.4"
   },
   "devDependencies": {
-    "@ethersproject/bignumber": "^5.6.0",
-    "@ethersproject/experimental": "^5.6.0",
-    "@ethersproject/providers": "^5.6.0",
-    "@ethersproject/units": "^5.6.0",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
@@ -37,10 +31,5 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "typescript": "^5.0.2",
     "vite": "^4.3.9"
-  },
-  "pnpm": {
-    "overrides": {
-      "@ledgerhq/connect-kit-loader": "../../packages/connect-kit-loader"
-    }
   }
 }

@@ -104,6 +104,11 @@ export default function Card({
             Switch to Polygon
           </Button>
         </Box>
+        <Box>
+          <Button onClick={() => handleSwitchChain(5)} disabled={chainId === 5}>
+            Switch to Goerli
+          </Button>
+        </Box>
       </> : <></>
       }
     </Container>
