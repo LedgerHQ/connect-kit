@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { default as WalletConnectProvider } from '@walletconnect/ethereum-provider';
 import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader';
 import { Buffer } from 'buffer';
 import { On, Off, Heading, Button, Box, Stack, Message } from './components';
@@ -18,10 +19,10 @@ const useBalance = (
       if (!provider || !account || !chainId || stale) return;
 
       try {
-        const latestBalance = await provider.request({
+        const hexBalance = await provider.request({
           method: 'eth_getBalance', params: [account, 'latest']
         });
-        if (latestBalance) setBalance(latestBalance);
+        if (hexBalance) setBalance(hexBalance);
       } catch (error) {
         console.error(error)
       }
@@ -55,8 +56,8 @@ export default function Home() {
 
   // click handlers
 
-  const connectWallet = async () => {
-    console.log('> connectWallet');
+  const connectWithLedger = async () => {
+    console.log('> connectWithLedger');
 
     resetState();
 
@@ -68,16 +69,13 @@ export default function Home() {
         walletConnectVersion: 2,
         projectId: testProjectId,
         chains: [5],
-        optionalChains: [1],
+        optionalChains: [1, 137],
         methods: [
           // 'eth_getBalance', // no error on request but no result
         ],
         optionalMethods: [
           'eth_signTypedData_v4', // needed for sign typed data to work
           // 'eth_getBalance', // error on request
-        ],
-        events: [
-          'block',
         ],
         rpcMap: {
           1: 'https://cloudflare-eth.com/',  // Mainnet
@@ -94,6 +92,53 @@ export default function Home() {
       if (requestAccountsResponse) {
         setAccount(requestAccountsResponse[0]);
         const chainIdResponse = await getChainId(connectKitProvider);
+        if (chainIdResponse) setChainId(chainIdResponse);
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message);
+    }
+  };
+
+  const connectWithWalletConnect = async () => {
+    console.log('> connectWithWalletConnect');
+
+    resetState();
+
+    try {
+      const initOptions = {
+        providerType: SupportedProviders.Ethereum,
+        walletConnectVersion: 2,
+        projectId: testProjectId,
+        chains: [5],
+        optionalChains: [1, 137],
+        methods: [
+          // 'eth_getBalance', // no error on request but no result
+        ],
+        optionalMethods: [
+          'eth_signTypedData_v4', // needed for sign typed data to work
+          'eth_getBalance', // error on request
+        ],
+        rpcMap: {
+          1: 'https://cloudflare-eth.com/',  // Mainnet
+          5: 'https://goerli.optimism.io/',  // Goerli
+          137: 'https://polygon-rpc.com/',   // Polygon
+        },
+        showQrModal: true,
+      };
+      const walletConnectProvider = await WalletConnectProvider.init(initOptions);
+      setProvider(walletConnectProvider);
+      console.log('provider is', walletConnectProvider);
+
+      await walletConnectProvider.connect({
+        chains: initOptions.chains,
+        optionalChains: initOptions.optionalChains,
+      });
+
+      const requestAccountsResponse = await (requestAccounts(walletConnectProvider));
+      if (requestAccountsResponse) {
+        setAccount(requestAccountsResponse[0]);
+        const chainIdResponse = await getChainId(walletConnectProvider);
         if (chainIdResponse) setChainId(chainIdResponse);
       }
     } catch (error) {
@@ -339,10 +384,15 @@ export default function Home() {
         <Message>{message ? message : null}</Message>
 
         {!account ? (
-          <Box>
-            <Button bg='primary' onClick={connectWallet}>Connect Wallet</Button>
-          </Box>
-        ) : (
+          <>
+            <Box>
+              <Button bg='primary' onClick={connectWithLedger}>Ledger</Button>
+            </Box>
+            <Box>
+              <Button bg='primary' onClick={connectWithWalletConnect}>WalletConnect</Button>
+            </Box>
+          </>
+      ) : (
           <>
             <Box>
               <Button onClick={disconnectWallet}>Disconnect</Button>

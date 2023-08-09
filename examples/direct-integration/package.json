@@ -7,6 +7,8 @@
   "main": "src/index.js",
   "dependencies": {
     "@ledgerhq/connect-kit-loader": "^1.1.0",
+    "@walletconnect/ethereum-provider": "2.9.2",
+    "@walletconnect/modal": "2.6.1",
     "buffer": "^6.0.3",
     "react": "18",
     "react-dom": "18",
