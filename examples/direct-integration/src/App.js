@@ -1,9 +1,41 @@
 import { useCallback, useEffect, useState } from 'react';
+import { default as WalletConnectProvider } from '@walletconnect/ethereum-provider';
 import { loadConnectKit, SupportedProviders } from '@ledgerhq/connect-kit-loader';
 import { Buffer } from 'buffer';
 import { On, Off, Heading, Button, Box, Stack, Message } from './components';
 
 const testProjectId = '85a25426af6e359da0d3508466a95a1d';
+
+const useBalance = (
+  provider,
+  account,
+  chainId
+) => {
+  const [balance, setBalance] = useState(0)
+  let stale = false
+
+  useEffect(() => {
+    (async () => {
+      if (!provider || !account || !chainId || stale) return;
+
+      try {
+        const hexBalance = await provider.request({
+          method: 'eth_getBalance', params: [account, 'latest']
+        });
+        if (hexBalance) setBalance(hexBalance);
+      } catch (error) {
+        console.error(error)
+      }
+    })()
+
+    return () => {
+      stale = true
+      setBalance(0)
+    }
+  }, [provider, account, chainId])
+
+  return balance
+}
 
 export const shortenAddress = (address) => {
   if (!address) return "none";
@@ -20,11 +52,26 @@ export default function Home() {
   const [account, setAccount] = useState();
   const [chainId, setChainId] = useState();
   const [message, setMessage] = useState('');
+  const balance = useBalance(provider, account, chainId);
+
+  const providerInitOptions = {
+    projectId: testProjectId,
+    chains: [1],
+    optionalChains: [5, 137],
+    methods: [],
+    optionalMethods: [],
+    rpcMap: {
+      1: 'https://cloudflare-eth.com/',  // Mainnet
+      5: 'https://goerli.optimism.io/',  // Goerli
+      137: 'https://polygon-rpc.com/',   // Polygon
+    },
+    showQrModal: true,
+  };
 
   // click handlers
 
-  const connectWallet = async () => {
-    console.log('> connectWallet');
+  const connectWithLedger = async () => {
+    console.log('> connectWithLedger');
 
     resetState();
 
@@ -34,13 +81,12 @@ export default function Home() {
       const checkSupportResult = connectKit.checkSupport({
         providerType: SupportedProviders.Ethereum,
         walletConnectVersion: 2,
-        projectId: testProjectId,
-        chains: [137],
-        rpcMap: {
-          1: 'https://cloudflare-eth.com/',  // Mainnet
-          5: 'https://goerli.optimism.io/',  // Goerli
-          137: 'https://polygon-rpc.com/',   // Polygon
-        },
+        ...providerInitOptions,
+        optionalMethods: [
+          'eth_signTypedData_v4', // needed for sign typed data to work
+          'eth_getBalance', // error on request
+          'eth_getBalance', // no error on request but no result
+        ],
       });
       console.log('checkSupportResult is', checkSupportResult);
 
@@ -58,6 +104,75 @@ export default function Home() {
       setMessage(error.message);
     }
   };
+
+  const connectWithWalletConnect = async (methods, optionalMethods) => {
+    console.log('> connectWithWalletConnect');
+
+    resetState();
+
+    try {
+      const wcInitOptions = {
+        ...providerInitOptions,
+        methods,
+        optionalMethods,
+      }
+      console.log('init options are', wcInitOptions);
+
+      const walletConnectProvider = await WalletConnectProvider.init(wcInitOptions);
+      console.log('provider is', walletConnectProvider);
+
+      setProvider(walletConnectProvider);
+
+      await walletConnectProvider.connect({
+        chains: wcInitOptions.chains,
+        optionalChains: wcInitOptions.optionalChains,
+      });
+
+      const requestAccountsResponse = await (requestAccounts(walletConnectProvider));
+      if (requestAccountsResponse) {
+        setAccount(requestAccountsResponse[0]);
+        const chainIdResponse = await getChainId(walletConnectProvider);
+        if (chainIdResponse) setChainId(chainIdResponse);
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage(error.message);
+    }
+  };
+  //
+  const connectWithWalletConnectWithNoMethods =
+    () => connectWithWalletConnect(
+      // methods
+      [
+        'personal_sign', // needed for signing messages to work
+        'eth_signTypedData_v4', // needed for sign typed data to work
+      ],
+      // optionalMethods
+      [],
+    );
+  const connectWithWalletConnectWithMethods =
+    () => connectWithWalletConnect(
+      // methods
+      [
+        'personal_sign', // needed for signing messages to work
+        'eth_signTypedData_v4', // needed for sign typed data to work
+        'eth_getBalance', // no error on request but no result
+      ],
+      // optionalMethods
+      [],
+    );
+  const connectWithWalletConnectWithOptionalMethods =
+    () => connectWithWalletConnect(
+      // methods
+      [
+        'personal_sign', // needed for signing messages to work
+        'eth_signTypedData_v4', // needed for sign typed data to work
+      ],
+      // optionalMethods
+      [
+        'eth_getBalance', // error on request
+      ],
+    );
 
   const disconnectWallet = async () => {
     console.log('> disconnectWallet');
@@ -278,7 +393,7 @@ export default function Home() {
   return (
     <>
       <Stack direction="column" justifyContent="center" height="100vh">
-        <Heading>Connect with Ledger Connect Kit</Heading>
+        <Heading>Connect with WalletConnect</Heading>
 
         <Box>Status: {account
           ? (<On>Connected</On>)
@@ -289,16 +404,21 @@ export default function Home() {
           <>
             <Box>{`Chain Id: ${chainId ? chainId : "none"}`}</Box>
             <Box>{`Account: ${shortenAddress(account)}`}</Box>
+            <Box>{`Balance: ${balance}`}</Box>
           </>
         )}
 
         <Message>{message ? message : null}</Message>
 
         {!account ? (
-          <Box>
-            <Button bg='primary' onClick={connectWallet}>Connect Wallet</Button>
-          </Box>
-        ) : (
+          <>
+            <Box>
+              <div><Button bg='primary' onClick={connectWithWalletConnectWithNoMethods}>WalletConnect no gB</Button></div>
+              <div><Button bg='primary' onClick={connectWithWalletConnectWithMethods}>WalletConnect gB in methods</Button></div>
+              <div><Button bg='primary' onClick={connectWithWalletConnectWithOptionalMethods}>WalletConnect gB in optionalMethods</Button></div>
+            </Box>
+          </>
+      ) : (
           <>
             <Box>
               <Button onClick={disconnectWallet}>Disconnect</Button>
