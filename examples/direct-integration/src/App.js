@@ -54,6 +54,20 @@ export default function Home() {
   const [message, setMessage] = useState('');
   const balance = useBalance(provider, account, chainId);
 
+  const providerInitOptions = {
+    projectId: testProjectId,
+    chains: [1],
+    optionalChains: [5, 137],
+    methods: [],
+    optionalMethods: [],
+    rpcMap: {
+      1: 'https://cloudflare-eth.com/',  // Mainnet
+      5: 'https://goerli.optimism.io/',  // Goerli
+      137: 'https://polygon-rpc.com/',   // Polygon
+    },
+    showQrModal: true,
+  };
+
   // click handlers
 
   const connectWithLedger = async () => {
@@ -67,21 +81,12 @@ export default function Home() {
       const checkSupportResult = connectKit.checkSupport({
         providerType: SupportedProviders.Ethereum,
         walletConnectVersion: 2,
-        projectId: testProjectId,
-        chains: [5],
-        optionalChains: [1, 137],
-        methods: [
-          // 'eth_getBalance', // no error on request but no result
-        ],
+        ...providerInitOptions,
         optionalMethods: [
           'eth_signTypedData_v4', // needed for sign typed data to work
-          // 'eth_getBalance', // error on request
+          'eth_getBalance', // error on request
+          'eth_getBalance', // no error on request but no result
         ],
-        rpcMap: {
-          1: 'https://cloudflare-eth.com/',  // Mainnet
-          5: 'https://goerli.optimism.io/',  // Goerli
-          137: 'https://polygon-rpc.com/',   // Polygon
-        },
       });
       console.log('checkSupportResult is', checkSupportResult);
 
@@ -100,39 +105,27 @@ export default function Home() {
     }
   };
 
-  const connectWithWalletConnect = async () => {
+  const connectWithWalletConnect = async (methods, optionalMethods) => {
     console.log('> connectWithWalletConnect');
 
     resetState();
 
     try {
-      const initOptions = {
-        providerType: SupportedProviders.Ethereum,
-        walletConnectVersion: 2,
-        projectId: testProjectId,
-        chains: [5],
-        optionalChains: [1, 137],
-        methods: [
-          // 'eth_getBalance', // no error on request but no result
-        ],
-        optionalMethods: [
-          'eth_signTypedData_v4', // needed for sign typed data to work
-          'eth_getBalance', // error on request
-        ],
-        rpcMap: {
-          1: 'https://cloudflare-eth.com/',  // Mainnet
-          5: 'https://goerli.optimism.io/',  // Goerli
-          137: 'https://polygon-rpc.com/',   // Polygon
-        },
-        showQrModal: true,
-      };
-      const walletConnectProvider = await WalletConnectProvider.init(initOptions);
-      setProvider(walletConnectProvider);
+      const wcInitOptions = {
+        ...providerInitOptions,
+        methods,
+        optionalMethods,
+      }
+      console.log('init options are', wcInitOptions);
+
+      const walletConnectProvider = await WalletConnectProvider.init(wcInitOptions);
       console.log('provider is', walletConnectProvider);
 
+      setProvider(walletConnectProvider);
+
       await walletConnectProvider.connect({
-        chains: initOptions.chains,
-        optionalChains: initOptions.optionalChains,
+        chains: wcInitOptions.chains,
+        optionalChains: wcInitOptions.optionalChains,
       });
 
       const requestAccountsResponse = await (requestAccounts(walletConnectProvider));
@@ -146,6 +139,40 @@ export default function Home() {
       setMessage(error.message);
     }
   };
+  //
+  const connectWithWalletConnectWithNoMethods =
+    () => connectWithWalletConnect(
+      // methods
+      [
+        'personal_sign', // needed for signing messages to work
+        'eth_signTypedData_v4', // needed for sign typed data to work
+      ],
+      // optionalMethods
+      [],
+    );
+  const connectWithWalletConnectWithMethods =
+    () => connectWithWalletConnect(
+      // methods
+      [
+        'personal_sign', // needed for signing messages to work
+        'eth_signTypedData_v4', // needed for sign typed data to work
+        'eth_getBalance', // no error on request but no result
+      ],
+      // optionalMethods
+      [],
+    );
+  const connectWithWalletConnectWithOptionalMethods =
+    () => connectWithWalletConnect(
+      // methods
+      [
+        'personal_sign', // needed for signing messages to work
+        'eth_signTypedData_v4', // needed for sign typed data to work
+      ],
+      // optionalMethods
+      [
+        'eth_getBalance', // error on request
+      ],
+    );
 
   const disconnectWallet = async () => {
     console.log('> disconnectWallet');
@@ -366,7 +393,7 @@ export default function Home() {
   return (
     <>
       <Stack direction="column" justifyContent="center" height="100vh">
-        <Heading>Connect with Ledger Connect Kit</Heading>
+        <Heading>Connect with WalletConnect</Heading>
 
         <Box>Status: {account
           ? (<On>Connected</On>)
@@ -386,10 +413,9 @@ export default function Home() {
         {!account ? (
           <>
             <Box>
-              <Button bg='primary' onClick={connectWithLedger}>Ledger</Button>
-            </Box>
-            <Box>
-              <Button bg='primary' onClick={connectWithWalletConnect}>WalletConnect</Button>
+              <div><Button bg='primary' onClick={connectWithWalletConnectWithNoMethods}>WalletConnect no gB</Button></div>
+              <div><Button bg='primary' onClick={connectWithWalletConnectWithMethods}>WalletConnect gB in methods</Button></div>
+              <div><Button bg='primary' onClick={connectWithWalletConnectWithOptionalMethods}>WalletConnect gB in optionalMethods</Button></div>
             </Box>
           </>
       ) : (

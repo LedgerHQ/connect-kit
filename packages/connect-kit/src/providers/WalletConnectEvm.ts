@@ -66,7 +66,7 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
   // const optionalEvents = OPTIONAL_EVENTS;
   const optionalEvents: string[] = [];
   if (providerOptions.optionalEvents && Array.isArray(providerOptions.optionalEvents))
-    optionalMethods.push(...providerOptions.optionalEvents.filter((id) => optionalEvents.indexOf(id) < 0));
+    optionalEvents.push(...providerOptions.optionalEvents.filter((id) => optionalEvents.indexOf(id) < 0));
 
   const ethereumInitOpts = {
     projectId: providerOptions.projectId,
