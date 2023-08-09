@@ -9,7 +9,6 @@ import {
   getSupportOptions,
 } from "../lib/supportOptions";
 import { EthereumRequestPayload } from "./ExtensionEvm";
-import { OPTIONAL_EVENTS } from "../support/EthereumProvider/constants";
 
 const log = getDebugLogger("WalletConnectEvm");
 const logError = getErrorLogger("WalletConnectEvm");
@@ -67,7 +66,7 @@ async function initWalletConnectProvider(): Promise<WalletConnectProvider> {
     );
 
   // merge optionalEvents with WalletConnect defaults ignoring duplicates
-  const optionalEvents = OPTIONAL_EVENTS;
+  const optionalEvents: string[] = [];
   if (
     providerOptions.optionalEvents &&
     Array.isArray(providerOptions.optionalEvents)
