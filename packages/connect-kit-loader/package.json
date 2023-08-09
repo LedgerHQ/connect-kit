@@ -1,7 +1,7 @@
 {
   "name": "@ledgerhq/connect-kit-loader",
   "sideEffects": false,
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Load Ledger Connect Kit at runtime, a library for dApps to integrate with the Ledger Extension and Ledger Live",
   "author": "Ledger SAS <ledger.com>",
   "license": "MIT",
