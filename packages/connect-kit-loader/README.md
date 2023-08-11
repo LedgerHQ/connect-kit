@@ -9,6 +9,9 @@ The `@ledgerhq/connect-kit-loader` allows dApps to load Connect Kit at runtime
 from a CDN so that we can improve the logic and UI without users having to wait
 for wallet libraries and dApps updating package versions and releasing new builds.
 
+### Content Security Policy (CSP)
+
+If your app uses CSP, please make sure to add `https://proxyseg.api.live.ledger.com/` to your settings
 
 ## Using Connect Kit loader
 
