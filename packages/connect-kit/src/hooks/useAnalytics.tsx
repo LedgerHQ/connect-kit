@@ -69,6 +69,7 @@ export function useAnalytics(): UseAnalyticsReturn {
       if (writeKey) {
         const analytics = AnalyticsBrowser.load({
           writeKey,
+          cdnURL: 'https://proxyseg.api.live.ledger.com/'
         });
 
         if (process.env.NODE_ENV === "development") {
