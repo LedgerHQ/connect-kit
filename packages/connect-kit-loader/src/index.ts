@@ -80,7 +80,7 @@ export interface LedgerConnectKit {
 }
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1";
+  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1.1.8";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {
