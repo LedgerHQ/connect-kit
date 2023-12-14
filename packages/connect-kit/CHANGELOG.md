@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-New version fix 
+
+## 1.1.8 - 2023-12-14
+New version fix
 
 ## 1.1.4 - 2023-08-17
 Add configuration to segment to use custom proxy
