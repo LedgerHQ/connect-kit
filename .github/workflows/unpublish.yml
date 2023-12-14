@@ -1,4 +1,4 @@
-name: Release Connect Kit
+name: Unpub
 concurrency: release-${{ github.repository }}
 
 on:
