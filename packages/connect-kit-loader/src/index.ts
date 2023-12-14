@@ -81,7 +81,7 @@ export interface LedgerConnectKit {
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
   const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1.1.8/dist/umd/index.js";
-  const sha256base64 = 'yiwH6w5S+g2YNb9zvLx7I/vZYv+5/AVm4qOlMagT+u0='
+  const sha256base64 = 'yiwH6w5S+g2YNb9zvLx7I/vZYv+5/AVm4qOlMagT+u0=';
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {
