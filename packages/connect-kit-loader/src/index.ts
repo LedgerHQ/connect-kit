@@ -80,7 +80,8 @@ export interface LedgerConnectKit {
 }
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://unpkg.com/@ledgerhq/connect-kit@1.1.4";
+  // jsDelivr dynamically minifies dist, use unpkg and strict version instead
+  const src = "https://unpkg.com/@ledgerhq/connect-kit@1.1.4/dist/umd/index.js";
   const globalName = "ledgerConnectKit";
 
   return new Promise((resolve, reject) => {
