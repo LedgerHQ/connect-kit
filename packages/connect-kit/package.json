@@ -4,7 +4,7 @@
   "description": "A library for dApps to integrate with the Ledger Extension and Ledger Live",
   "author": "Ledger SAS <ledger.com>",
   "license": "MIT",
-  "main": "dist/umd/index",
+  "main": "dist/umd/index.js",
   "module": "dist/esm/index.js",
   "files": [
     "dist"
