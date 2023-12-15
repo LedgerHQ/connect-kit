@@ -13,6 +13,7 @@ export default [
         file: packageJson.module,
         format: "esm",
         sourcemap: false,
+        inlineDynamicImports: true,
       },
     ],
     plugins: [
@@ -21,5 +22,5 @@ export default [
       typescript({ tsconfig: "./tsconfig.json" }),
       terser(),
     ],
-  }
+  },
 ];

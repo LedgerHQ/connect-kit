@@ -1,3 +1,4 @@
+import * as ConnectKit from "@ledgerhq/connect-kit";
 // chain
 
 export enum SupportedProviderImplementations {
@@ -33,8 +34,8 @@ export type CheckSupportOptions = {
 };
 
 export type CheckSupportResult = {
-  isLedgerConnectSupported: boolean;
-  isLedgerConnectEnabled: boolean;
+  isLedgerConnectSupported?: boolean;
+  isLedgerConnectEnabled?: boolean;
   isChainIdSupported?: boolean;
   providerImplementation: SupportedProviderImplementations;
 };
@@ -64,7 +65,7 @@ export interface EthereumProvider {
 // getProvider
 
 export enum SupportedProviders {
-  Ethereum = 'Ethereum',
+  Ethereum = "Ethereum",
 }
 
 export type ProviderResult = EthereumProvider;
@@ -80,31 +81,7 @@ export interface LedgerConnectKit {
 }
 
 export async function loadConnectKit(): Promise<LedgerConnectKit> {
-  const src = "https://cdn.jsdelivr.net/npm/@ledgerhq/connect-kit@1.1.8";
-  const globalName = "ledgerConnectKit";
-
-  return new Promise((resolve, reject) => {
-    const scriptId = `ledger-ck-script-${globalName}`;
-
-    // we don't support server side rendering, reject with no stack trace for now
-    if (typeof document === "undefined") {
-      reject("Connect Kit does not support server side");
-      return;
-    }
-
-    if (document.getElementById(scriptId)) {
-      resolve((window as { [key: string]: any })[globalName]);
-    } else {
-      const script = document.createElement("script");
-      script.src = src;
-      script.id = scriptId;
-      script.addEventListener("load", () => {
-        resolve((window as { [key: string]: any })[globalName]);
-      });
-      script.addEventListener("error", (e) => {
-        reject(e.error);
-      });
-      document.head.appendChild(script);
-    }
+  return new Promise((resolve) => {
+    resolve(ConnectKit);
   });
 }
