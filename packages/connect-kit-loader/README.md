@@ -1,3 +1,9 @@
+# !!!!!!!!!!!!!!!! IMPORTANT NOTICE !!!!!!!!!!!!!!!!
+
+This package is deprecated. From now on, connect-kit should be set up directly from npm instead of using the loader.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # Ledger Connect Kit
 
 The Ledger dApps Connect Kit enables developers to connect their dApps to
@@ -26,9 +32,9 @@ yarn add @ledgerhq/connect-kit-loader
 and use it as below
 
 ```js
-import { loadConnectKit } from '@ledgerhq/connect-kit-loader'
+import { loadConnectKit } from "@ledgerhq/connect-kit-loader";
 
-const connectKit = await loadConnectKit()
+const connectKit = await loadConnectKit();
 ```
 
 If you are using classes you can get the promise on the class constructor and
@@ -57,7 +63,6 @@ developer tools. You should see a request for `https://<CDN>/umd/index.js`.
 
 See what functions are provided by the Connect Kit API below.
 
-
 ## Connect Kit API
 
 Connect Kit exports three functions, `enableDebugLogs`, `checkSupport` and
@@ -85,15 +90,15 @@ type CheckSupportOptions = {
   walletConnectVersion?: number;
 
   // WalletConnect v2 init parameters
-  projectId?: string;              // REQUIRED WC v2 project id
-  chains?: number[];               // REQUIRED ethereum chains
-  optionalChains?: number[];       // OPTIONAL ethereum chains
-  methods?: string[];              // REQUIRED ethereum methods
-  optionalMethods?: string[];      // OPTIONAL ethereum methods
-  events?: string[];               // REQUIRED ethereum events
-  optionalEvents?: string[];       // OPTIONAL ethereum events
-  rpcMap?: { [chainId: string]: string; };  // OPTIONAL rpc urls for each chain
-}
+  projectId?: string; // REQUIRED WC v2 project id
+  chains?: number[]; // REQUIRED ethereum chains
+  optionalChains?: number[]; // OPTIONAL ethereum chains
+  methods?: string[]; // REQUIRED ethereum methods
+  optionalMethods?: string[]; // OPTIONAL ethereum methods
+  events?: string[]; // REQUIRED ethereum events
+  optionalEvents?: string[]; // OPTIONAL ethereum events
+  rpcMap?: { [chainId: string]: string }; // OPTIONAL rpc urls for each chain
+};
 ```
 
 To enable WalletConnect v2 you should update to version 1.1.0 of Connect Kit
@@ -132,8 +137,8 @@ type CheckSupportOptions = {
   chainId?: ConnectSupportedChains;
   bridge?: string;
   infuraId?: string;
-  rpc: { [chainId: number]: string; };
-}
+  rpc: { [chainId: number]: string };
+};
 ```
 
 #### Returns
@@ -176,7 +181,6 @@ of two modals.
 Based on the parameters passed to `checkSupport` it will return an instance of the
 Ledger Extension provider or a WalletConnect provider.
 
-
 ## Migration to WalletConnect v2
 
 To migrate from WaletConnect version 1 to version 2:
@@ -188,12 +192,11 @@ To migrate from WaletConnect version 1 to version 2:
 
 Have a look at the example velow and the full list of WalletConnect v2 options above.
 
-
 ## Examples
 
 ### Example for WalletConnect v2
 
-An example function using the *Ledger Connect Kit* and *ethers.js*, that would
+An example function using the _Ledger Connect Kit_ and _ethers.js_, that would
 be called when pressing the connect button on a React app.
 
 `setProvider`, `setAccount`, `setChainId` and `setError` are just
@@ -208,20 +211,20 @@ const connectWallet = async () => {
     const checkSupportResult = connectKit.checkSupport({
       providerType: SupportedProviders.Ethereum,
       walletConnectVersion: 2,
-      projectId: 'YOUR_PROJECT_ID',
+      projectId: "YOUR_PROJECT_ID",
       chains: [1, 137],
       optionalChains: [5],
       rpcMap: {
-        '1': 'https://cloudflare-eth.com/',
-        '5': 'https://goerli.optimism.io',
-        '137': 'https://polygon-rpc.com/',
+        "1": "https://cloudflare-eth.com/",
+        "5": "https://goerli.optimism.io",
+        "137": "https://polygon-rpc.com/",
       },
     });
 
     const provider = await connectKit.getProvider();
     setProvider(provider);
 
-    const accounts = await provider.request({ method: 'eth_requestAccounts' });
+    const accounts = await provider.request({ method: "eth_requestAccounts" });
     if (accounts) setAccount(accounts[0]);
 
     const library = new ethers.providers.Web3Provider(provider);
@@ -230,14 +233,14 @@ const connectWallet = async () => {
   } catch (error) {
     setError(error);
   }
-}
+};
 ```
 
 ### Example for WalletConnect v1
 
 If you are currently using WalletConnect version 1 you should migrate to version 2 as soon as possible, as the servers for version 1 are going to be shutdown on 28 June.
 
-An example function using the *Ledger Connect Kit* and *ethers.js*, that would
+An example function using the _Ledger Connect Kit_ and _ethers.js_, that would
 be called when pressing the connect button on a React app.
 
 `setProvider`, `setAccount`, `setChainId` and `setError` are just
@@ -259,17 +262,17 @@ const connectWallet = async () => {
       walletConnectVersion: 1,
       chainId: 1,
       rpc: {
-        1: `https://cloudflare-eth.com`,                 // Mainnet
-        5: 'https://goerli.optimism.io',                 // Goerli
+        1: `https://cloudflare-eth.com`, // Mainnet
+        5: "https://goerli.optimism.io", // Goerli
         137: "https://matic-mainnet.chainstacklabs.com", // Polygon
       },
     });
-    console.log('checkSupportResult is', checkSupportResult);
+    console.log("checkSupportResult is", checkSupportResult);
 
     const provider = await connectKit.getProvider();
     setProvider(provider);
 
-    const accounts = await provider.request({ method: 'eth_requestAccounts' });
+    const accounts = await provider.request({ method: "eth_requestAccounts" });
     if (accounts) setAccount(accounts[0]);
 
     const library = new ethers.providers.Web3Provider(provider);
@@ -278,9 +281,8 @@ const connectWallet = async () => {
   } catch (error) {
     setError(error);
   }
-}
+};
 ```
-
 
 ## Development
 
@@ -288,30 +290,30 @@ If you want to fix a bug or develop a new feature for Connect Kit follow these s
 
 - clone the repository
 
-    git clone https://github.com/LedgerHQ/connect-kit
+  git clone https://github.com/LedgerHQ/connect-kit
 
 - build the Connect Kit package
 
-    cd packages/connect-kit
-    yarn && yarn build
+  cd packages/connect-kit
+  yarn && yarn build
 
 - deploy it somewhere by using a service like vercel or netlify for test builds; e.g.
 
-    netlify deploy -d dist/ --prod
+  netlify deploy -d dist/ --prod
 
 - update the URL on the Connect Kit loader
 
-    // packages/connect-kit-loader/src/index.ts
-    const src = "https://DEPLOY_ADDRESS/umd/index.js";
+  // packages/connect-kit-loader/src/index.ts
+  const src = "https://DEPLOY_ADDRESS/umd/index.js";
 
 - build and link it locally; e.g.
 
-    yarn build && yarn link
+  yarn build && yarn link
 
 - use the linked loader package on your app
 
-    cd <my_app>
-    yarn
-    yarn link @ledgerhq/connect-kit-loader
+  cd <my_app>
+  yarn
+  yarn link @ledgerhq/connect-kit-loader
 
 Your app will now use the local version of the Connect Kit loader and you just need to deploy new changes to the same URL and reload the app to test them.

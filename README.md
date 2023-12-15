@@ -1,5 +1,9 @@
 # Ledger Connect Kit
 
-This repository is used to build two packages, `@ledgerhq/connect-kit-loader` and `@ledgerhq/connect-kit`.
+This repository serves the `@ledgerhq/connect-kit`
 
-More information is available on the [connect-kit-loader](packages/connect-kit-loader) package.
+# !!!!!!!!!!!!!!!! IMPORTANT NOTICE !!!!!!!!!!!!!!!!
+
+This repository used to serve the `@ledgerhq/connect-kit-loader` package.
+Please note that `@ledgerhq/connect-kit-loader` has been **deprecated** and should no longer be used.
+Versions post `1.1.8` of `@ledgerhq/connect-kit` are not accessible through the `@ledgerhq/connect-kit-loader`.
