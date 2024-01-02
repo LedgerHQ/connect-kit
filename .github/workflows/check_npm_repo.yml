@@ -1,0 +1,62 @@
+name: NPM Version Check and Remove
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Run every hour
+
+jobs:
+  check-versions:
+    runs-on: ledgerhq-shared-small
+
+    steps:
+      # Checkout project repository
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Check NPM Versions
+        run: |
+          # Get all versions of @ledgerhq/connect-kit from NPM registry
+          npm_versions=$(npm show @ledgerhq/connect-kit versions --json | jq -r '.[]' | tr -d '"')
+
+          # Add prefix "ck-v" to each version for Git check
+          git_versions=$(echo "$npm_versions" | sed 's/^/ck-v/')
+          
+          # Flag to check if any version does not exist
+          version_not_exist=false
+          missing_versions=""
+          
+          # Check if each version with prefix exists in the repository
+          for version in $git_versions; do
+            if git rev-parse "$version" > /dev/null 2>&1; then
+              echo "Version $version exists in the repository."
+            else
+              echo "Version $version does not exist in the repository."
+              missing_versions="$missing_versions$version, "
+              version_not_exist=true
+            fi
+          done
+          
+          # Send a message to Slack if any version does not exist
+          if [ "$version_not_exist" = true ]; then
+            missing_versions=${missing_versions%, *}  # Remove trailing comma and space
+            echo "::set-env name=SLACK_MESSAGE::Versions $missing_versions do not exist in the repository. Please review and take appropriate action. To remove a package version, you can use the following command: \`npm unpublish <your-package-name>@<version>\`"
+          else
+            echo "All versions exist in the repository."
+          fi
+        
+
+      - name: Send Message to Slack
+        if: env.SLACK_MESSAGE
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_USERNAME: GitHub Actions
+          SLACK_ICON_EMOJI: ":alert:"
+          SLACK_TITLE: Npm registry contains versions that do not exist in the repository
+          SLACK_COLOR: "#ff0000"
+          SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
