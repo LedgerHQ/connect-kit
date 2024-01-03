@@ -2,11 +2,11 @@ name: NPM Version Check and Remove
 
 on:
   schedule:
-    - cron: '0 * * * *' # Run every hour
+    - cron: '30 * * * *' # Run every hour
 
 jobs:
   check-versions:
-    runs-on: ledgerhq-shared-small
+    runs-on: ubuntu-latest
 
     steps:
       # Checkout project repository
