@@ -2,7 +2,7 @@ name: NPM Version Check and Remove
 
 on:
   schedule:
-    - cron: '30 * * * *' # Run every hour
+    - cron: '20 * * * *' # Run every hour
 
 jobs:
   check-versions:
@@ -41,15 +41,14 @@ jobs:
             fi
           done
           
-          # Send a message to Slack if any version does not exist
+          # Set an environment variable with missing versions directly
           if [ "$version_not_exist" = true ]; then
             missing_versions=${missing_versions%, *}  # Remove trailing comma and space
-            echo "::set-env name=SLACK_MESSAGE::Versions $missing_versions do not exist in the repository. Please review and take appropriate action. To remove a package version, you can use the following command: \`npm unpublish <your-package-name>@<version>\`"
+            export SLACK_MESSAGE="Versions $missing_versions do not exist in the repository. Please review and take appropriate action. To remove a package version, you can use the following command: \`npm unpublish <your-package-name>@<version>\`"
           else
             echo "All versions exist in the repository."
           fi
-        
-
+      
       - name: Send Message to Slack
         if: env.SLACK_MESSAGE
         uses: rtCamp/action-slack-notify@v2
