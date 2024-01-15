@@ -17,8 +17,7 @@ export const DEFAULT_REQUIRED_CHAINS: number[] = [DEFAULT_CHAIN_ID];
 export const DEFAULT_WALLETCONNECT_VERSION: number = 1;
 
 export enum SupportedProviders {
-  Ethereum = 'Ethereum',
-  Solana = 'Solana',
+  Ethereum = 'Ethereum'
 }
 
 export enum SupportedProviderImplementations {
