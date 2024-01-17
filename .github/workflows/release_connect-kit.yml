@@ -19,7 +19,7 @@ jobs:
       # use 'latest' for release, 'alpha' or 'beta' for pre-releases
       PKG_RELEASE_TAG: 'latest'
       # make sure it matches the version on package.json
-      PKG_VERSION: '1.1.10'
+      PKG_VERSION: '1.1.9'
       GIT_TAG_PREFIX: 'ck-'
     steps:
       # Checkout project repository
