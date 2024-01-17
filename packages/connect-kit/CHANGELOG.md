@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 1.1.10 - 2024-01-17
+Bumps node version (16->20) in connect-kit release workflow 
+
 ## 1.1.9 - 2024-01-15
 Export SupportedProviders and EthereumProvider
 
