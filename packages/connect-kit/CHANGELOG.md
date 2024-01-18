@@ -6,8 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## 1.1.9 - 2024-01-18
 Export SupportedProviders and EthereumProvider
-Bumps node version (16->20) in connect-kit release workflow 
+Bumps node version (16->20) in connect-kit release workflow
 
 ## 1.1.8 - 2023-12-14
 New version fix
