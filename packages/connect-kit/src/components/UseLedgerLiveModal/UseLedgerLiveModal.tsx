@@ -9,7 +9,6 @@ import {
   Link,
 } from "../Modal/Modal.styles";
 import { QrCode, QrCodeSection } from "./UseLedgerLiveModal.styles";
-import { useAnalytics } from "../../hooks/useAnalytics";
 
 const log = getDebugLogger('UseLedgerLiveModal');
 
@@ -33,7 +32,6 @@ const UseLedgerLiveModal = ({
   onClose = () => void 0,
 }: UseLedgerLiveModalProps) => {
   log('initializing', { isDesktop, uri });
-  const { init, track, sendUserFlow, addStepToFlow } = useAnalytics();
 
   // use the uri prop as the initial start value
   const [wcUri, setWcUri] = useState<string>(uri);
@@ -51,8 +49,6 @@ const UseLedgerLiveModal = ({
   });
 
   const onUseLedgerLiveClick = useCallback(() => {
-    addStepToFlow("Click on 'Connect with Ledger Live desktop/mobile' ")
-    sendUserFlow()
     log('loading Ledger Live, ', wcUri);
     window.location.href = `ledgerlive://wc?uri=${encodeURIComponent(wcUri)}`;
 
@@ -63,23 +59,8 @@ const UseLedgerLiveModal = ({
   }, [wcUri]);
 
   const onInstallLedgerLiveClick = useCallback(() => {
-    addStepToFlow("Click on 'Install Ledger Live' ")
     window.open('https://www.ledger.com/ledger-live');
     return false;
-  }, []);
-
-
-
-  useEffect(() => {
-    init(
-      {
-        dappName: "connect-kit",
-      },
-      { ip: "0.0.0.0" }
-    ).then(() => {
-      void track("source", {hostname : window.location.hostname})
-      addStepToFlow("Open Ledger Live Modal")
-    });
   }, []);
 
 

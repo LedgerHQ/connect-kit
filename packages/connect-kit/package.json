@@ -1,6 +1,6 @@
 {
   "name": "@ledgerhq/connect-kit",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "A library for dApps to integrate with the Ledger Extension and Ledger Live",
   "author": "Ledger SAS <ledger.com>",
   "license": "MIT",
@@ -53,7 +53,6 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
-    "@segment/analytics-next": "1.63.0",
     "rollup-plugin-dotenv": "0.5.0",
     "uuid": "9.0.1"
   }
