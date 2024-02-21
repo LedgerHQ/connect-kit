@@ -9,7 +9,7 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
+  "types": "dist/umd/index.d.ts",
   "homepage": "https://ledger.com",
   "repository": {
     "type": "git",
